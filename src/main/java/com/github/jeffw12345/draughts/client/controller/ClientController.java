@@ -2,35 +2,79 @@ package com.github.jeffw12345.draughts.client.controller;
 
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
+
+import com.github.jeffw12345.draughts.client.Client;
+import com.github.jeffw12345.draughts.client.service.PollServerForUpdatesService;
+import com.github.jeffw12345.draughts.client.service.ServerUpdateProcessingService;
 import com.github.jeffw12345.draughts.client.view.DraughtsBoardView;
+import com.github.jeffw12345.draughts.models.game.Board;
+import com.github.jeffw12345.draughts.models.game.Game;
+import com.github.jeffw12345.draughts.models.game.Player;
+import com.github.jeffw12345.draughts.models.game.SquareContent;
+import com.github.jeffw12345.draughts.models.request.ClientRequestToServer;
+
+import lombok.Getter;
+import lombok.Setter;
+
 import javax.swing.JOptionPane;
 
+import static com.github.jeffw12345.draughts.models.request.ClientToServerRequestType.WANT_GAME;
+import static com.github.jeffw12345.draughts.models.request.ClientToServerRequestType.WANT_PLAYER_ID;
+
+@Getter
+@Setter
 public class ClientController implements WindowListener {
 
+    private final ServerUpdateProcessingService serviceUpdateProcessingService;
+    private Client client;
     private final DraughtsBoardView view;
-
-    private boolean drawOfferSentPending, drawOfferReceivedPending, isRedsTurn = true, amIRed,
-            bothClientsConnectedToServer;
-    private boolean newGameAgreedByPlayers;
-
-    // TODO - How are turns being updated?
-
-    // Todo - Inform client of game id once game is agreed. Then create thread to poll server for board updates, turn updates,
-    // game status updates, draw offer updates, etc, every 100 ms.
-
-    // TODO - Code to assign player red or white player, and player name, i.e. Player 1 and Player 2
+    private Player player = new Player();
+    private Game game;
 
     // TODO - StringWorker
 
-    public ClientController() {
-        view = new DraughtsBoardView(this);
+    // TODO - Remove accept new game.
+
+    public ClientController(Client client) {
+        this.player.setPlayerId(requestPlayerId());
+        new Thread(() -> {
+            try {
+                new PollServerForUpdatesService(this).checkServerForUpdates();
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            }
+        });
+        this.view = new DraughtsBoardView(this);
+        this.client = client;
+        this.serviceUpdateProcessingService = new ServerUpdateProcessingService(this);
+    }
+
+    private String requestPlayerId() {
+        ClientRequestToServer requestForPlayerId = ClientRequestToServer.builder()
+                .client(this.client)
+                .requestType(WANT_PLAYER_ID)
+                .build();
+        // TODO - Can this be handled by the processMessage method in ServerUpdateProcessingService
+        return requestForPlayerId.makeServerRequestAndGetResponse().getInformationRequested();
+    }
+
+    public void offerNewGameButtonPressed() {
+        view.getOfferNewGameButton().setEnabled(false);
+        offerNewGameButtonPressedMsg();
+
+        ClientRequestToServer requestForGame = ClientRequestToServer.builder()
+                .client(client)
+                .requestType(WANT_GAME)
+                .build();
+
+        serviceUpdateProcessingService.processMessage(requestForGame.makeServerRequestAndGetResponse());
     }
 
     public void acceptDrawButtonPressed() {
         //TODO - Message to server
         view.getAcceptDrawButton().setEnabled(false);
         view.getOfferNewGameButton().setEnabled(true);
-        newGameAgreedByPlayers = false;// To prevent further moves
+        //newGameAgreedByPlayers = false;// To prevent further moves
         acceptDrawButtonPressedMsg();
     }
 
@@ -74,12 +118,8 @@ public class ClientController implements WindowListener {
         offerDrawButtonPressedMsg();
     }
 
-    public void offerNewGameButtonPressed() {
-        //TODO - Message to server
-        view.getOfferNewGameButton().setEnabled(false);
-        offerNewGameButtonPressedMsg();
 
-    }
+
 
     public void resignButtonPressed() {
         //TODO - Message to server
@@ -143,30 +183,26 @@ public class ClientController implements WindowListener {
         }
     }
 
-    void updateBoard(String boardRepresentation) {
-        //TODO - Rewrite this method
-        String[] parsed = boardRepresentation.split(",");
-        // squares starts at one as the first entry in the string is 'board'
-        for (int squares = 1; squares < parsed.length; squares++) {
-            // To convert the position in the array into co-ordinates
-            // Top left corner is col 0, row 0.
-            int col = (squares - 2) % 8;
-            int row = (squares - 2) / 8;
-
-            if (parsed[squares].equals("null")) {
-                view.setBlank(col, row);
-            }
-            if (parsed[squares].equals("red_man")) {
-                //view.addRedMan(col, row);
-            }
-            if (parsed[squares].equals("white_man")) {
-                //view.addWhiteMan(col, row);
-            }
-            if (parsed[squares].equals("red_king")) {
-                //view.addRedKing(col, row);
-            }
-            if (parsed[squares].equals("white_king")) {
-                //view.addWhiteKing(col, row);
+    //TODO - Use same method to initialise board
+    public void updateBoard(Board board) {
+        for(int row = 0; row < 8; row++){
+            for(int column = 0; column < 8; column++){
+                SquareContent squareContent = board.getSquareContentAtRowAndColumn(row, column);
+                if(squareContent == SquareContent.RED_MAN){
+                    view.addRedMan(column, row);
+                }
+                if(squareContent == SquareContent.WHITE_MAN){
+                    view.addWhiteMan(column, row);
+                }
+                if(squareContent == SquareContent.RED_KING){
+                    view.addRedKing(column, row);
+                }
+                if(squareContent == SquareContent.WHITE_KING){
+                    view.addWhiteKing(column, row);
+                }
+                if(squareContent == SquareContent.EMPTY){
+                    view.setBlank(column, row);
+                }
             }
         }
         view.getFrame().repaint();

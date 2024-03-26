@@ -63,11 +63,11 @@ public class DraughtsBoardView implements ActionListener {
 
     }
 
-    void addRedKing(int col, int row) {
+    public void addRedKing(int col, int row) {
         DrawSquare.getFor(square[col][row]).setState(SquareState.redman_king);
     }
 
-    void addRedMan(int col, int row) {
+    public void addRedMan(int col, int row) {
         DrawSquare.getFor(square[col][row]).setState(SquareState.redman);
     }
 
@@ -86,11 +86,11 @@ public class DraughtsBoardView implements ActionListener {
         }
     }
 
-    void addWhiteKing(int col, int row) {
+    public void addWhiteKing(int col, int row) {
         DrawSquare.getFor(square[col][row]).setState(SquareState.whiteman_king);
     }
 
-    void addWhiteMan(int col, int row) {
+    public void addWhiteMan(int col, int row) {
         DrawSquare.getFor(square[col][row]).setState(SquareState.whiteman);
     }
 

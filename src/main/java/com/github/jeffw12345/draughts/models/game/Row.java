@@ -1,8 +1,11 @@
 package com.github.jeffw12345.draughts.models.game;
 
-import java.util.ArrayList;
-import java.util.List;
+import lombok.Getter;
+import lombok.Setter;
 
+
+@Getter
+@Setter
 public class Row {
     private Square[] squaresOnRow = new Square[8];
 

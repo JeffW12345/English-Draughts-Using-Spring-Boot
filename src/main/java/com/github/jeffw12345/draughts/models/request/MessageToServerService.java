@@ -1,5 +1,8 @@
-package com.github.jeffw12345.draughts.client.controller;
+package com.github.jeffw12345.draughts.models.request;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.github.jeffw12345.draughts.client.Client;
+import com.github.jeffw12345.draughts.models.response.ServerResponseToClient;
 import lombok.Getter;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
@@ -12,10 +15,14 @@ import org.apache.http.util.EntityUtils;
 
 import java.io.IOException;
 
+@Getter
 public class MessageToServerService {
-
-    @Getter
+    private Client client;
     private HttpResponse httpResponse;
+
+    public MessageToServerService(Client client) {
+        this.client = client;
+    }
 
     public void sendMessage(String message) {
         try (CloseableHttpClient httpClient = HttpClients.createDefault()) {
@@ -25,7 +32,7 @@ public class MessageToServerService {
             httpPost.setEntity(stringEntity);
             httpPost.setHeader("Content-type", "text/plain");
 
-            // TODO - Log request
+            // TODO - Log request and handle non 200s
 
             httpResponse = httpClient.execute(httpPost);
 
@@ -48,8 +55,7 @@ public class MessageToServerService {
         return httpResponse.getStatusLine().getStatusCode() == HttpStatus.SC_OK;
     }
 
-    @Override
-    public String toString() {
+    public String responseMessage() {
         HttpEntity httpEntity= httpResponse.getEntity();
         try {
             return httpEntity != null ? EntityUtils.toString(httpEntity) : null;
@@ -57,4 +63,21 @@ public class MessageToServerService {
             throw new RuntimeException(e);
         }
     }
+
+    public ServerResponseToClient getServerResponseToClientObject() {
+        HttpEntity httpEntity = httpResponse.getEntity();
+        ObjectMapper objectMapper = new ObjectMapper();
+
+        try {
+            if (httpEntity != null) {
+                String responseString = EntityUtils.toString(httpEntity);
+                return objectMapper.readValue(responseString, ServerResponseToClient.class);
+            } else {
+                return null;
+            }
+        } catch (IOException e) {
+            throw new RuntimeException("Failed to read server response", e);
+        }
+    }
+
 }
