@@ -5,11 +5,11 @@ import com.github.jeffw12345.draughts.models.request.ClientRequestToServer;
 
 import static com.github.jeffw12345.draughts.models.request.ClientToServerRequestType.CHECK_FOR_UPDATE;
 
-public class PollServerForUpdatesService {
+public class ServerPollForUpdatesService {
 
     private final ClientController controller;
 
-    public PollServerForUpdatesService(ClientController controller) {
+    public ServerPollForUpdatesService(ClientController controller) {
         this.controller = controller;
     }
 

@@ -46,4 +46,8 @@ public class Game {
         whitePlayer.setPlayersTurn(!isRedTurn);
         whitePlayer.setHasOfferedDraw(false);
     }
+
+    public boolean isPlayerWhitePlayer(Player player){
+        return player == whitePlayer;
+    }
 }

@@ -4,7 +4,7 @@ import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
 
 import com.github.jeffw12345.draughts.client.Client;
-import com.github.jeffw12345.draughts.client.service.PollServerForUpdatesService;
+import com.github.jeffw12345.draughts.client.service.ServerPollForUpdatesService;
 import com.github.jeffw12345.draughts.client.service.ServerUpdateProcessingService;
 import com.github.jeffw12345.draughts.client.view.DraughtsBoardView;
 import com.github.jeffw12345.draughts.models.game.Board;
@@ -24,12 +24,17 @@ import static com.github.jeffw12345.draughts.models.request.ClientToServerReques
 @Getter
 @Setter
 public class ClientController implements WindowListener {
-
     private final ServerUpdateProcessingService serviceUpdateProcessingService;
     private Client client;
     private final DraughtsBoardView view;
     private Player player = new Player();
     private Game game;
+    private boolean amIRed,
+            newGameAgreedByPlayers,
+            isRedsTurn = true,
+            drawOfferSentPending,
+            drawOfferReceivedPending,
+            bothClientsConnectedToServer;
 
     // TODO - StringWorker
 
@@ -39,7 +44,7 @@ public class ClientController implements WindowListener {
         this.player.setPlayerId(requestPlayerId());
         new Thread(() -> {
             try {
-                new PollServerForUpdatesService(this).checkServerForUpdates();
+                new ServerPollForUpdatesService(this).checkServerForUpdates();
             } catch (InterruptedException e) {
                 throw new RuntimeException(e);
             }
@@ -49,13 +54,19 @@ public class ClientController implements WindowListener {
         this.serviceUpdateProcessingService = new ServerUpdateProcessingService(this);
     }
 
+    public void changeTurns() {
+        this.isRedsTurn = !this.isRedsTurn;
+        this.drawOfferSentPending = false;
+        this.drawOfferReceivedPending = false;
+    }
+
     private String requestPlayerId() {
         ClientRequestToServer requestForPlayerId = ClientRequestToServer.builder()
                 .client(this.client)
                 .requestType(WANT_PLAYER_ID)
                 .build();
-        // TODO - Can this be handled by the processMessage method in ServerUpdateProcessingService
-        return requestForPlayerId.makeServerRequestAndGetResponse().getInformationRequested();
+        // TODO - Can this be handled by the processMessage method in ServerUpdateProcessingService? NO
+        return requestForPlayerId.makeServerRequestAndGetResponse().getInformation();
     }
 
     public void offerNewGameButtonPressed() {
@@ -78,37 +89,12 @@ public class ClientController implements WindowListener {
         acceptDrawButtonPressedMsg();
     }
 
-    String acceptMsg() {
-        return "Do you accept the offer?";
-    }
-
-    public void acceptNewGameButtonPressed() {
-        //TODO - Message to server
-        view.getAcceptNewGameButton().setEnabled(false);
-        view.getOfferDrawButton().setEnabled(true);
-        view.getResignButton().setEnabled(true);
-        newGameAgreedByPlayers = true;
-        acceptNewGameButtonPressedMsg();
-    }
-
     String colourMessage() {
         if (amIRed) {
             return "You are the red player";
         } else {
             return "You are the white player";
         }
-    }
-
-    public boolean isDrawOfferReceivedPending() {
-        return drawOfferReceivedPending;
-    }
-
-    public boolean isDrawOfferSentPending() {
-        return drawOfferSentPending;
-    }
-
-    public boolean isRedsTurn() {
-        return isRedsTurn;
     }
 
     public void offerDrawButtonPressed() {
@@ -118,8 +104,9 @@ public class ClientController implements WindowListener {
         offerDrawButtonPressedMsg();
     }
 
-
-
+    public void stalemateViewUpdate(){
+        //TODO
+    }
 
     public void resignButtonPressed() {
         //TODO - Message to server
@@ -128,21 +115,10 @@ public class ClientController implements WindowListener {
         view.getAcceptDrawButton().setEnabled(false);
         view.getResignButton().setEnabled(false);
         view.getOfferDrawButton().setEnabled(false);
-        newGameAgreedByPlayers = false;// To prevent further moves
+        newGameAgreedByPlayers = false;
         resignButtonPressedMsg();
     }
 
-    public void setDrawOfferReceivedPending(boolean drawOfferReceivedPending) {
-        this.drawOfferReceivedPending = drawOfferReceivedPending;
-    }
-
-    public void setDrawOfferSentPending(boolean drawOfferSentPending) {
-        this.drawOfferSentPending = drawOfferSentPending;
-    }
-
-    public void setPlayerColour() {
-        // TODO - Set amIRed using response from server.
-    }
 
     public void setRedsTurn(boolean isRedsTurn) {
         this.isRedsTurn = isRedsTurn;
@@ -154,6 +130,7 @@ public class ClientController implements WindowListener {
     // if the user clicks a square out of turn or before they have
     // agreed a game with their opponent.
 
+    // TODO - This.
     public void squareClicked(int column, int row) {
 
         if (!newGameAgreedByPlayers) {
@@ -184,7 +161,7 @@ public class ClientController implements WindowListener {
     }
 
     //TODO - Use same method to initialise board
-    public void updateBoard(Board board) {
+    public void repaintBoard(Board board) {
         for(int row = 0; row < 8; row++){
             for(int column = 0; column < 8; column++){
                 SquareContent squareContent = board.getSquareContentAtRowAndColumn(row, column);
@@ -210,7 +187,7 @@ public class ClientController implements WindowListener {
     }
 
     public void ifSentDrawOfferExpires() {
-        setDrawOfferSentPending(false);
+        //TODO - setDrawOfferSentPending(false);
         view.getOfferNewGameButton().setEnabled(false);
         view.getAcceptNewGameButton().setEnabled(false);
         view.getAcceptDrawButton().setEnabled(false);
@@ -219,7 +196,7 @@ public class ClientController implements WindowListener {
         ifWhiteLostMsg();
     }
 
-    public void ifRedLost() {
+    public void viewUpdateIfRedLost() {
         view.getOfferNewGameButton().setEnabled(true);
         view.getResignButton().setEnabled(false);
         view.getOfferDrawButton().setEnabled(false);
@@ -229,7 +206,7 @@ public class ClientController implements WindowListener {
         ifRedLostMsg();
     }
 
-    public void ifWhiteLost() {
+    public void viewUpdateIfWhiteLost() {
         view.getOfferNewGameButton().setEnabled(true);
         view.getResignButton().setEnabled(false);
         view.getOfferDrawButton().setEnabled(false);
@@ -271,7 +248,7 @@ public class ClientController implements WindowListener {
         ifOtherPlayerResignsMsg();
     }
 
-    public void ifDrawOfferAcceptedByOtherClient() {
+    public void drawOfferAcceptedViewUpdate() {
         view.getOfferNewGameButton().setEnabled(true);
         view.getAcceptNewGameButton().setEnabled(false);
         view.getAcceptDrawButton().setEnabled(false);
@@ -520,5 +497,6 @@ public class ClientController implements WindowListener {
     public void windowDeactivated(WindowEvent e) {
 
     }
+
 
 }

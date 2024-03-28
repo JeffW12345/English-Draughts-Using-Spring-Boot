@@ -9,9 +9,10 @@ import lombok.Getter;
 @Builder
 @Getter
 public class ServerResponseToClient {
+    private String clientId;
     private Game game;
     private Player player;
     private Move move;
     private ServerResponseType serverResponseType;
-    private String informationRequested;
+    private String information;
 }

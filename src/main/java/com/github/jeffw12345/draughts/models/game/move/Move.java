@@ -4,7 +4,10 @@ import com.github.jeffw12345.draughts.models.game.Game;
 import com.github.jeffw12345.draughts.models.game.Player;
 import com.github.jeffw12345.draughts.models.game.Square;
 
+import java.util.UUID;
+
 public class Move {
+    private String MOVE_ID = String.valueOf(UUID.randomUUID());
     private Player playerMakingMove;
     private Game game;
     private Square startingSquare;
