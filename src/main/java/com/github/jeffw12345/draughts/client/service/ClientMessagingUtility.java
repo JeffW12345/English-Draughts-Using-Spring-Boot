@@ -2,13 +2,13 @@ package com.github.jeffw12345.draughts.client.service;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.github.jeffw12345.draughts.models.client.message.ClientRequestToServer;
+import com.github.jeffw12345.draughts.models.client.message.ClientMessageToServer;
 import lombok.extern.slf4j.Slf4j; //TODO - Add to other classes
 
 @Slf4j
 public class ClientMessagingUtility {
 
-    public static String convertClientRequestToServerObjectToJSON(ClientRequestToServer clientRequestToServer) {
+    public static String convertClientMessageToJSON(ClientMessageToServer clientRequestToServer) {
         String objectAsString = "";
         try {
             objectAsString = new ObjectMapper()

@@ -10,7 +10,7 @@ import lombok.Getter;
 
 @Builder
 @Getter
-public class ClientRequestToServer {
+public class ClientMessageToServer {
     private String clientId;
     private Client client;
     private ClientToServerRequestType requestType;

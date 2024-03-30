@@ -3,14 +3,13 @@ package com.github.jeffw12345.draughts.client.service;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.jeffw12345.draughts.client.Client;
-import com.github.jeffw12345.draughts.models.client.message.ClientRequestToServer;
+import com.github.jeffw12345.draughts.models.client.message.ClientMessageToServer;
 import com.github.jeffw12345.draughts.models.server.message.ServerMessageToClient;
 import jakarta.websocket.ClientEndpoint;
 import jakarta.websocket.ContainerProvider;
 import jakarta.websocket.OnMessage;
 import jakarta.websocket.OnOpen;
 import jakarta.websocket.Session;
-import jakarta.websocket.WebSocketContainer;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 
@@ -54,16 +53,15 @@ public class ClientMessagingService {
 
     public void establishConnection() {
         try {
-            WebSocketContainer container = ContainerProvider.getWebSocketContainer();
-            container.connectToServer(this, new URI("ws://localhost:8080/webSocket"));
-            ClientRequestToServer clientRequestToServer = ClientRequestToServer.builder()
+            ContainerProvider.getWebSocketContainer()
+                    .connectToServer(this, new URI("ws://localhost:8080/webSocket"));
+
+            ClientMessageToServer clientMessage = ClientMessageToServer.builder()
                     .clientId(this.client.getCLIENT_ID())
                     .requestType(ESTABLISH_CONNECTION)
                     .build();
-            String connectionMessage = new ObjectMapper()
-                    .writer()
-                    .withDefaultPrettyPrinter()
-                    .writeValueAsString(clientRequestToServer);
+
+            String connectionMessage = ClientMessagingUtility.convertClientMessageToJSON(clientMessage);
 
             sendMessageToServer(connectionMessage);
 

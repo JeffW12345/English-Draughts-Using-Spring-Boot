@@ -9,12 +9,7 @@ import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
-import javax.swing.JButton;
-import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-import javax.swing.UIManager;
-import javax.swing.WindowConstants;
+import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 
 public class DraughtsBoardView implements ActionListener {
@@ -42,27 +37,42 @@ public class DraughtsBoardView implements ActionListener {
 
     @Override
     public void actionPerformed(ActionEvent e) {
-        for (int column = 0; column < 8; column++) {
-            for (int row = 0; row < 8; row++) {
-                if (e.getSource() == square[column][row]) {
-                    controller.squareClicked(column, row);
+        if (e.getSource() == offerNewGameButton || e.getSource() == offerDrawButton ||
+                e.getSource() == acceptDrawButton || e.getSource() == resignButton) {
+            SwingWorker<Void, Void> buttonActionWorker = new SwingWorker<>() {
+                @Override
+                protected Void doInBackground() {
+                    if (e.getSource() == offerNewGameButton) {
+                        controller.offerNewGameButtonPressed();
+                    } else if (e.getSource() == offerDrawButton) {
+                        controller.offerDrawButtonPressed();
+                    } else if (e.getSource() == acceptDrawButton) {
+                        controller.acceptDrawButtonPressed();
+                    } else if (e.getSource() == resignButton) {
+                        controller.resignButtonPressed();
+                    }
+                    return null;
                 }
-            }
-        }
-
-        if (e.getSource() == offerNewGameButton) {
-            controller.offerNewGameButtonPressed();
-        }
-        if (e.getSource() == offerDrawButton) {
-            controller.offerDrawButtonPressed();
-        }
-        if (e.getSource() == acceptDrawButton) {
-            controller.acceptDrawButtonPressed();
-        }
-        if (e.getSource() == resignButton) {
-            controller.resignButtonPressed();
+            };
+            buttonActionWorker.execute();
+        } else {
+            SwingWorker<Void, Void> squareClickWorker = new SwingWorker<>() {
+                @Override
+                protected Void doInBackground() {
+                    for (int column = 0; column < 8; column++) {
+                        for (int row = 0; row < 8; row++) {
+                            if (e.getSource() == square[column][row]) {
+                                controller.squareClicked(column, row);
+                            }
+                        }
+                    }
+                    return null;
+                }
+            };
+            squareClickWorker.execute();
         }
     }
+
 
     public void addRedKing(int col, int row) {
         DrawSquare.getFor(square[col][row]).setState(SquareState.redman_king);

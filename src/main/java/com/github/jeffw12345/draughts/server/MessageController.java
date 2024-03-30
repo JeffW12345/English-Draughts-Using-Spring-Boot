@@ -1,11 +1,11 @@
 package com.github.jeffw12345.draughts.server;
 
 import com.github.jeffw12345.draughts.server.mapping.ClientIdToSessionMapping;
-import com.github.jeffw12345.draughts.models.client.message.ClientRequestToServer;
+import com.github.jeffw12345.draughts.models.client.message.ClientMessageToServer;
 import com.github.jeffw12345.draughts.models.client.message.ClientToServerRequestType;
 
 public class MessageController {
-    public void processMessageFromClient(ClientRequestToServer clientRequestToServer) {
+    public void processMessageFromClient(ClientMessageToServer clientRequestToServer) {
         ClientToServerRequestType clientToServerRequestType= clientRequestToServer.getRequestType();
         switch (clientToServerRequestType) {
             case WANT_GAME:
@@ -40,32 +40,32 @@ public class MessageController {
         }
     }
 
-    private void establishConnectionActions(ClientRequestToServer clientRequestToServer) {
+    private void establishConnectionActions(ClientMessageToServer clientRequestToServer) {
         ClientIdToSessionMapping.add(clientRequestToServer.getClientId(),
                 clientRequestToServer.getClient().getClientMessagingService().getSession());
     }
 
-    private void checkForUpdateActions(ClientRequestToServer clientRequestToServer) {
+    private void checkForUpdateActions(ClientMessageToServer clientRequestToServer) {
     }
-    private void exitActions(ClientRequestToServer clientRequestToServer) {
-    }
-
-    private void acceptGameActions(ClientRequestToServer clientRequestToServer) {
+    private void exitActions(ClientMessageToServer clientRequestToServer) {
     }
 
-    private void resignationActions(ClientRequestToServer clientRequestToServer) {
+    private void acceptGameActions(ClientMessageToServer clientRequestToServer) {
     }
 
-    private void drawAcceptActions(ClientRequestToServer clientRequestToServer) {
+    private void resignationActions(ClientMessageToServer clientRequestToServer) {
     }
 
-    private void drawOfferActions(ClientRequestToServer clientRequestToServer) {
+    private void drawAcceptActions(ClientMessageToServer clientRequestToServer) {
     }
 
-    private void moveRequestActions(ClientRequestToServer clientRequestToServer) {
+    private void drawOfferActions(ClientMessageToServer clientRequestToServer) {
     }
 
-    private void wantGameActions(ClientRequestToServer clientRequestToServer) {
+    private void moveRequestActions(ClientMessageToServer clientRequestToServer) {
+    }
+
+    private void wantGameActions(ClientMessageToServer clientRequestToServer) {
     }
 
 }

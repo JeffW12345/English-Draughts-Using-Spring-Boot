@@ -1,97 +1,51 @@
 package com.github.jeffw12345.draughts.models.game;
 
+import lombok.Getter;
+import lombok.extern.slf4j.Slf4j;
+
+@Getter
+@Slf4j
 public class Board {
-    Row[] listOfRows = new Row[8];
+    private final Row[] rows = new Row[8];
+    private final Square EMPTY_SQUARE = Square.builder().squareContent(SquareContent.EMPTY).build();
+    private final Square WHITE_MAN = Square.builder().squareContent(SquareContent.WHITE_MAN).build();
+    private final Square RED_MAN = Square.builder().squareContent(SquareContent.RED_MAN).build();
 
-    private final Square EMPTY_SQUARE = Square.builder()
-            .squareContent(SquareContent.EMPTY)
-            .build();
-
-    private final Square WHITE_MAN = Square.builder()
-            .squareContent(SquareContent.WHITE_MAN)
-            .build();
-
-    private final Square RED_MAN = Square.builder()
-            .squareContent(SquareContent.RED_MAN)
-            .build();
-
-    public void initialBoard() {
-        Row firstRow = createFirstRow();
-        Row secondRow = createSecondRow();
-        Row thirdRow = createFirstRow();
-        Row fourthRow = createEmptyRow();
-        Row fifthRow = createEmptyRow();
-        Row sixthRow = createSixthRow();
-        Row seventhRow = createSeventhRow();
-        Row eigthRow = createSixthRow();
-
-        listOfRows[0] = firstRow;
-        listOfRows[1] = secondRow;
-        listOfRows[2] = thirdRow;
-        listOfRows[3] = fourthRow;
-        listOfRows[4] = fifthRow;
-        listOfRows[5] = sixthRow;
-        listOfRows[6] = seventhRow;
-        listOfRows[7] = eigthRow;
+    public Board() {
+        initializeBoard();
     }
 
-    private Row createSeventhRow() {
+    private void initializeBoard() {
+        for (int row = 0; row < 8; row++) {
+            rows[row] = createRow(row);
+        }
+    }
+    private Row createRow(int rowNumber) {
         Row row = new Row();
-        for(int column = 0; column < 8; column++){
-            if(column % 2 == 0){
-                row.getSquaresOnRow()[column] = RED_MAN;
-            }else{
+        for (int column = 0; column < 8; column++) {
+            if ((rowNumber + column) % 2 == 0) {
                 row.getSquaresOnRow()[column] = EMPTY_SQUARE;
-            }
-        }
-        return row;
-    }
-
-    private Row createSixthRow() {
-        Row row = new Row();
-        for(int column = 0; column < 8; column++){
-            if(column % 2 != 0){
-                row.getSquaresOnRow()[column] = RED_MAN;
-            }else{
-                row.getSquaresOnRow()[column] = EMPTY_SQUARE;
-            }
-        }
-        return row;
-    }
-
-    private Row createEmptyRow() {
-        Row row = new Row();
-        for(int column = 0; column < 8; column++){
-            row.getSquaresOnRow()[column] = EMPTY_SQUARE;
-        }
-        return row;
-    }
-
-    private Row createSecondRow() {
-        Row row = new Row();
-        for(int column = 0; column < 8; column++){
-            if(column % 2 != 0){
+            } else if (rowNumber < 3) {
                 row.getSquaresOnRow()[column] = WHITE_MAN;
-            }else{
+            } else if (rowNumber > 4) {
+                row.getSquaresOnRow()[column] = RED_MAN;
+            } else {
                 row.getSquaresOnRow()[column] = EMPTY_SQUARE;
             }
         }
         return row;
     }
 
-    private Row createFirstRow() {
-        Row row = new Row();
-        for(int column = 0; column < 8; column++){
-            if(column % 2 == 0){
-                row.getSquaresOnRow()[column] = WHITE_MAN;
-            }else{
-                row.getSquaresOnRow()[column] = EMPTY_SQUARE;
-            }
+    public SquareContent getSquareContentAtRowAndColumn(int rowNumber, int columnNumber) {
+        if (isValidPosition(rowNumber, columnNumber)) {
+            return rows[rowNumber].getSquareAtColumn(columnNumber).getSquareContent();
+        } else {
+            // TODO - Code to exit gracefully
+            throw new IllegalArgumentException("Invalid row or column index");
         }
-        return row;
     }
 
-    public SquareContent getSquareContentAtRowAndColumn(int rowNumber, int columnNumber){
-        return listOfRows[rowNumber].getSquareAtColumn(columnNumber).getSquareContent();
+    private boolean isValidPosition(int rowNumber, int columnNumber) {
+        return rowNumber >= 0 && rowNumber < 8 && columnNumber >= 0 && columnNumber < 8;
     }
 }

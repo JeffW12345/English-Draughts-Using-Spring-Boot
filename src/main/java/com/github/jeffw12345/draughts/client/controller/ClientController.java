@@ -2,14 +2,13 @@ package com.github.jeffw12345.draughts.client.controller;
 
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
-import java.util.concurrent.CountDownLatch;
 
 import com.github.jeffw12345.draughts.client.Client;
 import com.github.jeffw12345.draughts.client.view.DraughtsBoardView;
 import com.github.jeffw12345.draughts.models.game.Board;
 import com.github.jeffw12345.draughts.models.game.Colour;
 import com.github.jeffw12345.draughts.models.game.SquareContent;
-import com.github.jeffw12345.draughts.models.client.message.ClientRequestToServer;
+import com.github.jeffw12345.draughts.models.client.message.ClientMessageToServer;
 
 import com.github.jeffw12345.draughts.models.server.message.ServerMessageToClient;
 import com.github.jeffw12345.draughts.models.server.message.ServerResponseType;
@@ -33,9 +32,6 @@ public class ClientController implements WindowListener {
             drawOfferSentPending,
             drawOfferReceivedPending,
             bothClientsConnectedToServer;
-
-    // TODO - StringWorker
-
     public ClientController(Client client) {
         this.client = client;
     }
@@ -125,7 +121,7 @@ public class ClientController implements WindowListener {
         view.getOfferNewGameButton().setEnabled(false);
         offerNewGameButtonPressedMsg();
 
-        ClientRequestToServer requestForGame = ClientRequestToServer.builder()
+        ClientMessageToServer requestForGame = ClientMessageToServer.builder()
                 .client(client)
                 .requestType(WANT_GAME)
                 .build();
