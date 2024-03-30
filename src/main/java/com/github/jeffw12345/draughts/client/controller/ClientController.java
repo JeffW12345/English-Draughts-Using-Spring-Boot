@@ -8,6 +8,7 @@ import com.github.jeffw12345.draughts.client.view.DraughtsBoardView;
 import com.github.jeffw12345.draughts.models.game.Board;
 import com.github.jeffw12345.draughts.models.game.Colour;
 import com.github.jeffw12345.draughts.models.game.SquareContent;
+import com.github.jeffw12345.draughts.models.game.move.Move;
 import com.github.jeffw12345.draughts.models.messaging.ClientMessageToServer;
 
 import com.github.jeffw12345.draughts.models.messaging.ServerMessageToClient;
@@ -18,6 +19,7 @@ import lombok.extern.slf4j.Slf4j;
 
 import javax.swing.JOptionPane;
 
+import static com.github.jeffw12345.draughts.models.messaging.message.ClientToServerRequestType.MOVE_REQUEST;
 import static com.github.jeffw12345.draughts.models.messaging.message.ClientToServerRequestType.WANT_GAME;
 
 @Getter
@@ -25,6 +27,8 @@ import static com.github.jeffw12345.draughts.models.messaging.message.ClientToSe
 @Slf4j
 public class ClientController implements WindowListener {
     private Client client;
+
+    private Move move = Move.builder().build();
     private final DraughtsBoardView view =  new DraughtsBoardView(this);
     private boolean amIRed,
             gameInProgress,
@@ -43,9 +47,6 @@ public class ClientController implements WindowListener {
     public void processMessageFromServer(ServerMessageToClient serverResponseToClient) {
         ServerResponseType serverResponseType = serverResponseToClient.getServerResponseType();
         switch (serverResponseType) {
-            case NO_UPDATE:
-                noUpdateActions();
-                break;
             case ASSIGN_WHITE_COLOUR:
                 assignColour(Colour.WHITE);
                 break;
@@ -56,10 +57,10 @@ public class ClientController implements WindowListener {
                 invalidMoveOptions();
                 break;
             case INFORM_OF_DRAW_ACCEPTED:
-                drawAcceptedActions(serverResponseToClient);
+                drawOfferAcceptedViewUpdate();
                 break;
             case INFORM_OF_STALEMATE:
-                stalemateActions();
+                stalemateViewUpdate();
                 break;
             case INFORM_RED_IS_WINNER:
                 winnerActions(Colour.RED);
@@ -73,12 +74,19 @@ public class ClientController implements WindowListener {
             case UPDATE_BOARD_SAME_TURN:
                 updateBoardSameTurn(serverResponseToClient);
                 break;
-            case INFORM_OF_PLAYER_RESIGNATION:
-                playerResignationActions(serverResponseToClient);
+            case INFORM_WHITE_RESIGNED:
+                resignationActions(Colour.WHITE);
+                break;
+            case INFORM_RED_RESIGNED:
+                resignationActions(Colour.RED);
                 break;
             default:
                 throw new IllegalArgumentException("Unexpected response type: " + serverResponseType);
         }
+    }
+
+    private void resignationActions(Colour colourOfResigningPlayer) {
+
     }
 
     private void updateBoardSameTurn(ServerMessageToClient serverResponseObject) {
@@ -99,26 +107,11 @@ public class ClientController implements WindowListener {
             viewUpdateIfRedLost();
         }
     }
-    private void stalemateActions() {
-        stalemateViewUpdate();
-    }
-
-    private void drawAcceptedActions(ServerMessageToClient serverResponseObject) {
-        drawOfferAcceptedViewUpdate();
-    }
-
-    private void noUpdateActions() {
-    }
-
-    private void playerResignationActions(ServerMessageToClient client) {
-    }
     public void changeTurns() {
         this.drawOfferSentPending = false;
         this.drawOfferReceivedPending = false;
         this.isRedsTurn = !this.isRedsTurn;
     }
-
-
 
     public void offerNewGameButtonPressed() {
         view.getOfferNewGameButton().setEnabled(false);
@@ -129,9 +122,7 @@ public class ClientController implements WindowListener {
                 .requestType(WANT_GAME)
                 .build();
 
-
-
-        //TODO - processMessageFromServer(requestForGame.makeServerRequestAndGetResponse());
+        this.client.getClientMessagingService().sendMessageToServer(requestForGame);
     }
 
     public void acceptDrawButtonPressed() {
@@ -172,20 +163,7 @@ public class ClientController implements WindowListener {
         resignButtonPressedMsg();
     }
 
-
-    public void setRedsTurn(boolean isRedsTurn) {
-        this.isRedsTurn = isRedsTurn;
-    }
-
-    // This method responds sends squares clicked data to the server.
-    // In addition, it reduces excess messages to server that could
-    // potentially cause race conditions by creating a pop up box
-    // if the user clicks a square out of turn or before they have
-    // agreed a game with their opponent.
-
-    // TODO - This.
     public void squareClicked(int column, int row) {
-
         if (!gameInProgress) {
             JOptionPane.showMessageDialog(view.getFrame(), "You need to agree a game before playing.");
             return;
@@ -198,8 +176,17 @@ public class ClientController implements WindowListener {
             JOptionPane.showMessageDialog(view.getFrame(), "It is not your turn, it is red's turn");
             return;
         }
+        if(move.noCoordinatesOnlyProvided()){
+            move.setStartCoordinates(column, row);
+            return;
+        }
+        if(move.startCoordinatesOnlyProvided()){
+            move.setEndCoordinates(column, row);
 
-        //TODO - Inform server of moves
+            client.getClientMessagingService().sendMoveToServer(move);
+
+            move = Move.builder().build();
+        }
     }
 
     String turnMsg() {
@@ -331,11 +318,6 @@ public class ClientController implements WindowListener {
         view.getOfferNewGameButton().setEnabled(false);
         ifReceivedDrawOfferExpiresMsg();
     }
-
-    public boolean isAmIRed() {
-        return amIRed;
-    }
-
     public void setAmIRed(boolean amIRed) {
         this.amIRed = amIRed;
     }

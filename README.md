@@ -52,6 +52,8 @@ The game is now in progress, and players can now do the following:
 
 * A move is defined as the movement of a piece, which may or may not terminate with a change of turn.
 
+The server checks if moves are legal and promotes men to kings where required.
+
 After each move, the server monitors the following:
 
 - Whether a game is a draw (whether due to a stalemate or a draw acceptance).

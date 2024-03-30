@@ -9,11 +9,11 @@ import java.util.UUID;
 
 @Getter
 public class Client {
-    private final String CLIENT_ID = String.valueOf(UUID.randomUUID());
+    private final String clientId = String.valueOf(UUID.randomUUID());
     private final ClientMessagingService clientMessagingService = new ClientMessagingService(this);
     private final ClientController clientController = new ClientController(this);
     public void setUp() {
-        clientMessagingService.establishConnection();
+        clientMessagingService.establishSession();
         clientController.setUp();
     }
 }

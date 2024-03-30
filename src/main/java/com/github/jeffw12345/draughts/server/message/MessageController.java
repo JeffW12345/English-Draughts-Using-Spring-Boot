@@ -32,7 +32,7 @@ public class MessageController {
             case CHECK_FOR_UPDATE:
                 checkForUpdateActions(clientRequestToServer);
                 break;
-            case ESTABLISH_CONNECTION:
+            case ESTABLISH_SESSION:
                 establishConnectionActions(clientRequestToServer);
                 break;
             default:
