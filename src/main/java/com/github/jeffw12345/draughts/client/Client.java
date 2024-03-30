@@ -6,6 +6,7 @@ import com.github.jeffw12345.draughts.client.service.ClientMessagingService;
 import lombok.Getter;
 
 import java.util.UUID;
+import java.util.concurrent.CountDownLatch;
 
 @Getter
 public class Client {

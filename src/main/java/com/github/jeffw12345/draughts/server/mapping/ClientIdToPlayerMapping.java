@@ -1,4 +1,4 @@
-package com.github.jeffw12345.draughts.models.mapping;
+package com.github.jeffw12345.draughts.server.mapping;
 
 import com.github.jeffw12345.draughts.models.game.Player;
 

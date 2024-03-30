@@ -1,12 +1,8 @@
 package com.github.jeffw12345.draughts.server;
 
-import com.github.jeffw12345.draughts.models.game.Colour;
-import com.github.jeffw12345.draughts.models.mapping.ClientIdToSessionMapping;
-import com.github.jeffw12345.draughts.models.request.ClientRequestToServer;
-import com.github.jeffw12345.draughts.models.request.ClientToServerRequestType;
-import com.github.jeffw12345.draughts.models.response.ServerResponseToClient;
-import com.github.jeffw12345.draughts.models.response.ServerResponseType;
-import org.springframework.web.bind.annotation.*;
+import com.github.jeffw12345.draughts.server.mapping.ClientIdToSessionMapping;
+import com.github.jeffw12345.draughts.models.client.request.ClientRequestToServer;
+import com.github.jeffw12345.draughts.models.client.request.ClientToServerRequestType;
 
 public class MessageController {
     public void processMessageFromClient(ClientRequestToServer clientRequestToServer) {

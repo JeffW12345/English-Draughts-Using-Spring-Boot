@@ -3,7 +3,7 @@ package com.github.jeffw12345.draughts.client.service;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.jeffw12345.draughts.client.Client;
-import com.github.jeffw12345.draughts.models.request.ClientRequestToServer;
+import com.github.jeffw12345.draughts.models.client.request.ClientRequestToServer;
 import com.github.jeffw12345.draughts.models.response.ServerResponseToClient;
 import jakarta.websocket.ClientEndpoint;
 import jakarta.websocket.ContainerProvider;
@@ -16,7 +16,7 @@ import lombok.extern.slf4j.Slf4j;
 
 import java.net.URI;
 
-import static com.github.jeffw12345.draughts.models.request.ClientToServerRequestType.ESTABLISH_CONNECTION;
+import static com.github.jeffw12345.draughts.models.client.request.ClientToServerRequestType.ESTABLISH_CONNECTION;
 
 @ClientEndpoint
 @Slf4j

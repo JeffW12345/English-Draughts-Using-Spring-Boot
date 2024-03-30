@@ -2,35 +2,36 @@ package com.github.jeffw12345.draughts.client.controller;
 
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
+import java.util.concurrent.CountDownLatch;
 
 import com.github.jeffw12345.draughts.client.Client;
+import com.github.jeffw12345.draughts.client.service.ClientMessagingUtility;
 import com.github.jeffw12345.draughts.client.view.DraughtsBoardView;
 import com.github.jeffw12345.draughts.models.game.Board;
 import com.github.jeffw12345.draughts.models.game.Colour;
-import com.github.jeffw12345.draughts.models.game.Game;
-import com.github.jeffw12345.draughts.models.game.Player;
 import com.github.jeffw12345.draughts.models.game.SquareContent;
-import com.github.jeffw12345.draughts.models.request.ClientRequestToServer;
+import com.github.jeffw12345.draughts.models.client.request.ClientRequestToServer;
 
 import com.github.jeffw12345.draughts.models.response.ServerResponseToClient;
 import com.github.jeffw12345.draughts.models.response.ServerResponseType;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.extern.slf4j.Slf4j;
 
 import javax.swing.JOptionPane;
 
-import static com.github.jeffw12345.draughts.models.request.ClientToServerRequestType.WANT_GAME;
-import static com.github.jeffw12345.draughts.models.request.ClientToServerRequestType.WANT_PLAYER_ID;
+import static com.github.jeffw12345.draughts.models.client.request.ClientToServerRequestType.WANT_GAME;
+import static com.github.jeffw12345.draughts.models.client.request.ClientToServerRequestType.WANT_PLAYER_ID;
 
 @Getter
 @Setter
+@Slf4j
 public class ClientController implements WindowListener {
     private Client client;
     private final DraughtsBoardView view =  new DraughtsBoardView(this);
-    private Player player = new Player();
-    private Game game;
+    private final CountDownLatch playerIdAssignedLatch = new CountDownLatch(1);
     private boolean amIRed,
-            newGameAgreedByPlayers,
+            gameInProgress,
             isRedsTurn = true,
             drawOfferSentPending,
             drawOfferReceivedPending,
@@ -38,15 +39,31 @@ public class ClientController implements WindowListener {
 
     // TODO - StringWorker
 
-    // TODO - Remove accept new game.
-
     public ClientController(Client client) {
         this.client = client;
     }
 
-    public void setUp() {
-        this.player.setPlayerId(requestPlayerId());
-        this.view.setUp();
+    public void setUp()  {
+        requestPlayerId();
+        try{
+            playerIdAssignedLatch.await();
+        }
+        catch (InterruptedException ex){
+            log.error(ex.getMessage());
+        }
+        view.setUp();
+    }
+
+    private void requestPlayerId() {
+        ClientRequestToServer requestForPlayerId = ClientRequestToServer.builder()
+                .client(this.client)
+                .requestType(WANT_PLAYER_ID)
+                .build();
+
+        String requestForPlayerIDAsJSON =
+                ClientMessagingUtility.convertClientRequestToServerObjectToJSON(requestForPlayerId);
+
+        this.client.getClientMessagingService().sendMessageToServer(requestForPlayerIDAsJSON);
     }
 
     public void processMessageFromServer(ServerResponseToClient serverResponseToClient) {
@@ -99,12 +116,9 @@ public class ClientController implements WindowListener {
         Board updatedBoard = serverResponseObject.getGame().getCurrentBoard();
         repaintBoard(updatedBoard);
         changeTurns();
-        //this.clientController.getGame().changeTurns();//TODO - Does the Client need to update Game object?
     }
 
     private void winnerActions(Colour winnerColour) {
-        // TODO - Put this on server side. Game game = serverResponseObject.getGame();
-        //game.setGameStatus(winnerColour == Colour.RED ? GameStatus.RED_VICTORY : GameStatus.WHITE_VICTORY);
         if(winnerColour == Colour.RED){
             viewUpdateIfWhiteLost();
         } else{
@@ -120,7 +134,7 @@ public class ClientController implements WindowListener {
     }
 
     private void assignPlayerIdActions(ServerResponseToClient serverResponseObject) {
-
+        playerIdAssignedLatch.countDown();
     }
 
     private void noUpdateActions() {
@@ -129,19 +143,12 @@ public class ClientController implements WindowListener {
     private void playerResignationActions(ServerResponseToClient client) {
     }
     public void changeTurns() {
-        this.isRedsTurn = !this.isRedsTurn;
         this.drawOfferSentPending = false;
         this.drawOfferReceivedPending = false;
+        this.isRedsTurn = !this.isRedsTurn;
     }
 
-    private String requestPlayerId() {
-        ClientRequestToServer requestForPlayerId = ClientRequestToServer.builder()
-                .client(this.client)
-                .requestType(WANT_PLAYER_ID)
-                .build();
-        // TODO - Can this be handled by the processMessage method in ServerUpdateProcessingService? NO
-        return requestForPlayerId.makeServerRequestAndGetResponse().getInformation();
-    }
+
 
     public void offerNewGameButtonPressed() {
         view.getOfferNewGameButton().setEnabled(false);
@@ -152,7 +159,9 @@ public class ClientController implements WindowListener {
                 .requestType(WANT_GAME)
                 .build();
 
-        processMessageFromServer(requestForGame.makeServerRequestAndGetResponse());
+
+
+        //TODO - processMessageFromServer(requestForGame.makeServerRequestAndGetResponse());
     }
 
     public void acceptDrawButtonPressed() {
@@ -189,7 +198,7 @@ public class ClientController implements WindowListener {
         view.getAcceptDrawButton().setEnabled(false);
         view.getResignButton().setEnabled(false);
         view.getOfferDrawButton().setEnabled(false);
-        newGameAgreedByPlayers = false;
+        gameInProgress = false;
         resignButtonPressedMsg();
     }
 
@@ -207,7 +216,7 @@ public class ClientController implements WindowListener {
     // TODO - This.
     public void squareClicked(int column, int row) {
 
-        if (!newGameAgreedByPlayers) {
+        if (!gameInProgress) {
             JOptionPane.showMessageDialog(view.getFrame(), "You need to agree a game before playing.");
             return;
         }
@@ -276,7 +285,7 @@ public class ClientController implements WindowListener {
         view.getOfferDrawButton().setEnabled(false);
         view.getAcceptNewGameButton().setEnabled(false);
         view.getAcceptDrawButton().setEnabled(false);
-        newGameAgreedByPlayers = false; // To prevent further moves
+        gameInProgress = false; // To prevent further moves
         ifRedLostMsg();
     }
 
@@ -286,7 +295,7 @@ public class ClientController implements WindowListener {
         view.getOfferDrawButton().setEnabled(false);
         view.getAcceptNewGameButton().setEnabled(false);
         view.getAcceptDrawButton().setEnabled(false);
-        newGameAgreedByPlayers = false; // To prevent further moves
+        gameInProgress = false; // To prevent further moves
         ifWhiteLostMsg();
     }
 
@@ -299,7 +308,7 @@ public class ClientController implements WindowListener {
         isRedsTurn = true; // Red starts first in new games.
         drawOfferSentPending = false; // To cancel any pending offers.
         drawOfferReceivedPending = false;
-        newGameAgreedByPlayers = true;
+        gameInProgress = true;
         ifNewGameOfferAcceptedByOtherClientMsg();
     }
 
@@ -318,7 +327,7 @@ public class ClientController implements WindowListener {
         view.getAcceptDrawButton().setEnabled(false);
         view.getResignButton().setEnabled(false);
         view.getOfferDrawButton().setEnabled(false);
-        newGameAgreedByPlayers = false; // To prevent further moves
+        gameInProgress = false; // To prevent further moves
         ifOtherPlayerResignsMsg();
     }
 
@@ -328,7 +337,7 @@ public class ClientController implements WindowListener {
         view.getAcceptDrawButton().setEnabled(false);
         view.getResignButton().setEnabled(false);
         view.getOfferDrawButton().setEnabled(false);
-        newGameAgreedByPlayers = false; // To prevent further moves
+        gameInProgress = false; // To prevent further moves
         ifDrawOfferAcceptedByOtherClientMsg();
     }
 
@@ -580,7 +589,7 @@ public class ClientController implements WindowListener {
                         .isPlayerWhitePlayer(serverResponseObject.getPlayer());
 
         setAmIRed(!isClientWhitePlayer);
-        setNewGameAgreedByPlayers(true);
+        setGameInProgress(true);
         //TODO - Do I need to update the game id?
     }
 

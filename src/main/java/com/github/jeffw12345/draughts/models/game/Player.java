@@ -6,7 +6,6 @@ import lombok.Setter;
 @Getter
 @Setter
 public class Player {
-
     private String playerId;
     private boolean isPlayersTurn;
     private boolean hasResigned = false;

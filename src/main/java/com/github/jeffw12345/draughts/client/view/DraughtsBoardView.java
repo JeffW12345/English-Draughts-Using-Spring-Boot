@@ -23,7 +23,7 @@ public class DraughtsBoardView implements ActionListener {
     private JFrame frame;
     private JPanel leftPanel, rightPanel, userInfoPanel;
     private JButton offerNewGameButton, acceptNewGameButton, offerDrawButton, acceptDrawButton, resignButton;
-    private final JButton square[][] = new JButton[8][8];
+    private final JButton[][] square = new JButton[8][8];
     private final Font messagesFont = new Font("Aerial", Font.BOLD, 14);
     private JLabel lblTopMessage, lblMiddleMessage, lblBottomMessage;
     private String bottomLineMessage, middleLineMessage, topLineMessage;
@@ -62,7 +62,6 @@ public class DraughtsBoardView implements ActionListener {
         if (e.getSource() == resignButton) {
             controller.resignButtonPressed();
         }
-
     }
 
     public void addRedKing(int col, int row) {
