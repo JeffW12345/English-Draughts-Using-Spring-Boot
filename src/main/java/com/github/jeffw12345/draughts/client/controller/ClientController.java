@@ -8,17 +8,17 @@ import com.github.jeffw12345.draughts.client.view.DraughtsBoardView;
 import com.github.jeffw12345.draughts.models.game.Board;
 import com.github.jeffw12345.draughts.models.game.Colour;
 import com.github.jeffw12345.draughts.models.game.SquareContent;
-import com.github.jeffw12345.draughts.models.client.message.ClientMessageToServer;
+import com.github.jeffw12345.draughts.models.messaging.ClientMessageToServer;
 
-import com.github.jeffw12345.draughts.models.server.message.ServerMessageToClient;
-import com.github.jeffw12345.draughts.models.server.message.ServerResponseType;
+import com.github.jeffw12345.draughts.models.messaging.ServerMessageToClient;
+import com.github.jeffw12345.draughts.models.messaging.ServerResponseType;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 
 import javax.swing.JOptionPane;
 
-import static com.github.jeffw12345.draughts.models.client.message.ClientToServerRequestType.WANT_GAME;
+import static com.github.jeffw12345.draughts.models.messaging.message.ClientToServerRequestType.WANT_GAME;
 
 @Getter
 @Setter
@@ -46,8 +46,11 @@ public class ClientController implements WindowListener {
             case NO_UPDATE:
                 noUpdateActions();
                 break;
-            case ASSIGN_PLAYER_COLOUR_AND_GAME_ID:
-                gameStartActions(serverResponseToClient);
+            case ASSIGN_WHITE_COLOUR:
+                assignColour(Colour.WHITE);
+                break;
+            case ASSIGN_RED_COLOUR:
+                assignColour(Colour.RED);
                 break;
             case DECLINE_MOVE:
                 invalidMoveOptions();
@@ -549,15 +552,9 @@ public class ClientController implements WindowListener {
     }
 
 
-    public void gameStartActions(ServerMessageToClient serverResponseObject) {
-        boolean isClientWhitePlayer =
-                serverResponseObject
-                        .getGame()
-                        .isPlayerWhitePlayer(serverResponseObject.getPlayer());
-
-        setAmIRed(!isClientWhitePlayer);
+    public void assignColour(Colour colour) {
+        setAmIRed(colour == Colour.RED);
         setGameInProgress(true);
-        //TODO - Do I need to update the game id?
     }
 
     public void invalidMoveOptions() {

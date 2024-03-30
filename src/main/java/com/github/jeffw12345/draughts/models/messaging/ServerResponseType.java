@@ -1,7 +1,9 @@
-package com.github.jeffw12345.draughts.models.server.message;
+package com.github.jeffw12345.draughts.models.messaging;
 
 public enum ServerResponseType {
-    ASSIGN_PLAYER_COLOUR_AND_GAME_ID, //TODO - The name is derived from this.
+    ASSIGN_RED_COLOUR, //TODO - Plumbing
+
+    ASSIGN_WHITE_COLOUR, //TODO - Plumbing
     UPDATE_BOARD_SAME_TURN,
     UPDATE_BOARD_CHANGE_OF_TURN,
     DECLINE_MOVE,

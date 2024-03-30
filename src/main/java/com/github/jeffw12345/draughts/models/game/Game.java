@@ -31,9 +31,9 @@ public class Game {
         gameStatus = GameStatus.IN_PROGRESS;
     }
 
-    public void notifyPlayersGameCreated() {
-        redPlayer.notifyClientGameInProgress(this, Colour.RED);
-        whitePlayer.notifyClientGameInProgress(this, Colour.WHITE);
+    public void newGamePlayerNotificationActions() {
+        redPlayer.newGameClientNotifications(this);
+        whitePlayer.newGameClientNotifications(this);
     }
 
     public void changeTurns(){

@@ -3,8 +3,8 @@ package com.github.jeffw12345.draughts.client.service;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.jeffw12345.draughts.client.Client;
-import com.github.jeffw12345.draughts.models.client.message.ClientMessageToServer;
-import com.github.jeffw12345.draughts.models.server.message.ServerMessageToClient;
+import com.github.jeffw12345.draughts.models.messaging.ClientMessageToServer;
+import com.github.jeffw12345.draughts.models.messaging.ServerMessageToClient;
 import jakarta.websocket.ClientEndpoint;
 import jakarta.websocket.ContainerProvider;
 import jakarta.websocket.OnMessage;
@@ -15,7 +15,7 @@ import lombok.extern.slf4j.Slf4j;
 
 import java.net.URI;
 
-import static com.github.jeffw12345.draughts.models.client.message.ClientToServerRequestType.ESTABLISH_CONNECTION;
+import static com.github.jeffw12345.draughts.models.messaging.message.ClientToServerRequestType.ESTABLISH_CONNECTION;
 
 @ClientEndpoint
 @Slf4j
@@ -23,6 +23,8 @@ import static com.github.jeffw12345.draughts.models.client.message.ClientToServe
 public class ClientMessagingService {
     private Session session;
     private Client client;
+
+    private String sessionId;
 
     public ClientMessagingService(Client client) {
         this.client = client;
@@ -32,6 +34,7 @@ public class ClientMessagingService {
     @OnOpen
     public void onOpen(Session session) {
         this.session = session;
+        this.sessionId = session.getId();
     }
 
     // Processes incoming messages.
@@ -58,6 +61,7 @@ public class ClientMessagingService {
 
             ClientMessageToServer clientMessage = ClientMessageToServer.builder()
                     .clientId(this.client.getCLIENT_ID())
+                    .sessionId(this.sessionId)
                     .requestType(ESTABLISH_CONNECTION)
                     .build();
 
