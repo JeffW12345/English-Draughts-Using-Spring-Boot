@@ -4,15 +4,16 @@ import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
 
 import com.github.jeffw12345.draughts.client.Client;
-import com.github.jeffw12345.draughts.client.service.ServerPollForUpdatesService;
-import com.github.jeffw12345.draughts.client.service.ServerUpdateProcessingService;
 import com.github.jeffw12345.draughts.client.view.DraughtsBoardView;
 import com.github.jeffw12345.draughts.models.game.Board;
+import com.github.jeffw12345.draughts.models.game.Colour;
 import com.github.jeffw12345.draughts.models.game.Game;
 import com.github.jeffw12345.draughts.models.game.Player;
 import com.github.jeffw12345.draughts.models.game.SquareContent;
 import com.github.jeffw12345.draughts.models.request.ClientRequestToServer;
 
+import com.github.jeffw12345.draughts.models.response.ServerResponseToClient;
+import com.github.jeffw12345.draughts.models.response.ServerResponseType;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -24,9 +25,8 @@ import static com.github.jeffw12345.draughts.models.request.ClientToServerReques
 @Getter
 @Setter
 public class ClientController implements WindowListener {
-    private final ServerUpdateProcessingService serviceUpdateProcessingService;
     private Client client;
-    private final DraughtsBoardView view;
+    private final DraughtsBoardView view =  new DraughtsBoardView(this);
     private Player player = new Player();
     private Game game;
     private boolean amIRed,
@@ -41,19 +41,93 @@ public class ClientController implements WindowListener {
     // TODO - Remove accept new game.
 
     public ClientController(Client client) {
-        this.player.setPlayerId(requestPlayerId());
-        new Thread(() -> {
-            try {
-                new ServerPollForUpdatesService(this).checkServerForUpdates();
-            } catch (InterruptedException e) {
-                throw new RuntimeException(e);
-            }
-        });
-        this.view = new DraughtsBoardView(this);
         this.client = client;
-        this.serviceUpdateProcessingService = new ServerUpdateProcessingService(this);
     }
 
+    public void setUp() {
+        this.player.setPlayerId(requestPlayerId());
+        this.view.setUp();
+    }
+
+    public void processMessageFromServer(ServerResponseToClient serverResponseToClient) {
+        ServerResponseType serverResponseType = serverResponseToClient.getServerResponseType();
+        switch (serverResponseType) {
+            case NO_UPDATE:
+                noUpdateActions();
+                break;
+            case ASSIGN_PLAYER_ID:
+                assignPlayerIdActions(serverResponseToClient);
+                break;
+            case ASSIGN_PLAYER_COLOUR_AND_GAME_ID:
+                gameStartActions(serverResponseToClient);
+                break;
+            case DECLINE_MOVE:
+                invalidMoveOptions();
+                break;
+            case INFORM_OF_DRAW_ACCEPTED:
+                drawAcceptedActions(serverResponseToClient);
+                break;
+            case INFORM_OF_STALEMATE:
+                stalemateActions();
+                break;
+            case INFORM_RED_IS_WINNER:
+                winnerActions(Colour.RED);
+                break;
+            case INFORM_WHITE_IS_WINNER:
+                winnerActions(Colour.WHITE);
+                break;
+            case UPDATE_BOARD_CHANGE_OF_TURN:
+                updateBoardChangeOfTurn(serverResponseToClient);
+                break;
+            case UPDATE_BOARD_SAME_TURN:
+                updateBoardSameTurn(serverResponseToClient);
+                break;
+            case INFORM_OF_PLAYER_RESIGNATION:
+                playerResignationActions(serverResponseToClient);
+                break;
+            default:
+                throw new IllegalArgumentException("Unexpected response type: " + serverResponseType);
+        }
+    }
+
+    private void updateBoardSameTurn(ServerResponseToClient serverResponseObject) {
+        Board newBoard = serverResponseObject.getGame().getCurrentBoard();
+        repaintBoard(newBoard);
+    }
+
+    private void updateBoardChangeOfTurn(ServerResponseToClient serverResponseObject) {
+        Board updatedBoard = serverResponseObject.getGame().getCurrentBoard();
+        repaintBoard(updatedBoard);
+        changeTurns();
+        //this.clientController.getGame().changeTurns();//TODO - Does the Client need to update Game object?
+    }
+
+    private void winnerActions(Colour winnerColour) {
+        // TODO - Put this on server side. Game game = serverResponseObject.getGame();
+        //game.setGameStatus(winnerColour == Colour.RED ? GameStatus.RED_VICTORY : GameStatus.WHITE_VICTORY);
+        if(winnerColour == Colour.RED){
+            viewUpdateIfWhiteLost();
+        } else{
+            viewUpdateIfRedLost();
+        }
+    }
+    private void stalemateActions() {
+        stalemateViewUpdate();
+    }
+
+    private void drawAcceptedActions(ServerResponseToClient serverResponseObject) {
+        drawOfferAcceptedViewUpdate();
+    }
+
+    private void assignPlayerIdActions(ServerResponseToClient serverResponseObject) {
+
+    }
+
+    private void noUpdateActions() {
+    }
+
+    private void playerResignationActions(ServerResponseToClient client) {
+    }
     public void changeTurns() {
         this.isRedsTurn = !this.isRedsTurn;
         this.drawOfferSentPending = false;
@@ -78,7 +152,7 @@ public class ClientController implements WindowListener {
                 .requestType(WANT_GAME)
                 .build();
 
-        serviceUpdateProcessingService.processMessage(requestForGame.makeServerRequestAndGetResponse());
+        processMessageFromServer(requestForGame.makeServerRequestAndGetResponse());
     }
 
     public void acceptDrawButtonPressed() {
@@ -438,7 +512,7 @@ public class ClientController implements WindowListener {
 
     public void bothPlayersReadyActions() {
         if (bothClientsConnectedToServer) {
-            view.initialSetup();
+            view.setUp();
             view.setMiddleLineMessage("Both players are connected");
             if (amIRed) {
                 view.setBottomLineMessage("You are the red player.");
@@ -499,4 +573,19 @@ public class ClientController implements WindowListener {
     }
 
 
+    public void gameStartActions(ServerResponseToClient serverResponseObject) {
+        boolean isClientWhitePlayer =
+                serverResponseObject
+                        .getGame()
+                        .isPlayerWhitePlayer(serverResponseObject.getPlayer());
+
+        setAmIRed(!isClientWhitePlayer);
+        setNewGameAgreedByPlayers(true);
+        //TODO - Do I need to update the game id?
+    }
+
+    public void invalidMoveOptions() {
+        // TODO - Move id system?
+        invalidMove();
+    }
 }

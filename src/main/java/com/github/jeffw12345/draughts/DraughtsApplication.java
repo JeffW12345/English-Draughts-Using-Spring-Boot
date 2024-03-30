@@ -10,7 +10,7 @@ public class DraughtsApplication {
 	public static void main(String[] args) {
 		SpringApplication.run(DraughtsApplication.class, args);
 
-		new Thread(() -> new Client().initialize()).start();
-		new Thread(() -> new Client().initialize()).start();
+		new Thread(() -> new Client().setUp()).start();
+		new Thread(() -> new Client().setUp()).start();
 	}
 }

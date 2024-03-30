@@ -25,7 +25,6 @@ public class DraughtsBoardView implements ActionListener {
     private JButton offerNewGameButton, acceptNewGameButton, offerDrawButton, acceptDrawButton, resignButton;
     private final JButton square[][] = new JButton[8][8];
     private final Font messagesFont = new Font("Aerial", Font.BOLD, 14);
-    private String messageToServer;
     private JLabel lblTopMessage, lblMiddleMessage, lblBottomMessage;
     private String bottomLineMessage, middleLineMessage, topLineMessage;
     private final ClientController controller;
@@ -33,6 +32,12 @@ public class DraughtsBoardView implements ActionListener {
     public DraughtsBoardView(ClientController controller) {
         this.controller = controller;
 
+    }
+
+    public void setUp() {
+        newBoardActions();
+        controller.setWelcomeMessage();
+        messagesToPlayer();
     }
 
     @Override
@@ -47,9 +52,6 @@ public class DraughtsBoardView implements ActionListener {
 
         if (e.getSource() == offerNewGameButton) {
             controller.offerNewGameButtonPressed();
-        }
-        if (e.getSource() == acceptNewGameButton) {
-            controller.acceptNewGameButtonPressed();
         }
         if (e.getSource() == offerDrawButton) {
             controller.offerDrawButtonPressed();
@@ -219,10 +221,6 @@ public class DraughtsBoardView implements ActionListener {
         return acceptNewGameButton;
     }
 
-    public String getMessageToServer() {
-        return messageToServer;
-    }
-
     public JButton getOfferDrawButton() {
         return offerDrawButton;
     }
@@ -237,12 +235,6 @@ public class DraughtsBoardView implements ActionListener {
 
     public JButton[][] getSquare() {
         return square;
-    }
-
-    public void initialSetup() {
-        newBoardActions();
-        controller.setWelcomeMessage();
-        messagesToPlayer();
     }
 
     void newBoardActions() {

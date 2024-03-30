@@ -8,10 +8,12 @@ import com.github.jeffw12345.draughts.models.game.move.Move;
 import com.github.jeffw12345.draughts.models.game.Player;
 import com.github.jeffw12345.draughts.models.response.ServerResponseToClient;
 import lombok.Builder;
+import lombok.Getter;
 
 @Builder
+@Getter
 public class ClientRequestToServer {
-
+    private String clientId;
     private Client client;
     private ClientToServerRequestType requestType;
     private Game game;
