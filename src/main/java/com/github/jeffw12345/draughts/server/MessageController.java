@@ -1,8 +1,8 @@
 package com.github.jeffw12345.draughts.server;
 
 import com.github.jeffw12345.draughts.server.mapping.ClientIdToSessionMapping;
-import com.github.jeffw12345.draughts.models.client.request.ClientRequestToServer;
-import com.github.jeffw12345.draughts.models.client.request.ClientToServerRequestType;
+import com.github.jeffw12345.draughts.models.client.message.ClientRequestToServer;
+import com.github.jeffw12345.draughts.models.client.message.ClientToServerRequestType;
 
 public class MessageController {
     public void processMessageFromClient(ClientRequestToServer clientRequestToServer) {
@@ -29,9 +29,6 @@ public class MessageController {
             case EXIT:
                 exitActions(clientRequestToServer);
                 break;
-            case WANT_PLAYER_ID:
-                providePlayerIdActions(clientRequestToServer);
-                break;
             case CHECK_FOR_UPDATE:
                 checkForUpdateActions(clientRequestToServer);
                 break;
@@ -50,10 +47,6 @@ public class MessageController {
 
     private void checkForUpdateActions(ClientRequestToServer clientRequestToServer) {
     }
-
-    private void providePlayerIdActions(ClientRequestToServer clientRequestToServer) {
-    }
-
     private void exitActions(ClientRequestToServer clientRequestToServer) {
     }
 

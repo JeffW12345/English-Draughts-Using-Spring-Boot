@@ -3,8 +3,8 @@ package com.github.jeffw12345.draughts.client.service;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.jeffw12345.draughts.client.Client;
-import com.github.jeffw12345.draughts.models.client.request.ClientRequestToServer;
-import com.github.jeffw12345.draughts.models.response.ServerResponseToClient;
+import com.github.jeffw12345.draughts.models.client.message.ClientRequestToServer;
+import com.github.jeffw12345.draughts.models.server.message.ServerMessageToClient;
 import jakarta.websocket.ClientEndpoint;
 import jakarta.websocket.ContainerProvider;
 import jakarta.websocket.OnMessage;
@@ -16,7 +16,7 @@ import lombok.extern.slf4j.Slf4j;
 
 import java.net.URI;
 
-import static com.github.jeffw12345.draughts.models.client.request.ClientToServerRequestType.ESTABLISH_CONNECTION;
+import static com.github.jeffw12345.draughts.models.client.message.ClientToServerRequestType.ESTABLISH_CONNECTION;
 
 @ClientEndpoint
 @Slf4j
@@ -38,9 +38,9 @@ public class ClientMessagingService {
     // Processes incoming messages.
     @OnMessage
     public void onMessage(String message) {
-        ServerResponseToClient serverResponseToClient;
+        ServerMessageToClient serverResponseToClient;
         try{
-            serverResponseToClient = new ObjectMapper().readValue(message, ServerResponseToClient.class);
+            serverResponseToClient = new ObjectMapper().readValue(message, ServerMessageToClient.class);
             client.getClientController().processMessageFromServer(serverResponseToClient);
         } catch(JsonProcessingException jsonProcessingException){
             log.error(jsonProcessingException.getMessage());}

@@ -1,8 +1,6 @@
-package com.github.jeffw12345.draughts.models.response;
+package com.github.jeffw12345.draughts.models.server.message;
 
 public enum ServerResponseType {
-
-    ASSIGN_PLAYER_ID,
     ASSIGN_PLAYER_COLOUR_AND_GAME_ID, //TODO - The name is derived from this.
     UPDATE_BOARD_SAME_TURN,
     UPDATE_BOARD_CHANGE_OF_TURN,

@@ -5,23 +5,21 @@ import java.awt.event.WindowListener;
 import java.util.concurrent.CountDownLatch;
 
 import com.github.jeffw12345.draughts.client.Client;
-import com.github.jeffw12345.draughts.client.service.ClientMessagingUtility;
 import com.github.jeffw12345.draughts.client.view.DraughtsBoardView;
 import com.github.jeffw12345.draughts.models.game.Board;
 import com.github.jeffw12345.draughts.models.game.Colour;
 import com.github.jeffw12345.draughts.models.game.SquareContent;
-import com.github.jeffw12345.draughts.models.client.request.ClientRequestToServer;
+import com.github.jeffw12345.draughts.models.client.message.ClientRequestToServer;
 
-import com.github.jeffw12345.draughts.models.response.ServerResponseToClient;
-import com.github.jeffw12345.draughts.models.response.ServerResponseType;
+import com.github.jeffw12345.draughts.models.server.message.ServerMessageToClient;
+import com.github.jeffw12345.draughts.models.server.message.ServerResponseType;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 
 import javax.swing.JOptionPane;
 
-import static com.github.jeffw12345.draughts.models.client.request.ClientToServerRequestType.WANT_GAME;
-import static com.github.jeffw12345.draughts.models.client.request.ClientToServerRequestType.WANT_PLAYER_ID;
+import static com.github.jeffw12345.draughts.models.client.message.ClientToServerRequestType.WANT_GAME;
 
 @Getter
 @Setter
@@ -29,7 +27,6 @@ import static com.github.jeffw12345.draughts.models.client.request.ClientToServe
 public class ClientController implements WindowListener {
     private Client client;
     private final DraughtsBoardView view =  new DraughtsBoardView(this);
-    private final CountDownLatch playerIdAssignedLatch = new CountDownLatch(1);
     private boolean amIRed,
             gameInProgress,
             isRedsTurn = true,
@@ -44,36 +41,14 @@ public class ClientController implements WindowListener {
     }
 
     public void setUp()  {
-        requestPlayerId();
-        try{
-            playerIdAssignedLatch.await();
-        }
-        catch (InterruptedException ex){
-            log.error(ex.getMessage());
-        }
         view.setUp();
     }
 
-    private void requestPlayerId() {
-        ClientRequestToServer requestForPlayerId = ClientRequestToServer.builder()
-                .client(this.client)
-                .requestType(WANT_PLAYER_ID)
-                .build();
-
-        String requestForPlayerIDAsJSON =
-                ClientMessagingUtility.convertClientRequestToServerObjectToJSON(requestForPlayerId);
-
-        this.client.getClientMessagingService().sendMessageToServer(requestForPlayerIDAsJSON);
-    }
-
-    public void processMessageFromServer(ServerResponseToClient serverResponseToClient) {
+    public void processMessageFromServer(ServerMessageToClient serverResponseToClient) {
         ServerResponseType serverResponseType = serverResponseToClient.getServerResponseType();
         switch (serverResponseType) {
             case NO_UPDATE:
                 noUpdateActions();
-                break;
-            case ASSIGN_PLAYER_ID:
-                assignPlayerIdActions(serverResponseToClient);
                 break;
             case ASSIGN_PLAYER_COLOUR_AND_GAME_ID:
                 gameStartActions(serverResponseToClient);
@@ -107,12 +82,12 @@ public class ClientController implements WindowListener {
         }
     }
 
-    private void updateBoardSameTurn(ServerResponseToClient serverResponseObject) {
+    private void updateBoardSameTurn(ServerMessageToClient serverResponseObject) {
         Board newBoard = serverResponseObject.getGame().getCurrentBoard();
         repaintBoard(newBoard);
     }
 
-    private void updateBoardChangeOfTurn(ServerResponseToClient serverResponseObject) {
+    private void updateBoardChangeOfTurn(ServerMessageToClient serverResponseObject) {
         Board updatedBoard = serverResponseObject.getGame().getCurrentBoard();
         repaintBoard(updatedBoard);
         changeTurns();
@@ -129,18 +104,14 @@ public class ClientController implements WindowListener {
         stalemateViewUpdate();
     }
 
-    private void drawAcceptedActions(ServerResponseToClient serverResponseObject) {
+    private void drawAcceptedActions(ServerMessageToClient serverResponseObject) {
         drawOfferAcceptedViewUpdate();
-    }
-
-    private void assignPlayerIdActions(ServerResponseToClient serverResponseObject) {
-        playerIdAssignedLatch.countDown();
     }
 
     private void noUpdateActions() {
     }
 
-    private void playerResignationActions(ServerResponseToClient client) {
+    private void playerResignationActions(ServerMessageToClient client) {
     }
     public void changeTurns() {
         this.drawOfferSentPending = false;
@@ -582,7 +553,7 @@ public class ClientController implements WindowListener {
     }
 
 
-    public void gameStartActions(ServerResponseToClient serverResponseObject) {
+    public void gameStartActions(ServerMessageToClient serverResponseObject) {
         boolean isClientWhitePlayer =
                 serverResponseObject
                         .getGame()
