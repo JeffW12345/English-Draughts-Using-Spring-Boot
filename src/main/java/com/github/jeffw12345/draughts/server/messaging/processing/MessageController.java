@@ -1,4 +1,4 @@
-package com.github.jeffw12345.draughts.server.message;
+package com.github.jeffw12345.draughts.server.messaging.processing;
 
 import com.github.jeffw12345.draughts.models.game.Colour;
 import com.github.jeffw12345.draughts.models.game.Game;

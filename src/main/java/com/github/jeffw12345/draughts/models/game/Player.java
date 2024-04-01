@@ -1,9 +1,9 @@
 package com.github.jeffw12345.draughts.models.game;
 
 import com.github.jeffw12345.draughts.models.messaging.ServerMessageToClient;
-import com.github.jeffw12345.draughts.server.mapping.PlayerToClientId;
-import com.github.jeffw12345.draughts.server.message.ServerMessagingService;
-import com.github.jeffw12345.draughts.server.message.ServerMessagingUtility;
+import com.github.jeffw12345.draughts.server.mapping.PlayerToClientIdMapping;
+import com.github.jeffw12345.draughts.server.messaging.sending.ServerMessagingOutboundService;
+import com.github.jeffw12345.draughts.server.messaging.sending.ServerMessagingUtility;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -36,6 +36,6 @@ public class Player {
                 .build();
 
         String messageAsJson = ServerMessagingUtility.convertServerMessageToJSON(serverMessageToClient);
-        ServerMessagingService.sendMessage(messageAsJson, PlayerToClientId.retrieveClientId(this));
+        ServerMessagingOutboundService.sendJsonMessage(messageAsJson, PlayerToClientIdMapping.retrieveClientId(this));
     }
 }

@@ -1,4 +1,4 @@
-package com.github.jeffw12345.draughts.server;
+package com.github.jeffw12345.draughts.server.messaging.processing;
 
 import com.github.jeffw12345.draughts.models.game.Board;
 import com.github.jeffw12345.draughts.models.game.Colour;
@@ -10,7 +10,7 @@ import com.github.jeffw12345.draughts.models.game.move.MoveType;
 import com.github.jeffw12345.draughts.models.game.move.RedManMoveType;
 import com.github.jeffw12345.draughts.models.game.move.WhiteManMoveType;
 
-public class MoveCheck {
+public class MoveCheckService {
 
     public boolean isMoveLegal(Game game, Colour colour){
         Move move = game.getLatestMoveForColour(colour);

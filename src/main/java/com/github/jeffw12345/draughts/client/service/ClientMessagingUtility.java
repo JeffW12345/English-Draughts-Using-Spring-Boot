@@ -7,7 +7,7 @@ import com.github.jeffw12345.draughts.models.messaging.ServerMessageToClient;
 import lombok.extern.slf4j.Slf4j; //TODO - Add to other classes
 
 @Slf4j
-public class ClientMessagingUtil {
+public class ClientMessagingUtility {
 
     public static String convertClientMessageToJSON(ClientMessageToServer clientRequestToServer) {
         String objectAsString = "";

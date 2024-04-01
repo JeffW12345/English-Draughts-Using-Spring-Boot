@@ -2,7 +2,6 @@ package com.github.jeffw12345.draughts.models.messaging;
 
 public enum ServerResponseType {
     ASSIGN_RED_COLOUR, //TODO - Plumbing
-
     ASSIGN_WHITE_COLOUR, //TODO - Plumbing
     UPDATE_BOARD_SAME_TURN,
     UPDATE_BOARD_CHANGE_OF_TURN,
@@ -12,7 +11,5 @@ public enum ServerResponseType {
     INFORM_OF_DRAW_ACCEPTED,
     INFORM_OF_STALEMATE,
     INFORM_OTHER_PLAYER_RESIGNED,
-    INFORM_RED_RESIGNED,
-
     INFORM_DRAW_OFFER_MADE
 }

@@ -1,4 +1,4 @@
-package com.github.jeffw12345.draughts.server.message;
+package com.github.jeffw12345.draughts.server.messaging.sending;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;

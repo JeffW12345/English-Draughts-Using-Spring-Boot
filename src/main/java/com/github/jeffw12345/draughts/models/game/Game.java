@@ -3,6 +3,8 @@ package com.github.jeffw12345.draughts.models.game;
 import com.github.jeffw12345.draughts.models.game.move.Move;
 import lombok.Getter;
 import lombok.Setter;
+
+import java.util.UUID;
 import java.util.concurrent.ConcurrentLinkedDeque;
 
 import java.util.LinkedList;
@@ -10,7 +12,7 @@ import java.util.LinkedList;
 @Setter
 @Getter
 public class Game {
-    private String gameId;
+    private String gameId = String.valueOf(UUID.randomUUID());
     private Board currentBoard;
     private Player redPlayer;
     private Player whitePlayer;

@@ -55,7 +55,7 @@ public class ClientMessagingService {
     }
 
     public void sendMessageToServer(ClientMessageToServer messageAsObject) {
-        String messageAsJSON = ClientMessagingUtil.convertClientMessageToJSON(messageAsObject);
+        String messageAsJSON = ClientMessagingUtility.convertClientMessageToJSON(messageAsObject);
         if (session != null && session.isOpen()) {
             session.getAsyncRemote().sendText(messageAsJSON);
         }
@@ -102,7 +102,7 @@ public class ClientMessagingService {
                     .requestType(ESTABLISH_SESSION)
                     .build();
 
-            String connectionMessage = ClientMessagingUtil.convertClientMessageToJSON(clientMessage);
+            String connectionMessage = ClientMessagingUtility.convertClientMessageToJSON(clientMessage);
 
             sendMessageToServer(connectionMessage);
         } catch (Exception e) {

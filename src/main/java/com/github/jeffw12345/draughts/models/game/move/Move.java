@@ -26,13 +26,6 @@ public class Move {
     private int endSquareColumn;
     private int endSquareRow;
     private boolean endCoordinatesProvided;
-
-    public int getChangeInRows(){
-        return endSquare.getRowNumber() - startSquare.getRowNumber();
-    }
-    public int getChangeInColumns(){
-        return endSquare.getColumnNumber()- startSquare.getColumnNumber();
-    }
     private boolean isLegal = false; //TODO - Call method.
     private boolean convertsToKing = false; //TODO - Call method
 
@@ -51,8 +44,8 @@ public class Move {
         endCoordinatesProvided = true;
     }
 
-    public int absoluteHorizontalDistance(){
-        return Math.abs(startSquareColumn - endSquareColumn);
+    public boolean isOneSquareMove(){
+        return Math.abs(startSquareColumn - endSquareColumn) == 1;
     }
 
     public int absoluteVerticalDistance(){
@@ -90,12 +83,15 @@ public class Move {
         return endSquareRow > startSquareRow;
     }
 
-
-
     public boolean startCoordinatesOnlyProvided(){
         return startCoordinatesProvided && !endCoordinatesProvided;
     }
     public boolean noCoordinatesOnlyProvided(){
         return !startCoordinatesProvided && !endCoordinatesProvided;
+    }
+
+    public boolean willMoveResultInCoronation(){
+        boolean isPlayerRed = this.playerMakingMove.isAmIRedPlayer();
+        return (isPlayerRed && endSquareRow == 7) || (!isPlayerRed && endSquareRow == 0);
     }
 }

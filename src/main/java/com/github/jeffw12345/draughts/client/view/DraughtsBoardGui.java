@@ -163,6 +163,7 @@ public class DraughtsBoardGui implements ActionListener {
         frame.addWindowListener(new WindowAdapter() {
             @Override
             public void windowClosing(WindowEvent e) {
+                //TODO - Add method to send a message to the server.
                 log.warn("Exiting as a player has closed their window");
                 System.exit(1);
             }

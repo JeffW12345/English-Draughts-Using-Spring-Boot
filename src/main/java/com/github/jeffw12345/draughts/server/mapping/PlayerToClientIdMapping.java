@@ -4,7 +4,7 @@ import com.github.jeffw12345.draughts.models.game.Player;
 
 import java.util.concurrent.ConcurrentHashMap;
 
-public class PlayerToClientId {
+public class PlayerToClientIdMapping {
     private static final ConcurrentHashMap<Player, String> playerToClientId = new ConcurrentHashMap<>();
 
     public static void add(Player player, String clientId){

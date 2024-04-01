@@ -45,6 +45,15 @@ public class Board {
         }
     }
 
+    public Square getSquareAtRowAndColumn(int rowNumber, int columnNumber) {
+        if (isValidPosition(rowNumber, columnNumber)) {
+            return rows[rowNumber].getSquareAtColumn(columnNumber);
+        } else {
+            // TODO - Code to exit gracefully
+            throw new IllegalArgumentException("Invalid row or column index");
+        }
+    }
+
     private boolean isValidPosition(int rowNumber, int columnNumber) {
         return rowNumber >= 0 && rowNumber < 8 && columnNumber >= 0 && columnNumber < 8;
     }
