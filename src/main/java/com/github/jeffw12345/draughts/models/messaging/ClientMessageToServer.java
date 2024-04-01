@@ -13,12 +13,7 @@ import lombok.Getter;
 @Getter
 public class ClientMessageToServer {
     private String clientId;
-    private Client client;
     private ClientToServerRequestType requestType;
     private Game game;
-    private Player player;
-    private Move move;
-
     private String sessionId;
-
 }

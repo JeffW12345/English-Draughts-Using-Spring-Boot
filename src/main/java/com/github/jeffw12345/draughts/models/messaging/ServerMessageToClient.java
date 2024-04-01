@@ -11,8 +11,5 @@ import lombok.Getter;
 public class ServerMessageToClient {
     private String clientId;
     private Game game;
-    private Move move; //TODO - Give each game a list of moves then remove this.
     private ServerResponseType serverResponseType;
-    private String sessionId;
-    private String information; // TODO - Necessary?
 }

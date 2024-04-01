@@ -3,10 +3,10 @@ package com.github.jeffw12345.draughts.server.messaging.processing;
 import com.github.jeffw12345.draughts.models.game.Board;
 import com.github.jeffw12345.draughts.models.game.Colour;
 import com.github.jeffw12345.draughts.models.game.SquareContent;
-import com.github.jeffw12345.draughts.models.game.move.KingMoveType;
-import com.github.jeffw12345.draughts.models.game.move.MoveType;
-import com.github.jeffw12345.draughts.models.game.move.RedManMoveType;
-import com.github.jeffw12345.draughts.models.game.move.WhiteManMoveType;
+import com.github.jeffw12345.draughts.models.game.move.type.KingMoveType;
+import com.github.jeffw12345.draughts.models.game.move.type.MoveType;
+import com.github.jeffw12345.draughts.models.game.move.type.RedManMoveType;
+import com.github.jeffw12345.draughts.models.game.move.type.WhiteManMoveType;
 
 public class PostMoveCheckService {
     public static boolean anyLegalMovesForColour(Board board, Colour colour) {

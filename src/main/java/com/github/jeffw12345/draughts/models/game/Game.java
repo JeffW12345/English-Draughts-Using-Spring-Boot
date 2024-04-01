@@ -18,7 +18,6 @@ public class Game {
     private Player whitePlayer;
     private boolean isRedTurn;
     private GameStatus gameStatus = GameStatus.AWAITING_NEW_GAME;
-    private static LinkedList<Move> ConcurrentLinkedDeque;
     private static final ConcurrentLinkedDeque<Move>  redPlayerMoves = new ConcurrentLinkedDeque<>();
     private static final ConcurrentLinkedDeque<Move>  whitePlayerMoves = new ConcurrentLinkedDeque<>();
 
@@ -85,6 +84,15 @@ public class Game {
     public Colour getPlayerColour(Player player){
         if (player == redPlayer){
             return Colour.RED;
+        }
+        return Colour.WHITE;
+    }
+
+    public Colour getColourOfPlayerMakingMove(Move move) {
+        for(Move redPlayerMove : redPlayerMoves){
+            if(redPlayerMove == move){
+                return Colour.RED;
+            }
         }
         return Colour.WHITE;
     }

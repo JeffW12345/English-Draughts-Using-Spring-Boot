@@ -6,7 +6,7 @@ import lombok.extern.slf4j.Slf4j;
 @Getter
 @Slf4j
 public class Board {
-    private final Row[] rows = new Row[8];
+    private final BoardRow[] rows = new BoardRow[8];
     private final Square EMPTY_SQUARE = Square.builder().squareContent(SquareContent.EMPTY).build();
     private final Square WHITE_MAN = Square.builder().squareContent(SquareContent.WHITE_MAN).build();
     private final Square RED_MAN = Square.builder().squareContent(SquareContent.RED_MAN).build();
@@ -20,8 +20,8 @@ public class Board {
             rows[row] = createRow(row);
         }
     }
-    private Row createRow(int rowNumber) {
-        Row row = new Row();
+    private BoardRow createRow(int rowNumber) {
+        BoardRow row = new BoardRow();
         for (int column = 0; column < 8; column++) {
             if ((rowNumber + column) % 2 == 0) {
                 row.getSquaresOnRow()[column] = EMPTY_SQUARE;

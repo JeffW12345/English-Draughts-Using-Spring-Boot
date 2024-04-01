@@ -8,7 +8,7 @@ public enum SquareContent {
             return Colour.RED;
         }
         if (squareContent == SquareContent.WHITE_MAN || squareContent == SquareContent.WHITE_KING){
-            return Colour.RED;
+            return Colour.WHITE;
         }
         return null;
     }

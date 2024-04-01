@@ -10,7 +10,6 @@ public class PlayerToClientIdMapping {
     public static void add(Player player, String clientId){
         playerToClientId.put(player, clientId);
     }
-
     public static String retrieveClientId(Player player){
         return playerToClientId.get(player);
     }

@@ -2,10 +2,9 @@ package com.github.jeffw12345.draughts.client.controller;
 
 public class DrawController {
     public boolean drawOfferSentPending;
-    private MasterClientController controller;
-
-    public DrawController(MasterClientController controller) {
-        this.controller = controller;
+    private MasterClientController masterController;
+    public DrawController(MasterClientController masterController) {
+        this.masterController = masterController;
     }
 
     public void drawOfferAcceptedViewUpdate() {

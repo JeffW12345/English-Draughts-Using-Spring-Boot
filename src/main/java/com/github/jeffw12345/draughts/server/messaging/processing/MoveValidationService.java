@@ -8,8 +8,9 @@ import com.github.jeffw12345.draughts.models.game.move.Move;
 
 public class MoveValidationService {
 
-    public static boolean isMoveLegal(Game game, Colour colour){
-        Move move = game.getLatestMoveForColour(colour);
+    public static boolean isMoveLegal(Game game, Move move){
+        Colour colour = game.getColourOfPlayerMakingMove(move);
+
         if (!game.isTurnOfColour(colour)){
             return false;
         }

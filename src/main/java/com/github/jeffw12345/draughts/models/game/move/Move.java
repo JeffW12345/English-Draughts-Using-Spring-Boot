@@ -1,6 +1,7 @@
 package com.github.jeffw12345.draughts.models.game.move;
 
 import com.github.jeffw12345.draughts.models.game.Board;
+import com.github.jeffw12345.draughts.models.game.Colour;
 import com.github.jeffw12345.draughts.models.game.Game;
 import com.github.jeffw12345.draughts.models.game.Player;
 import com.github.jeffw12345.draughts.models.game.Square;
@@ -16,8 +17,6 @@ import java.util.UUID;
 @Getter
 public class Move {
     private String MOVE_ID = String.valueOf(UUID.randomUUID());
-    private Player playerMakingMove;
-    private Game game;
     private Square startSquare;
     private Square endSquare;
 
@@ -96,9 +95,9 @@ public class Move {
         return !startCoordinatesProvided && !endCoordinatesProvided;
     }
 
-    public boolean willMoveResultInCoronation(){
-        boolean isPlayerRed = this.playerMakingMove.isAmIRedPlayer();
-        return (isPlayerRed && endSquareRow == 7) || (!isPlayerRed && endSquareRow == 0);
+    public boolean willMoveResultInCoronation(Game game){
+        Colour playerColour = game.getColourOfPlayerMakingMove(this);
+        return (playerColour == Colour.RED && endSquareRow == 7) || (playerColour == Colour.WHITE && endSquareRow == 0);
     }
     public Square getStartOfMoveSquare(Board board){
         return board.getSquareAtRowAndColumn(startSquareRow, startSquareColumn);
@@ -112,7 +111,7 @@ public class Move {
         int middleColumn = (startSquareColumn + endSquareColumn) / 2;
         return board.getSquareAtRowAndColumn(middleRow, middleColumn);
     }
-    public boolean isLegal(){
-        return MoveValidationService.isMoveLegal(game, game.getPlayerColour(playerMakingMove));
+    public boolean isLegal(Game game){
+        return MoveValidationService.isMoveLegal(game, this);
     }
 }

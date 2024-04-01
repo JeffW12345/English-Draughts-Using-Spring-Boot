@@ -1,8 +1,9 @@
-package com.github.jeffw12345.draughts.models.game.move;
+package com.github.jeffw12345.draughts.models.game.move.type;
 
+import com.github.jeffw12345.draughts.models.game.move.type.MoveType;
 import lombok.Getter;
 
-public enum WhiteManMoveType implements MoveType{
+public enum WhiteManMoveType implements MoveType {
     MOVE_ONE_DOWN_RIGHT(-1, 1),
     JUMP_TWO_DOWN_RIGHT(-2, 2),
     MOVE_ONE_DOWN_LEFT(-1, -1),

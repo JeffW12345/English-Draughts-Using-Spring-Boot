@@ -1,4 +1,4 @@
-package com.github.jeffw12345.draughts.models.game.move;
+package com.github.jeffw12345.draughts.models.game.move.type;
 
 import lombok.Getter;
 
