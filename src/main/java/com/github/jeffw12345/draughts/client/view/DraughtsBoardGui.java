@@ -1,32 +1,35 @@
 package com.github.jeffw12345.draughts.client.view;
 
-import com.github.jeffw12345.draughts.client.controller.ClientController;
+import com.github.jeffw12345.draughts.client.controller.MasterClientController;
 import lombok.Getter;
+import lombok.extern.slf4j.Slf4j;
 
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 
-public class DraughtsBoardView implements ActionListener {
-
-    @Getter
+@Slf4j
+//TODO- Explore adding other classes
+@Getter
+public class DraughtsBoardGui implements ActionListener {
     private JFrame frame;
     private JPanel leftPanel, rightPanel, userInfoPanel;
-    private JButton offerNewGameButton, acceptNewGameButton, offerDrawButton, acceptDrawButton, resignButton;
+    private JButton offerNewGameButton, offerDrawButton, acceptDrawButton, resignButton;
     private final JButton[][] square = new JButton[8][8];
     private final Font messagesFont = new Font("Aerial", Font.BOLD, 14);
-    private JLabel lblTopMessage, lblMiddleMessage, lblBottomMessage;
-    private String bottomLineMessage, middleLineMessage, topLineMessage;
-    private final ClientController controller;
+    private JLabel topMessageLabel, middleMessageLabel, bottomMessageLabel;
+    private String bottomLineMessageText, middleLineMessageText, topLineMessageText;
+    private final MasterClientController controller;
 
-    public DraughtsBoardView(ClientController controller) {
+    public DraughtsBoardGui(MasterClientController controller) {
         this.controller = controller;
-
     }
 
     public void setUp() {
@@ -73,50 +76,48 @@ public class DraughtsBoardView implements ActionListener {
         }
     }
 
-
     public void addRedKing(int col, int row) {
-        DrawSquare.getFor(square[col][row]).setState(SquareState.redman_king);
+        Square.getComponent(square[col][row]).setState(SquareState.RED_KING);
     }
-
     public void addRedMan(int col, int row) {
-        DrawSquare.getFor(square[col][row]).setState(SquareState.redman);
+        Square.getComponent(square[col][row]).setState(SquareState.RED_MAN);
     }
 
-    void addRedMenToBoard() {
+    void addRedMenToBoardForInitialSetup() {
         for (int row = 0; row < 3; row++) {
             for (int column = 1; column < 8; column += 2) {
                 if ((row == 0) || (row == 2)) {
-                    DrawSquare.getFor(square[column][row]).setState(SquareState.redman);
+                    Square.getComponent(square[column][row]).setState(SquareState.RED_MAN);
                 }
             }
 
-            ((DrawSquare) (square[0][1].getComponents()[0])).setState(SquareState.redman);
-            ((DrawSquare) (square[2][1].getComponents()[0])).setState(SquareState.redman);
-            ((DrawSquare) (square[4][1].getComponents()[0])).setState(SquareState.redman);
-            ((DrawSquare) (square[6][1].getComponents()[0])).setState(SquareState.redman);
+            ((Square) (square[0][1].getComponents()[0])).setState(SquareState.RED_MAN);
+            ((Square) (square[2][1].getComponents()[0])).setState(SquareState.RED_MAN);
+            ((Square) (square[4][1].getComponents()[0])).setState(SquareState.RED_MAN);
+            ((Square) (square[6][1].getComponents()[0])).setState(SquareState.RED_MAN);
         }
     }
 
     public void addWhiteKing(int col, int row) {
-        DrawSquare.getFor(square[col][row]).setState(SquareState.whiteman_king);
+        Square.getComponent(square[col][row]).setState(SquareState.WHITE_KING);
     }
 
     public void addWhiteMan(int col, int row) {
-        DrawSquare.getFor(square[col][row]).setState(SquareState.whiteman);
+        Square.getComponent(square[col][row]).setState(SquareState.WHITE_MAN);
     }
 
-    void addWhiteMenToBoard() {
+    void addWhiteMenToBoardForInitialSetup() {
         for (int row = 5; row < 8; row++) {
             for (int column = 0; column < 8; column += 2) {
                 if ((row == 5) || (row == 7)) {
-                    DrawSquare.getFor(square[column][row]).setState(SquareState.whiteman);
+                    Square.getComponent(square[column][row]).setState(SquareState.WHITE_MAN);
                 }
             }
 
-            DrawSquare.getFor(square[1][6]).setState(SquareState.whiteman);
-            ((DrawSquare) (square[3][6].getComponents()[0])).setState(SquareState.whiteman);
-            ((DrawSquare) (square[5][6].getComponents()[0])).setState(SquareState.whiteman);
-            ((DrawSquare) (square[7][6].getComponents()[0])).setState(SquareState.whiteman);
+            Square.getComponent(square[1][6]).setState(SquareState.WHITE_MAN);
+            ((Square) (square[3][6].getComponents()[0])).setState(SquareState.WHITE_MAN);
+            ((Square) (square[5][6].getComponents()[0])).setState(SquareState.WHITE_MAN);
+            ((Square) (square[7][6].getComponents()[0])).setState(SquareState.WHITE_MAN);
         }
     }
 
@@ -129,14 +130,6 @@ public class DraughtsBoardView implements ActionListener {
         return acceptDrawButton;
     }
 
-    JButton createAcceptNewGameBtn() {
-        acceptNewGameButton = new JButton("Accept new game");
-        acceptNewGameButton.setFont(new java.awt.Font("Arial", Font.BOLD, 18));
-        rightPanel.add(acceptNewGameButton);
-        acceptNewGameButton.setEnabled(false);
-        acceptNewGameButton.addActionListener(this);
-        return acceptNewGameButton;
-    }
 
     void createEmptyBoard() {
         leftPanel.setLayout(new GridLayout(8, 8));
@@ -152,14 +145,13 @@ public class DraughtsBoardView implements ActionListener {
                     square[column][row].setBackground(Color.WHITE);
                     square[column][row].setOpaque(true);
                 }
-                square[column][row].add(new DrawSquare(SquareState.blank));
+                square[column][row].add(new Square(SquareState.EMPTY));
             }
         }
     }
 
     JFrame createFrame() {
         try {
-            // To make it so that the GUI appears the same on Macs as on Windows.
             UIManager.setLookAndFeel(UIManager.getCrossPlatformLookAndFeelClassName());
         } catch (Exception e) {
             e.printStackTrace();
@@ -168,7 +160,13 @@ public class DraughtsBoardView implements ActionListener {
         frame.setDefaultCloseOperation(WindowConstants.HIDE_ON_CLOSE);
         frame.setSize(1000, 500);
         frame.setLayout(new GridLayout(0, 2));
-        frame.addWindowListener(controller);
+        frame.addWindowListener(new WindowAdapter() {
+            @Override
+            public void windowClosing(WindowEvent e) {
+                log.warn("Exiting as a player has closed their window");
+                System.exit(1);
+            }
+        });
         return frame;
     }
 
@@ -222,39 +220,14 @@ public class DraughtsBoardView implements ActionListener {
         return userInfoPanel;
     }
 
-    public JButton getAcceptDrawButton() {
-        return acceptDrawButton;
-    }
-
-    public JButton getAcceptNewGameButton() {
-        return acceptNewGameButton;
-    }
-
-    public JButton getOfferDrawButton() {
-        return offerDrawButton;
-    }
-
-    public JButton getOfferNewGameButton() {
-        return offerNewGameButton;
-    }
-
-    public JButton getResignButton() {
-        return resignButton;
-    }
-
-    public JButton[][] getSquare() {
-        return square;
-    }
-
     void newBoardActions() {
         frame = createFrame();
         leftPanel = createLeftPanel();
         rightPanel = createRightPanel();
         createEmptyBoard();
-        addRedMenToBoard();
-        addWhiteMenToBoard();
+        addRedMenToBoardForInitialSetup();
+        addWhiteMenToBoardForInitialSetup();
         offerNewGameButton = createOfferNewGameBtn();
-        acceptNewGameButton = createAcceptNewGameBtn();
         offerDrawButton = createOfferDrawBtn();
         acceptDrawButton = createAcceptDrawBtn();
         resignButton = createResignButton();
@@ -263,39 +236,38 @@ public class DraughtsBoardView implements ActionListener {
     }
 
     void messagesToPlayer() {
-        lblTopMessage = new JLabel();
-        lblTopMessage.setFont(messagesFont);
-        lblMiddleMessage = new JLabel();
-        lblMiddleMessage.setFont(messagesFont);
-        lblBottomMessage = new JLabel();
-        lblBottomMessage.setFont(messagesFont);
-        userInfoPanel.add(lblTopMessage);
-        userInfoPanel.add(lblMiddleMessage);
-        userInfoPanel.add(lblBottomMessage);
-        lblTopMessage.setText(bottomLineMessage);
-        lblMiddleMessage.setText(middleLineMessage);
-        lblBottomMessage.setText(topLineMessage);
+        topMessageLabel = new JLabel();
+        topMessageLabel.setFont(messagesFont);
+        middleMessageLabel = new JLabel();
+        middleMessageLabel.setFont(messagesFont);
+        bottomMessageLabel = new JLabel();
+        bottomMessageLabel.setFont(messagesFont);
+        userInfoPanel.add(topMessageLabel);
+        userInfoPanel.add(middleMessageLabel);
+        userInfoPanel.add(bottomMessageLabel);
+        topMessageLabel.setText(bottomLineMessageText);
+        middleMessageLabel.setText(middleLineMessageText);
+        bottomMessageLabel.setText(topLineMessageText);
     }
 
     public void setBlank(int col, int row) {
-        DrawSquare.getFor(square[col][row]).setState(SquareState.blank);
+        Square.getComponent(square[col][row]).setState(SquareState.EMPTY);
     }
 
     public void updateLabels() {
-        lblTopMessage.setText(topLineMessage);
-        lblMiddleMessage.setText(middleLineMessage);
-        lblBottomMessage.setText(bottomLineMessage);
+        topMessageLabel.setText(topLineMessageText);
+        middleMessageLabel.setText(middleLineMessageText);
+        bottomMessageLabel.setText(bottomLineMessageText);
     }
 
-    public void setBottomLineMessage(String bottomLineMessage) {
-        this.bottomLineMessage = bottomLineMessage;
+    public void setBottomLineMessageText(String bottomLineMessageText) {
+        this.bottomLineMessageText = bottomLineMessageText;
     }
 
-    public void setMiddleLineMessage(String middleLineMessage) {
-        this.middleLineMessage = middleLineMessage;
+    public void setMiddleLineMessageText(String middleLineMessageText) {
+        this.middleLineMessageText = middleLineMessageText;
     }
-
-    public void setTopLineMessage(String topLineMessage) {
-        this.topLineMessage = topLineMessage;
+    public void setTopLineMessageText(String topLineMessageText) {
+        this.topLineMessageText = topLineMessageText;
     }
 }

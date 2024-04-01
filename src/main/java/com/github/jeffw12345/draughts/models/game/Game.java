@@ -1,7 +1,11 @@
 package com.github.jeffw12345.draughts.models.game;
 
+import com.github.jeffw12345.draughts.models.game.move.Move;
 import lombok.Getter;
 import lombok.Setter;
+import java.util.concurrent.ConcurrentLinkedDeque;
+
+import java.util.LinkedList;
 
 @Setter
 @Getter
@@ -12,6 +16,9 @@ public class Game {
     private Player whitePlayer;
     private boolean isRedTurn;
     private GameStatus gameStatus = GameStatus.AWAITING_NEW_GAME;
+    private static LinkedList<Move> ConcurrentLinkedDeque;
+    private static final ConcurrentLinkedDeque<Move>  redPlayerMoves = new ConcurrentLinkedDeque<>();
+    private static final ConcurrentLinkedDeque<Move>  whitePlayerMoves = new ConcurrentLinkedDeque<>();
 
     public boolean awaitingNewGame(){
         return gameStatus == GameStatus.AWAITING_NEW_GAME;
@@ -24,6 +31,28 @@ public class Game {
         }
         else{
             whitePlayer = player;
+        }
+    }
+
+    public void addMove(Move move, Colour colour){
+        if (colour == Colour.RED){
+            redPlayerMoves.push(move);
+        }
+        else{
+            whitePlayerMoves.push(move);
+        }
+    }
+
+    public boolean isTurnOfColour(Colour colour){
+        return (colour==Colour.RED && isRedTurn) || (colour==Colour.WHITE && !isRedTurn);
+    }
+
+    public Move getLatestMoveForColour(Colour colour){
+        if (colour == Colour.RED){
+            return redPlayerMoves.peek();
+        }
+        else{
+            return whitePlayerMoves.peek();
         }
     }
 

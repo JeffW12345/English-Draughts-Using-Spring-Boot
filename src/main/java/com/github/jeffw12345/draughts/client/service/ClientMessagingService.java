@@ -18,6 +18,7 @@ import java.net.URI;
 
 import static com.github.jeffw12345.draughts.models.messaging.message.ClientToServerRequestType.ESTABLISH_SESSION;
 import static com.github.jeffw12345.draughts.models.messaging.message.ClientToServerRequestType.MOVE_REQUEST;
+import static com.github.jeffw12345.draughts.models.messaging.message.ClientToServerRequestType.WANT_GAME;
 
 @ClientEndpoint
 @Slf4j
@@ -67,6 +68,27 @@ public class ClientMessagingService {
                 .build();
 
         sendMessageToServer(moveRequest);
+    }
+
+    public void sendOfferNewGameRequest(Client client){
+        ClientMessageToServer requestForGame = ClientMessageToServer.builder()
+                .client(client)
+                .requestType(WANT_GAME)
+                .build();
+
+        sendMessageToServer(requestForGame);
+    }
+
+    public void sendDrawOfferAcceptance(Client client){
+        //TODO
+    }
+
+    public void sendDrawOfferProposal(Client client){
+        //TODO
+    }
+
+    public void sendResignation(Client client){
+        //TODO
     }
 
     public void establishSession() {

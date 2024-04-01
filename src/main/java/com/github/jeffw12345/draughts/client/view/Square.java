@@ -9,16 +9,16 @@ import java.awt.geom.Ellipse2D;
 import javax.swing.JComponent;
 import javax.swing.JPanel;
 
-public class DrawSquare extends JPanel {
+public class Square extends JPanel {
     private SquareState state;
 
-    DrawSquare(SquareState state) {
+    Square(SquareState state) {
         this.state = state;
     }
 
     @Override
     public void paintComponent(Graphics g) {
-        if (state == SquareState.redman) {
+        if (state == SquareState.RED_MAN) {
             Graphics2D g2 = (Graphics2D) g;
             g2.setPaint(Color.RED);
             g2.fill(new Ellipse2D.Double(0, 10, 25, 25));
@@ -26,7 +26,7 @@ public class DrawSquare extends JPanel {
             g2.draw(new Ellipse2D.Double(0, 10, 25, 25));
         }
 
-        if (state == SquareState.whiteman) {
+        if (state == SquareState.WHITE_MAN) {
             Graphics2D g2 = (Graphics2D) g;
             g2.setPaint(Color.WHITE);
             g2.fill(new Ellipse2D.Double(0, 10, 25, 25));
@@ -34,7 +34,7 @@ public class DrawSquare extends JPanel {
             g2.draw(new Ellipse2D.Double(0, 10, 25, 25));
         }
 
-        if (state == SquareState.redman_king) {
+        if (state == SquareState.RED_KING) {
             Graphics2D g2 = (Graphics2D) g;
             g2.setPaint(Color.RED);
             g2.fill(new Ellipse2D.Double(0, 10, 25, 25));
@@ -46,7 +46,7 @@ public class DrawSquare extends JPanel {
             g2.drawString("K", (getWidth() / 2) - 7, (getHeight() / 2) + 7);
         }
 
-        if (state == SquareState.whiteman_king) {
+        if (state == SquareState.WHITE_KING) {
             Graphics2D g2 = (Graphics2D) g;
             g2.setPaint(Color.WHITE);
             g2.fill(new Ellipse2D.Double(0, 10, 25, 25));
@@ -63,7 +63,7 @@ public class DrawSquare extends JPanel {
         this.state = state;
     }
 
-    public static DrawSquare getFor(JComponent component) {
-        return (DrawSquare) component.getComponents()[0];
+    public static Square getComponent(JComponent component) {
+        return (Square) component.getComponents()[0];
     }
 }

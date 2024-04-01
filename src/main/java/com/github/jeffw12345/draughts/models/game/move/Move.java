@@ -36,6 +36,9 @@ public class Move {
     private boolean isLegal = false; //TODO - Call method.
     private boolean convertsToKing = false; //TODO - Call method
 
+    private boolean hasMoveBeenVerified;
+    private boolean isMoveLegal;
+
     public void setStartCoordinates(int column, int row){
         startSquareColumn = column;
         startSquareRow = row;
@@ -47,6 +50,47 @@ public class Move {
         endSquareRow = row;
         endCoordinatesProvided = true;
     }
+
+    public int absoluteHorizontalDistance(){
+        return Math.abs(startSquareColumn - endSquareColumn);
+    }
+
+    public int absoluteVerticalDistance(){
+        return Math.abs(startSquareRow - endSquareRow);
+    }
+
+    public boolean isRightUpOne(){
+        return (startSquareRow - endSquareRow == -1) && (startSquareColumn - endSquareColumn == -1);
+    }
+    public boolean isLeftUpOne() {
+        return (startSquareRow - endSquareRow == 1) && (startSquareColumn - endSquareColumn == -1);
+    }
+    public boolean isRightDownOne() {
+        return (startSquareRow - endSquareRow == -1) && (startSquareColumn - endSquareColumn == 1);
+    }
+    public boolean isLeftDownOne() {
+        return (startSquareRow - endSquareRow == -1) && (startSquareColumn - endSquareColumn == -1);
+    }
+    public boolean isRightUpTwo() {
+        return (startSquareRow - endSquareRow == -2) && (startSquareColumn - endSquareColumn == -2);
+    }
+    public boolean isLeftUpTwo() {
+        return (startSquareRow - endSquareRow == 2) && (startSquareColumn - endSquareColumn == -2);
+    }
+    public boolean isRightDownTwo() {
+        return (startSquareRow - endSquareRow == -2) && (startSquareColumn - endSquareColumn == 2);
+    }
+    public boolean isLeftDownTwo() {
+        return (startSquareRow - endSquareRow == 2) && (startSquareColumn - endSquareColumn == 2);
+    }
+    public boolean isMovingUpBoard(){
+        return endSquareRow > startSquareRow;
+    }
+    public boolean isMovingDownBoard(){
+        return endSquareRow > startSquareRow;
+    }
+
+
 
     public boolean startCoordinatesOnlyProvided(){
         return startCoordinatesProvided && !endCoordinatesProvided;

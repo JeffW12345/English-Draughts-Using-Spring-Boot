@@ -11,14 +11,14 @@ public class ClientsAwaitingAGame {
             clientIdsSeekingGame.add(clientId);
         }
     }
-    public static void pop() {
+    public static String pop() {
         synchronized (lock) {
-            clientIdsSeekingGame.pop();
+            return clientIdsSeekingGame.pop();
         }
     }
-    public boolean moreThanOnePlayerSeekingGame(){
+    public static boolean atLeastOnePlayerSeekingGame(){
         synchronized (lock) {
-            return clientIdsSeekingGame.size() > 1;
+            return clientIdsSeekingGame.size() > 0;
         }
     }
 }

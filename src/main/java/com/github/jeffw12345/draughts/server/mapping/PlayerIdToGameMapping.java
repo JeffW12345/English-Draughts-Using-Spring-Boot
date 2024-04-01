@@ -7,22 +7,21 @@ import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class PlayerIdToGameMapping {
-    private static final ConcurrentHashMap<Player, Game> playerToGame = new ConcurrentHashMap<>();
+    private static final ConcurrentHashMap<String, Game> playerIdToGame = new ConcurrentHashMap<>();
 
-    //TODO - Add functionality to create a new Game once 2+ players waiting.
     public synchronized static void assignPlayerToGame(Player player, Game game){
-        playerToGame.put(player, game);
+        playerIdToGame.put(player.getPlayerId(), game);
     }
 
     private synchronized static List<Game> getListOfGamesAwaitingPlayers() {
-        return playerToGame.values().stream().filter(Game::awaitingNewGame).toList();
+        return playerIdToGame.values().stream().filter(Game::awaitingNewGame).toList();
     }
 
     public static Game getGameForPlayer(Player player){
-        return playerToGame.get(player);
+        return playerIdToGame.get(player.getPlayerId());
     }
 
     public static boolean doesGameExistForPlayer(Player player){
-        return playerToGame.containsKey(player);
+        return playerIdToGame.containsKey(player.getPlayerId());
     }
 }

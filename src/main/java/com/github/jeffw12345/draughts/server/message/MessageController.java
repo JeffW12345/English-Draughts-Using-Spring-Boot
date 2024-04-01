@@ -1,8 +1,14 @@
 package com.github.jeffw12345.draughts.server.message;
 
+import com.github.jeffw12345.draughts.models.game.Colour;
+import com.github.jeffw12345.draughts.models.game.Game;
+import com.github.jeffw12345.draughts.models.game.Player;
+import com.github.jeffw12345.draughts.server.ClientsAwaitingAGame;
+import com.github.jeffw12345.draughts.server.mapping.ClientIdToGameMapping;
 import com.github.jeffw12345.draughts.server.mapping.ClientIdToSessionMapping;
 import com.github.jeffw12345.draughts.models.messaging.ClientMessageToServer;
 import com.github.jeffw12345.draughts.models.messaging.message.ClientToServerRequestType;
+import com.github.jeffw12345.draughts.server.mapping.PlayerIdToGameMapping;
 
 public class MessageController {
     public static void processMessageFromClient(ClientMessageToServer clientRequestToServer) {
@@ -66,6 +72,32 @@ public class MessageController {
     }
 
     private static void wantGameActions(ClientMessageToServer clientRequestToServer) {
+        String clientId = clientRequestToServer.getClient().getClientId();
+        if (ClientsAwaitingAGame.atLeastOnePlayerSeekingGame()){
+            String otherClientId = ClientsAwaitingAGame.pop();
+            newGameSetup(clientId, otherClientId);
+        }
+        else{
+            ClientsAwaitingAGame.addClientId(clientId);
+        }
     }
 
+    private static void newGameSetup(String redPlayerClientId, String whitePlayerClientId) {
+        Game game = new Game();
+
+        Player redPlayer = new Player(redPlayerClientId, Colour.RED);
+        game.addPlayer(redPlayer);
+
+        Player whitePlayer = new Player(whitePlayerClientId, Colour.WHITE);
+        game.addPlayer(whitePlayer);
+
+        PlayerIdToGameMapping.assignPlayerToGame(redPlayer, game);
+        PlayerIdToGameMapping.assignPlayerToGame(whitePlayer, game);
+
+        ClientIdToGameMapping.assignClientIdToGame(redPlayerClientId, game);
+        ClientIdToGameMapping.assignClientIdToGame(whitePlayerClientId, game);
+
+        redPlayer.newGameClientNotifications(game);
+        whitePlayer.newGameClientNotifications(game);
+    }
 }
