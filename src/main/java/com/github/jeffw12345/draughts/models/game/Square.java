@@ -8,6 +8,8 @@ import lombok.Setter;
 @Setter
 @Builder
 public class Square {
+
+    //TODO - Does the square need its own co-ordinates?
     private SquareContent squareContent;
     private int rowNumber;
     private int columnNumber;

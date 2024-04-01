@@ -81,4 +81,11 @@ public class Game {
     public boolean isPlayerWhitePlayer(Player player){
         return player == whitePlayer;
     }
+
+    public Colour getPlayerColour(Player player){
+        if (player == redPlayer){
+            return Colour.RED;
+        }
+        return Colour.WHITE;
+    }
 }

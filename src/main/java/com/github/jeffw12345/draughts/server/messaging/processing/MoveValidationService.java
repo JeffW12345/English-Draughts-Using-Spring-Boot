@@ -4,15 +4,11 @@ import com.github.jeffw12345.draughts.models.game.Board;
 import com.github.jeffw12345.draughts.models.game.Colour;
 import com.github.jeffw12345.draughts.models.game.Game;
 import com.github.jeffw12345.draughts.models.game.SquareContent;
-import com.github.jeffw12345.draughts.models.game.move.KingMoveType;
 import com.github.jeffw12345.draughts.models.game.move.Move;
-import com.github.jeffw12345.draughts.models.game.move.MoveType;
-import com.github.jeffw12345.draughts.models.game.move.RedManMoveType;
-import com.github.jeffw12345.draughts.models.game.move.WhiteManMoveType;
 
-public class MoveCheckService {
+public class MoveValidationService {
 
-    public boolean isMoveLegal(Game game, Colour colour){
+    public static boolean isMoveLegal(Game game, Colour colour){
         Move move = game.getLatestMoveForColour(colour);
         if (!game.isTurnOfColour(colour)){
             return false;
@@ -31,12 +27,14 @@ public class MoveCheckService {
             return isMovingInRightDirection(move, startingSquareContent);
         }
 
-        if (!passesOvertakingMovesCheck(game, colour, move)) return false;
+        if (!passesOvertakingMovesCheck(game, colour, move)) {
+            return false;
+        }
 
         return false;
     }
 
-    private boolean passesOvertakingMovesCheck(Game game, Colour colour, Move move) {
+    private static boolean passesOvertakingMovesCheck(Game game, Colour colour, Move move) {
         Board board = game.getCurrentBoard();
         int startingRow = move.getStartSquareRow();
         int startingColumn = move.getStartSquareColumn();
@@ -58,7 +56,7 @@ public class MoveCheckService {
         }
         return false;
     }
-    private boolean isMovingInRightDirection(Move move, SquareContent startingSquarecontent) {
+    private static boolean isMovingInRightDirection(Move move, SquareContent startingSquarecontent) {
         boolean movingUpBoardAsExpected = move.isMovingUpBoard() &&
                 startingSquarecontent == SquareContent.RED_MAN;
 
@@ -71,59 +69,27 @@ public class MoveCheckService {
         return (move.isLeftUpOne() || move.isLeftDownOne() || move.isRightUpOne() || move.isRightDownOne());
     }
 
-    private boolean isStartingSquareTheRightColour(Colour startSquareColour, SquareContent startSquareContent) {
+    private static boolean isStartingSquareTheRightColour(Colour startSquareColour,
+                                                          SquareContent startSquareContent) {
         boolean redValid = startSquareColour == Colour.RED &&
-                (startSquareContent == SquareContent.RED_KING || startSquareContent == SquareContent.RED_MAN);
+                (startSquareContent == SquareContent.RED_KING ||
+                        startSquareContent == SquareContent.RED_MAN);
 
         boolean whiteValid = startSquareColour == Colour.WHITE &&
-                (startSquareContent == SquareContent.WHITE_KING || startSquareContent == SquareContent.WHITE_MAN);
+                (startSquareContent == SquareContent.WHITE_KING ||
+                        startSquareContent == SquareContent.WHITE_MAN);
         return redValid || whiteValid;
     }
 
-    private boolean isIntermediateSquareTheWrongColour(Colour startSquareColour, SquareContent intermediateSquareContent) {
+    private static boolean isIntermediateSquareTheWrongColour(Colour startSquareColour,
+                                                              SquareContent intermediateSquareContent) {
         boolean redValid = startSquareColour == Colour.RED &&
-                (intermediateSquareContent == SquareContent.WHITE_KING || intermediateSquareContent == SquareContent.WHITE_MAN);
+                (intermediateSquareContent == SquareContent.WHITE_KING ||
+                        intermediateSquareContent == SquareContent.WHITE_MAN);
 
         boolean whiteValid = startSquareColour == Colour.WHITE &&
-                (intermediateSquareContent == SquareContent.RED_KING || intermediateSquareContent == SquareContent.RED_MAN);
+                (intermediateSquareContent == SquareContent.RED_KING ||
+                        intermediateSquareContent == SquareContent.RED_MAN);
         return !redValid && !whiteValid;
     }
-    public boolean anyLegalMovesForColour(Board board, Colour colour) {
-        for (int rowIndex = 0; rowIndex < 8; rowIndex++) {
-            for (int columnIndex = 0; columnIndex < 8; columnIndex++) {
-                SquareContent content = board.getSquareContentAtRowAndColumn(rowIndex, columnIndex);
-
-                boolean wrongColour = !content.toString().toLowerCase().contains(colour.toString().toLowerCase());
-                if (content == SquareContent.EMPTY || wrongColour) {
-                    continue;
-                }
-
-                MoveType[] moveTypes = null;
-                if (content == SquareContent.WHITE_MAN) {
-                    moveTypes = WhiteManMoveType.values();
-                } else if (content == SquareContent.RED_MAN) {
-                    moveTypes = RedManMoveType.values();
-                } else if (content == SquareContent.WHITE_KING || content == SquareContent.RED_KING) {
-                    moveTypes = KingMoveType.values();
-                }
-
-                if (moveTypes != null) {
-                    for (MoveType moveType : moveTypes) {
-                        int rowChange = moveType.getRowChange();
-                        int columnChange = moveType.getColumnChange();
-                        if (!outOfBounds(rowIndex, columnIndex, rowChange, columnChange)) {
-                            return true;
-                        }
-                    }
-                }
-            }
-        }
-        return false;
-    }
-    private boolean outOfBounds(int row, int column, int rowChange, int columnChange){
-            row -= rowChange;
-            column -= columnChange;
-
-            return row < 0 || row > 7 || column < 0 || column > 7;
-        }
 }

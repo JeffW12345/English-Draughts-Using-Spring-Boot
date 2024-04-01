@@ -8,17 +8,47 @@ import com.github.jeffw12345.draughts.models.game.move.Move;
 
 public class BoardUpdate {
 
-    public static void updateBoardAfterMove(Move move, Board board){
-        int startRow = move.getStartSquare().getRowNumber();
-        int startColumn = move.getStartSquare().getColumnNumber();
+    public static void updateBoardAfterMove(Move move, Board board) {
+        if (move == null) {
+            throw new IllegalArgumentException("Invalid move: null");
+            // TODO - Code to exit gracefully
+        }
 
-        Square startSquareOnBoard = board.getSquareAtRowAndColumn(startRow, startColumn);
-        SquareContent pieceTypeBeingMoved = startSquareOnBoard.getSquareContent();
+        Square startSquareOnBoard = move.getStartOfMoveSquare(board);
+        Square destinationSquare = move.getMoveTerminationSquare(board);
+        Square middleSquare = move.getIntermediateSquare(board);
+        Colour colourOfPieceBeingMoved = SquareContent.getColour(startSquareOnBoard.getSquareContent());
+
         startSquareOnBoard.setSquareContent(SquareContent.EMPTY);
 
-        if (move.isOneSquareMove() && move.willMoveResultInCoronation()){
-            Colour colour = SquareContent.getColour(pieceTypeBeingMoved);
-            //TODO - Complete
+        if (move.isOneSquareMove()) {
+            oneSquareMoveActions(move, destinationSquare, colourOfPieceBeingMoved);
+        } else if (move.isTwoSquareMove()) {
+            twoSquareMoveActions(move, destinationSquare, middleSquare, colourOfPieceBeingMoved);
         }
+    }
+
+    private static void twoSquareMoveActions(Move move,
+                                             Square destinationSquare,
+                                             Square middleSquare,
+                                             Colour colourOfPieceBeingMoved) {
+        if (move.willMoveResultInCoronation()){
+            setSquareContent(destinationSquare, Colour.getKingSquareContent(colourOfPieceBeingMoved));
+        }else{
+            setSquareContent(destinationSquare, Colour.getManSquareContent(colourOfPieceBeingMoved));
+        }
+        middleSquare.setSquareContent(SquareContent.EMPTY);
+    }
+
+    private static void oneSquareMoveActions(Move move, Square destinationSquare, Colour colourOfPieceBeingMoved) {
+        if (move.willMoveResultInCoronation()) {
+            setSquareContent(destinationSquare, Colour.getKingSquareContent(colourOfPieceBeingMoved));
+        } else {
+            setSquareContent(destinationSquare, Colour.getManSquareContent(colourOfPieceBeingMoved));
+        }
+    }
+
+    private static void setSquareContent(Square square, SquareContent content) {
+        square.setSquareContent(content);
     }
 }

@@ -1,8 +1,10 @@
 package com.github.jeffw12345.draughts.models.game.move;
 
+import com.github.jeffw12345.draughts.models.game.Board;
 import com.github.jeffw12345.draughts.models.game.Game;
 import com.github.jeffw12345.draughts.models.game.Player;
 import com.github.jeffw12345.draughts.models.game.Square;
+import com.github.jeffw12345.draughts.server.messaging.processing.MoveValidationService;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
@@ -45,6 +47,10 @@ public class Move {
     }
 
     public boolean isOneSquareMove(){
+        return Math.abs(startSquareColumn - endSquareColumn) == 1;
+    }
+
+    public boolean isTwoSquareMove(){
         return Math.abs(startSquareColumn - endSquareColumn) == 1;
     }
 
@@ -93,5 +99,20 @@ public class Move {
     public boolean willMoveResultInCoronation(){
         boolean isPlayerRed = this.playerMakingMove.isAmIRedPlayer();
         return (isPlayerRed && endSquareRow == 7) || (!isPlayerRed && endSquareRow == 0);
+    }
+    public Square getStartOfMoveSquare(Board board){
+        return board.getSquareAtRowAndColumn(startSquareRow, startSquareColumn);
+    }
+    public Square getMoveTerminationSquare(Board board){
+        return board.getSquareAtRowAndColumn(endSquareRow, endSquareColumn);
+    }
+
+    public Square getIntermediateSquare(Board board){
+        int middleRow = (startSquareRow + endSquareRow) / 2;
+        int middleColumn = (startSquareColumn + endSquareColumn) / 2;
+        return board.getSquareAtRowAndColumn(middleRow, middleColumn);
+    }
+    public boolean isLegal(){
+        return MoveValidationService.isMoveLegal(game, game.getPlayerColour(playerMakingMove));
     }
 }
