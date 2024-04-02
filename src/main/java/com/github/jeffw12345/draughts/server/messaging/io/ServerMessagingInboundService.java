@@ -1,9 +1,9 @@
-package com.github.jeffw12345.draughts.server.messaging.sending;
+package com.github.jeffw12345.draughts.server.messaging.io;
 
 import com.github.jeffw12345.draughts.models.messaging.ClientMessageToServer;
 import com.github.jeffw12345.draughts.server.mapping.ClientIdToSessionMapping;
 import com.github.jeffw12345.draughts.server.mapping.SessionIdToSessionMapping;
-import com.github.jeffw12345.draughts.server.messaging.processing.MessageController;
+import com.github.jeffw12345.draughts.server.messaging.processing.ServerMessageController;
 import jakarta.websocket.ClientEndpoint;
 import jakarta.websocket.OnClose;
 import jakarta.websocket.OnError;
@@ -35,7 +35,7 @@ public class ServerMessagingInboundService {
 
         updateClientIdToSessionDictionary(messageFromClient);
 
-        MessageController.processMessageFromClient(messageFromClient);
+        ServerMessageController.processMessageFromClient(messageFromClient);
     }
 
     private static void updateClientIdToSessionDictionary(ClientMessageToServer message) {

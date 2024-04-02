@@ -1,6 +1,5 @@
 package com.github.jeffw12345.draughts.models.game.move.type;
 
-import com.github.jeffw12345.draughts.models.game.move.type.MoveType;
 import lombok.Getter;
 
 public enum WhiteManMoveType implements MoveType {

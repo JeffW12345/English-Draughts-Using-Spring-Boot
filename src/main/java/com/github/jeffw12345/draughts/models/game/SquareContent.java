@@ -10,6 +10,18 @@ public enum SquareContent {
         if (squareContent == SquareContent.WHITE_MAN || squareContent == SquareContent.WHITE_KING){
             return Colour.WHITE;
         }
-        return null;
+        return Colour.NONE;
+    }
+
+    public static boolean canPieceTypeJumpUpwardsFromBottomOnly(SquareContent squareContent){
+        return squareContent == SquareContent.RED_MAN;
+    }
+
+    public static boolean canPieceTypeJumpDownwardsFromTopOnly(SquareContent squareContent){
+        return squareContent == SquareContent.WHITE_MAN;
+    }
+
+    public static boolean canPieceTypeJumpBothDirections(SquareContent squareContent){
+        return squareContent == SquareContent.RED_KING || squareContent == SquareContent.WHITE_KING;
     }
 }

@@ -34,7 +34,6 @@ public class Game {
             whitePlayer = player;
         }
     }
-
     public void addMove(Move move, Colour colour){
         if (colour == Colour.RED){
             redPlayerMoves.push(move);
@@ -95,5 +94,9 @@ public class Game {
             }
         }
         return Colour.WHITE;
+    }
+
+    public Colour getColourOfPlayerWhoseTurnItIs() {
+        return isRedTurn ? Colour.RED : Colour.WHITE;
     }
 }

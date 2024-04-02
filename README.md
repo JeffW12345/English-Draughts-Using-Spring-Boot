@@ -20,6 +20,8 @@ To run the application, follow these steps:
 - Open two separate instances of the application to simulate two players.
 - Follow the on-screen instructions to play the game.
 
+This application was built using Java 17, though it may work with earlier versions of Java. 
+
 ASSUMPTIONS
 ===========
 
@@ -27,7 +29,7 @@ The game follows the rules of English draughts - https://en.wikipedia.org/wiki/E
 
 There is just one player per Client instance.
 
-If either player closes their GUI, this action results in the app terminating.
+If a player closes their GUI, the other player is informed, and the game is abandoned and the app closes. 
 
 LIMITATIONS
 ===========
@@ -35,11 +37,15 @@ LIMITATIONS
 This is an MVP version, and won't cover:
 
 - More than 2 players. However, I will make it so that my server to be open to being extended to accommodate > 2 players.
-- Logins
+- Logins.
 - The clients and server running on different devices.
 - Different board positioning, depending on whether the player is red or white.
 - Saving games or results to a database.
-- Players timing out due to inactivity
+- Players timing out due to inactivity.
+- Storing past games or results in a database.
+- Requesting a new game once the current game has concluded. 
+
+These features may be added in a future update, however. 
 
 SEQUENCE OF EVENTS
 ==================
@@ -61,8 +67,8 @@ Two Client objects are created. For each Client, the following takes place:
   responsible for the view. The MasterClientController constructor also creates its own instances of helper controller 
   classes.
 
-- The Client calls the newly created MasterClientController object's setUp() method, which fires up a GUI, using its instance
-  of the DraughtBoardView class. It does so by invoking its DraughtsBoardGui object's setUp method.
+- The Client calls the newly created MasterClientController object's setUp() method, which fires up a GUI, using its 
+instance of the DraughtBoardView class. It does so by invoking its DraughtsBoardGui object's setUp method.
 
 ## New game requests
 
@@ -72,7 +78,7 @@ The server then consults a static linked list of client ids relating to clients 
 ClientsAwaitingAGame class). If there is at least one client id in the list, then that client id is popped and a game is 
 set up between the current client and the client relating to that client id. This entails the following actions:
 
-- Greating a Game object.
+- Creating a Game object.
 - Creating a Player object for each client. One Player is chosen to be the white player and the other is chosen to 
   represent the red player. The Player objects create UUID ids when they are instantiated, and they are passed their 
   client's id and their colour in their constructor.
@@ -88,31 +94,41 @@ list, and they will join a game when their client id is popped by another user.
 
 When the game is progress, and players can now do the following, via the GUI:
 
-- Make a move*. The player does this by clicking on two squares, which represent the start and end squares respectively. 
-  The move is sent to the server by the client. The server checks whether the move is legal. If it is, both clients are 
-  given an updated board view (and told that it is now the other player's turn, if applicable). If the move is not 
-  legal, the client making the move is informed.
+**Make a move**. The player does this by clicking on two squares, which represent the start and end squares 
+respectively. 
 
-- Offer a draw. If a player offers a draw, the server is informed, which informs the other player. The offer is 
-  cancelled once the next move has been made, and the GUIs are updated accordingly.
+The move is sent to the server by the client in a JSON encoded ClientMessagingService object. The ClientMessagingService
+object consists of the following:
 
-- Accept a draw. If a draw is accepted, the server is informed, and it informs the other client. The game is then over.
+- The clientId String.
+- A Move object, representing the move being submitted.
+- The colour of the pieces used by the client's player. 
+- The request type (a move request).
 
-- Resign. If a player resigns, the server is informed, and it informs the other client. The game is then over.
+When the server receives the message, it does the following:
 
-* A move is defined as the movement of a piece, which may or may not terminate with a change of turn.
+- It begins by retrieving the relevant Game object using a static method in the ClientIdToGameMapping class. It then 
+adds the Move object to the Game object's list of moves for the relevant colour. 
+
+- It then checks whether the requested move is legal. 
+
+If the move is legal, the server does the following:
+
+- Updates the MoveStatus attribute of the Move object to COMPLETE. 
+- Updates the Board object. 
+- Checks whether the current player has another turn (because they have just jumped over a piece and another jump is 
+possible using the same piece that did the last jump). If another move is possible, the clients are informed of the new
+Board layout, so that it can update the GUI. 
+- If the turn is over, the client checks whether the game is now won by the current player or a stalemate. If either 
+of those conditions applies, both clients are informed of the new Board layout and of the game outcome.
+
+**Offer a draw**. If a player offers a draw, the server is informed, which informs the other player. The offer is 
+cancelled once the next move has been made, and the GUIs are updated accordingly.
+
+**Accept a draw** If a draw is accepted, the server is informed, and it informs the other client. The game is then over.
+
+**Resign** If a player resigns, the server is informed, and it informs the other client. The game is then over.
+
+*A move is defined as the movement of a piece, which may or may not terminate with a change of turn.
 
 The server checks if moves are legal and promotes men to kings where required.
-
-After each move, the server monitors the following:
-
-- Whether a game is a draw due to stalemate
-- Whether the game is won
-
-If also checks whether moves submitted are legal and made by the player whose turn it is.
-
-If there is a draw offer pending, it is cancelled when a new move is made.
-
-The server updates one or both clients in response to events, as required.
-
-If a player exits their GUI, the other player is informed, and the game is abandoned. 

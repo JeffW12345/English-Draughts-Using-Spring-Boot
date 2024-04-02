@@ -1,18 +1,23 @@
 package com.github.jeffw12345.draughts.server.messaging.processing;
 
+import com.github.jeffw12345.draughts.models.game.Board;
 import com.github.jeffw12345.draughts.models.game.Colour;
 import com.github.jeffw12345.draughts.models.game.Game;
 import com.github.jeffw12345.draughts.models.game.Player;
+import com.github.jeffw12345.draughts.models.game.Square;
+import com.github.jeffw12345.draughts.models.game.SquareContent;
+import com.github.jeffw12345.draughts.models.game.move.Move;
+import com.github.jeffw12345.draughts.models.game.move.MoveStatus;
 import com.github.jeffw12345.draughts.server.ClientsAwaitingAGame;
 import com.github.jeffw12345.draughts.server.mapping.ClientIdToGameMapping;
 import com.github.jeffw12345.draughts.server.mapping.ClientIdToSessionMapping;
 import com.github.jeffw12345.draughts.models.messaging.ClientMessageToServer;
-import com.github.jeffw12345.draughts.models.messaging.message.ClientToServerRequestType;
+import com.github.jeffw12345.draughts.models.messaging.ClientToServerMessageType;
 import com.github.jeffw12345.draughts.server.mapping.PlayerIdToGameMapping;
 
-public class MessageController {
+public class ServerMessageController {
     public static void processMessageFromClient(ClientMessageToServer clientRequestToServer) {
-        ClientToServerRequestType clientToServerRequestType= clientRequestToServer.getRequestType();
+        ClientToServerMessageType clientToServerRequestType= clientRequestToServer.getRequestType();
         switch (clientToServerRequestType) {
             case WANT_GAME:
                 wantGameActions(clientRequestToServer);
@@ -69,6 +74,33 @@ public class MessageController {
     }
 
     private static void moveRequestActions(ClientMessageToServer clientRequestToServer) {
+        String clientId = clientRequestToServer.getClientId();
+        Game game = ClientIdToGameMapping.getGameForClientId(clientId);
+        Move move = clientRequestToServer.getMove();
+        Colour playerColour = clientRequestToServer.getColourOfClientPlayer();
+
+        game.addMove(move, playerColour);
+
+        boolean isMoveLegal = MoveValidationService.isMoveLegal(game, move);
+        if(isMoveLegal){
+            legalMoveActions(game, move, clientId, playerColour);
+        }
+        if (!isMoveLegal){
+            illegalMoveActions(move, clientRequestToServer);
+        }
+
+    }
+
+    private static void legalMoveActions(Game game, Move move, String clientId, Colour playerColour) {
+        move.moveProcessedUpdate(MoveStatus.ILLEGAL);
+
+        boolean isTurnComplete = PostMoveCheckService.isTurnComplete(game, move);
+
+    }
+
+    private static void illegalMoveActions(Move move, ClientMessageToServer server) {
+        move.moveProcessedUpdate(MoveStatus.ILLEGAL);
+        // TODO - Code to tell client move is illegal.
     }
 
     private static void wantGameActions(ClientMessageToServer clientRequestToServer) {

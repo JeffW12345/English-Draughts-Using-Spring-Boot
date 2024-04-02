@@ -1,6 +1,6 @@
 package com.github.jeffw12345.draughts.models.messaging;
 
-public enum ServerResponseType {
+public enum ServerToClientMessageType {
     ASSIGN_RED_COLOUR, //TODO - Plumbing
     ASSIGN_WHITE_COLOUR, //TODO - Plumbing
     UPDATE_BOARD_SAME_TURN,

@@ -1,7 +1,6 @@
 package com.github.jeffw12345.draughts.client.controller;
 
 import com.github.jeffw12345.draughts.models.game.Colour;
-import com.github.jeffw12345.draughts.models.messaging.ServerResponseType;
 
 public class WinLossController {
     private MasterClientController controller;

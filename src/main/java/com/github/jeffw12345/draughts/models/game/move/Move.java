@@ -3,13 +3,13 @@ package com.github.jeffw12345.draughts.models.game.move;
 import com.github.jeffw12345.draughts.models.game.Board;
 import com.github.jeffw12345.draughts.models.game.Colour;
 import com.github.jeffw12345.draughts.models.game.Game;
-import com.github.jeffw12345.draughts.models.game.Player;
 import com.github.jeffw12345.draughts.models.game.Square;
 import com.github.jeffw12345.draughts.server.messaging.processing.MoveValidationService;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.sql.Timestamp;
 import java.util.UUID;
 
 @Builder
@@ -27,11 +27,14 @@ public class Move {
     private int endSquareColumn;
     private int endSquareRow;
     private boolean endCoordinatesProvided;
-    private boolean isLegal = false; //TODO - Call method.
-    private boolean convertsToKing = false; //TODO - Call method
 
-    private boolean hasMoveBeenVerified;
-    private boolean isMoveLegal;
+    private boolean overtakingMove;
+    private boolean oneSquareMove;
+
+    private MoveStatus moveStatus = MoveStatus.PENDING;
+
+    Timestamp moveProcessedTimestamp;
+
 
     public void setStartCoordinates(int column, int row){
         startSquareColumn = column;
@@ -43,20 +46,16 @@ public class Move {
         endSquareColumn = column;
         endSquareRow = row;
         endCoordinatesProvided = true;
+        oneSquareMove = isOneSquareMove();
+        overtakingMove = isTwoSquareMove();
     }
 
     public boolean isOneSquareMove(){
         return Math.abs(startSquareColumn - endSquareColumn) == 1;
     }
-
     public boolean isTwoSquareMove(){
-        return Math.abs(startSquareColumn - endSquareColumn) == 1;
+        return Math.abs(startSquareColumn - endSquareColumn) == 2;
     }
-
-    public int absoluteVerticalDistance(){
-        return Math.abs(startSquareRow - endSquareRow);
-    }
-
     public boolean isRightUpOne(){
         return (startSquareRow - endSquareRow == -1) && (startSquareColumn - endSquareColumn == -1);
     }
@@ -113,5 +112,10 @@ public class Move {
     }
     public boolean isLegal(Game game){
         return MoveValidationService.isMoveLegal(game, this);
+    }
+
+    public void moveProcessedUpdate(MoveStatus newStatus){
+        moveStatus = newStatus;
+        moveProcessedTimestamp = new Timestamp(System.currentTimeMillis());
     }
 }

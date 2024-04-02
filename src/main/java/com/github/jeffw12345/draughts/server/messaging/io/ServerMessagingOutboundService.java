@@ -1,4 +1,4 @@
-package com.github.jeffw12345.draughts.server.messaging.sending;
+package com.github.jeffw12345.draughts.server.messaging.io;
 
 import com.github.jeffw12345.draughts.server.mapping.ClientIdToSessionMapping;
 import jakarta.websocket.Session;

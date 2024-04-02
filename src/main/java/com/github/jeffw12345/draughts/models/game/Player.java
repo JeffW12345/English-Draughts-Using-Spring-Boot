@@ -2,15 +2,15 @@ package com.github.jeffw12345.draughts.models.game;
 
 import com.github.jeffw12345.draughts.models.messaging.ServerMessageToClient;
 import com.github.jeffw12345.draughts.server.mapping.PlayerToClientIdMapping;
-import com.github.jeffw12345.draughts.server.messaging.sending.ServerMessagingOutboundService;
-import com.github.jeffw12345.draughts.server.messaging.sending.ServerMessagingUtility;
+import com.github.jeffw12345.draughts.server.messaging.io.ServerMessagingOutboundService;
+import com.github.jeffw12345.draughts.server.messaging.io.ServerMessagingUtility;
 import lombok.Getter;
 import lombok.Setter;
 
 import java.util.UUID;
 
-import static com.github.jeffw12345.draughts.models.messaging.ServerResponseType.ASSIGN_RED_COLOUR;
-import static com.github.jeffw12345.draughts.models.messaging.ServerResponseType.ASSIGN_WHITE_COLOUR;
+import static com.github.jeffw12345.draughts.models.messaging.ServerToClientMessageType.ASSIGN_RED_COLOUR;
+import static com.github.jeffw12345.draughts.models.messaging.ServerToClientMessageType.ASSIGN_WHITE_COLOUR;
 
 @Getter
 @Setter

@@ -24,7 +24,7 @@ public class BoardUpdate {
 
         if (move.isOneSquareMove()) {
             oneSquareMoveActions(move, destinationSquare, colourOfPieceBeingMoved, game);
-        } else if (move.isTwoSquareMove()) {
+        } else if (move.isOvertakingMove()) {
             twoSquareMoveActions(move, destinationSquare, middleSquare, colourOfPieceBeingMoved, game);
         }
     }

@@ -1,4 +1,4 @@
-package com.github.jeffw12345.draughts.server.messaging.sending;
+package com.github.jeffw12345.draughts.server.messaging.io;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -32,5 +32,7 @@ public class ServerMessagingUtility {
         }
         return message;
     }
+
+    //TODO - Message both clients in game/message other client methods.
 
 }

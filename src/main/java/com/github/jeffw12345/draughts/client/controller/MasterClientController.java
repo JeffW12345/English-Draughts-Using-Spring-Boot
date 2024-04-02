@@ -7,7 +7,7 @@ import com.github.jeffw12345.draughts.models.game.Colour;
 import com.github.jeffw12345.draughts.models.game.SquareContent;
 import com.github.jeffw12345.draughts.models.game.move.Move;
 import com.github.jeffw12345.draughts.models.messaging.ServerMessageToClient;
-import com.github.jeffw12345.draughts.models.messaging.ServerResponseType;
+import com.github.jeffw12345.draughts.models.messaging.ServerToClientMessageType;
 import lombok.Getter;
 
 import javax.swing.JOptionPane;
@@ -36,7 +36,7 @@ public class MasterClientController {
     }
 
     public void processMessageFromServer(ServerMessageToClient serverResponseToClient) {
-        ServerResponseType serverResponseType = serverResponseToClient.getServerResponseType();
+        ServerToClientMessageType serverResponseType = serverResponseToClient.getServerResponseType();
         switch (serverResponseType) {
             case ASSIGN_WHITE_COLOUR:
                 assignColour(Colour.WHITE);

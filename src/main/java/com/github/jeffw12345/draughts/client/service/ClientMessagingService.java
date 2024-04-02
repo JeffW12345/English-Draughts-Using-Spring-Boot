@@ -3,6 +3,7 @@ package com.github.jeffw12345.draughts.client.service;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.jeffw12345.draughts.client.Client;
+import com.github.jeffw12345.draughts.models.game.Colour;
 import com.github.jeffw12345.draughts.models.game.move.Move;
 import com.github.jeffw12345.draughts.models.messaging.ClientMessageToServer;
 import com.github.jeffw12345.draughts.models.messaging.ServerMessageToClient;
@@ -16,9 +17,9 @@ import lombok.extern.slf4j.Slf4j;
 
 import java.net.URI;
 
-import static com.github.jeffw12345.draughts.models.messaging.message.ClientToServerRequestType.ESTABLISH_SESSION;
-import static com.github.jeffw12345.draughts.models.messaging.message.ClientToServerRequestType.MOVE_REQUEST;
-import static com.github.jeffw12345.draughts.models.messaging.message.ClientToServerRequestType.WANT_GAME;
+import static com.github.jeffw12345.draughts.models.messaging.ClientToServerMessageType.ESTABLISH_SESSION;
+import static com.github.jeffw12345.draughts.models.messaging.ClientToServerMessageType.MOVE_REQUEST;
+import static com.github.jeffw12345.draughts.models.messaging.ClientToServerMessageType.WANT_GAME;
 
 @ClientEndpoint
 @Slf4j
@@ -62,8 +63,11 @@ public class ClientMessagingService {
     }
 
     public void sendMoveToServer(Move move) {
+        Colour clientPlayerColour = client.getClientController().isAmIRed() ? Colour.RED : Colour.WHITE;
         ClientMessageToServer moveRequest = ClientMessageToServer.builder()
+                .clientId(client.getClientId())
                 .move(move)
+                .colourOfClientPlayer(clientPlayerColour)
                 .requestType(MOVE_REQUEST)
                 .build();
 
