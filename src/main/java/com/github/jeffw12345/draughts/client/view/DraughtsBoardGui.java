@@ -1,6 +1,8 @@
 package com.github.jeffw12345.draughts.client.view;
 
 import com.github.jeffw12345.draughts.client.controller.MasterClientController;
+import com.github.jeffw12345.draughts.models.game.Board;
+import com.github.jeffw12345.draughts.models.game.SquareContent;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 
@@ -77,47 +79,73 @@ public class DraughtsBoardGui implements ActionListener {
     }
 
     public void addRedKing(int col, int row) {
-        Square.getComponent(square[col][row]).setState(SquareState.RED_KING);
+        GuiSquare.getComponent(square[col][row]).setState(GuiSquareState.RED_KING);
     }
     public void addRedMan(int col, int row) {
-        Square.getComponent(square[col][row]).setState(SquareState.RED_MAN);
+        GuiSquare.getComponent(square[col][row]).setState(GuiSquareState.RED_MAN);
     }
 
     void addRedMenToBoardForInitialSetup() {
         for (int row = 0; row < 3; row++) {
             for (int column = 1; column < 8; column += 2) {
                 if ((row == 0) || (row == 2)) {
-                    Square.getComponent(square[column][row]).setState(SquareState.RED_MAN);
+                    GuiSquare.getComponent(square[column][row]).setState(GuiSquareState.RED_MAN);
                 }
             }
 
-            ((Square) (square[0][1].getComponents()[0])).setState(SquareState.RED_MAN);
-            ((Square) (square[2][1].getComponents()[0])).setState(SquareState.RED_MAN);
-            ((Square) (square[4][1].getComponents()[0])).setState(SquareState.RED_MAN);
-            ((Square) (square[6][1].getComponents()[0])).setState(SquareState.RED_MAN);
+            ((GuiSquare) (square[0][1].getComponents()[0])).setState(GuiSquareState.RED_MAN);
+            ((GuiSquare) (square[2][1].getComponents()[0])).setState(GuiSquareState.RED_MAN);
+            ((GuiSquare) (square[4][1].getComponents()[0])).setState(GuiSquareState.RED_MAN);
+            ((GuiSquare) (square[6][1].getComponents()[0])).setState(GuiSquareState.RED_MAN);
         }
     }
 
     public void addWhiteKing(int col, int row) {
-        Square.getComponent(square[col][row]).setState(SquareState.WHITE_KING);
+        GuiSquare.getComponent(square[col][row]).setState(GuiSquareState.WHITE_KING);
+    }
+
+    public void repaintBoard(Board board) {
+        for(int row = 0; row < 8; row++){
+            for(int column = 0; column < 8; column++){
+                //TODO - Make row, column vs column, row uniform
+                SquareContent squareContent = board.getSquareContentAtRowAndColumn(row, column);
+                if(squareContent == SquareContent.RED_MAN){
+                    addRedMan(column, row);
+                }
+                if(squareContent == SquareContent.WHITE_MAN){
+                    addWhiteMan(column, row);
+                }
+                if(squareContent == SquareContent.RED_KING){
+                    addRedKing(column, row);
+                }
+                if(squareContent == SquareContent.WHITE_KING){
+                    addWhiteKing(column, row);
+                }
+                if(squareContent == SquareContent.EMPTY){
+                    setBlank(column, row);
+                }
+            }
+        }
+        frame.repaint();
+        frame.setVisible(true);
     }
 
     public void addWhiteMan(int col, int row) {
-        Square.getComponent(square[col][row]).setState(SquareState.WHITE_MAN);
+        GuiSquare.getComponent(square[col][row]).setState(GuiSquareState.WHITE_MAN);
     }
 
     void addWhiteMenToBoardForInitialSetup() {
         for (int row = 5; row < 8; row++) {
             for (int column = 0; column < 8; column += 2) {
                 if ((row == 5) || (row == 7)) {
-                    Square.getComponent(square[column][row]).setState(SquareState.WHITE_MAN);
+                    GuiSquare.getComponent(square[column][row]).setState(GuiSquareState.WHITE_MAN);
                 }
             }
 
-            Square.getComponent(square[1][6]).setState(SquareState.WHITE_MAN);
-            ((Square) (square[3][6].getComponents()[0])).setState(SquareState.WHITE_MAN);
-            ((Square) (square[5][6].getComponents()[0])).setState(SquareState.WHITE_MAN);
-            ((Square) (square[7][6].getComponents()[0])).setState(SquareState.WHITE_MAN);
+            GuiSquare.getComponent(square[1][6]).setState(GuiSquareState.WHITE_MAN);
+            ((GuiSquare) (square[3][6].getComponents()[0])).setState(GuiSquareState.WHITE_MAN);
+            ((GuiSquare) (square[5][6].getComponents()[0])).setState(GuiSquareState.WHITE_MAN);
+            ((GuiSquare) (square[7][6].getComponents()[0])).setState(GuiSquareState.WHITE_MAN);
         }
     }
 
@@ -145,7 +173,7 @@ public class DraughtsBoardGui implements ActionListener {
                     square[column][row].setBackground(Color.WHITE);
                     square[column][row].setOpaque(true);
                 }
-                square[column][row].add(new Square(SquareState.EMPTY));
+                square[column][row].add(new GuiSquare(GuiSquareState.EMPTY));
             }
         }
     }
@@ -252,7 +280,7 @@ public class DraughtsBoardGui implements ActionListener {
     }
 
     public void setBlank(int col, int row) {
-        Square.getComponent(square[col][row]).setState(SquareState.EMPTY);
+        GuiSquare.getComponent(square[col][row]).setState(GuiSquareState.EMPTY);
     }
 
     public void updateLabels() {

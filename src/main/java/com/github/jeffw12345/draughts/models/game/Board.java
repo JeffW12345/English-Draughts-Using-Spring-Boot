@@ -1,6 +1,10 @@
 package com.github.jeffw12345.draughts.models.game;
 
 import com.github.jeffw12345.draughts.models.game.move.Move;
+import com.github.jeffw12345.draughts.models.game.move.type.KingMoveType;
+import com.github.jeffw12345.draughts.models.game.move.type.MoveType;
+import com.github.jeffw12345.draughts.models.game.move.type.RedManMoveType;
+import com.github.jeffw12345.draughts.models.game.move.type.WhiteManMoveType;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 
@@ -101,5 +105,84 @@ public class Board {
         } else {
             destinationSquare.setSquareContent(Colour.getManSquareContent(colourOfPieceBeingMoved));
         }
+    }
+
+    public boolean hasNoSquaresOfColour(Colour colourToCheck) {
+        for (int row = 0; row < 8; row++){
+            for (int column = 0; column < 8; column++){
+                SquareContent squareContent = getSquareContentAtRowAndColumn(row, column);
+                if (SquareContent.getColour(squareContent) == colourToCheck){
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
+
+    public boolean hasNoLegalMovesForColour(Colour colour) {
+        for (int rowIndex = 0; rowIndex < 8; rowIndex++) {
+            for (int columnIndex = 0; columnIndex < 8; columnIndex++) {
+                SquareContent content = getSquareContentAtRowAndColumn(rowIndex, columnIndex);
+
+                boolean wrongColour = !content.toString().toLowerCase().contains(colour.toString().toLowerCase());
+                if (content == SquareContent.EMPTY || wrongColour) {
+                    continue;
+                }
+
+                MoveType[] moveTypes = null;
+                if (content == SquareContent.WHITE_MAN) {
+                    moveTypes = WhiteManMoveType.values();
+                } else if (content == SquareContent.RED_MAN) {
+                    moveTypes = RedManMoveType.values();
+                } else if (content == SquareContent.WHITE_KING || content == SquareContent.RED_KING) {
+                    moveTypes = KingMoveType.values();
+                }
+
+                if (moveTypes != null) {
+                    for (MoveType moveType : moveTypes) {
+                        int rowChange = moveType.getRowChange();
+                        int columnChange = moveType.getColumnChange();
+                        if (!outOfBounds(rowIndex, columnIndex, rowChange, columnChange)) {
+                            return false;
+                        }
+                    }
+                }
+            }
+        }
+        return true;
+    }
+
+    public boolean jumpPossibleForMoveType(SquareContent startingSquareContent, Move move,
+                                           Class<? extends Enum<? extends MoveType>> moveTypeEnumClass) {
+        MoveType[] moveTypes = (MoveType[]) moveTypeEnumClass.getEnumConstants();
+        for (MoveType moveType : moveTypes) {
+            int startRow = move.getEndSquareRow();
+            int startColumn = move.getEndSquareColumn();
+            int rowChange = moveType.getRowChange();
+            int columnChange = moveType.getColumnChange();
+            if (!outOfBounds(startRow, startColumn, rowChange, columnChange)) {
+                int jumpedSquareRow = rowChange < 0
+                        ? startRow + rowChange + 1
+                        : startRow + rowChange -1;
+                int jumpedSquareColumn = columnChange < 0
+                        ? startColumn + columnChange + 1
+                        : startColumn + columnChange -1;
+
+                SquareContent middleSquareContent = getSquareContentAtRowAndColumn(jumpedSquareRow, jumpedSquareColumn);
+                Colour startingSquare = SquareContent.getColour(startingSquareContent);
+                Colour opponentColour = Colour.otherPlayerColour(startingSquare);
+                if(SquareContent.getColour(middleSquareContent) == opponentColour){
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    private boolean outOfBounds(int row, int column, int rowChange, int columnChange){
+        row -= rowChange;
+        column -= columnChange;
+
+        return row < 0 || row > 7 || column < 0 || column > 7;
     }
 }

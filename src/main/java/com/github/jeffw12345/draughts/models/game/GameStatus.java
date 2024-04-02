@@ -6,7 +6,6 @@ public enum GameStatus {
     RED_VICTORY,
     WHITE_VICTORY,
     ABANDONED,
-    STALEMATE,
     AGREED_DRAW,
     AWAITING_NEW_GAME
 }

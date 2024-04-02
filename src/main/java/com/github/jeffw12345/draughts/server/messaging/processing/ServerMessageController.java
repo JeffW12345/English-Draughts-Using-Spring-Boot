@@ -86,7 +86,6 @@ public class ServerMessageController {
         if (!isMoveLegal){
             illegalMoveActions(move, clientRequestToServer);
         }
-
     }
 
     private static void legalMoveActions(Game game, Move move, String clientId, Colour playerColour) {
@@ -98,15 +97,19 @@ public class ServerMessageController {
         if(PostMoveCheckService.isTurnOngoing(game, move)){
             ServerMessageComposeService.informClientsOfNewBoardAndThatTurnOngoing(clientId, board);
         }else{
-            ServerMessageComposeService.informClientsOfNewBoardAndThatTurnFinished(clientId, board);
+            boolean hasMoveResultedInWin = PostMoveCheckService.isWinForColour(playerColour, board);
+            if (hasMoveResultedInWin){
+                ServerMessageComposeService.informClientsOfNewBoardAndThatGameWon(clientId, board, playerColour);
+            } else{
+                ServerMessageComposeService.informClientsOfNewBoardAndThatTurnFinished(clientId, board);
+            }
             move.setTurnComplete(true);
         }
-
     }
 
     private static void illegalMoveActions(Move move, ClientMessageToServer server) {
         move.moveProcessedUpdate(MoveStatus.ILLEGAL);
-        // TODO - Code to tell client move is illegal.
+        ServerMessageComposeService.informClientThatMoveIllegal(server.getClientId());
     }
 
     private static void wantGameActions(ClientMessageToServer clientRequestToServer) {

@@ -8,6 +8,8 @@ public class BoardUpdateController {
         this.controller = controller;
     }
     public void updateBoardChangeOfTurn(ServerMessageToClient message) {
+        controller.getView().repaintBoard(message.getGame().getCurrentBoard());
+        controller.changeTurns();
     }
     public void updateBoardSameTurn(ServerMessageToClient message) {
     }

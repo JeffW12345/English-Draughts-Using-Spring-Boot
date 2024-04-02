@@ -31,6 +31,13 @@ There is just one player per Client instance.
 
 If a player closes their GUI, the other player is informed, and the game is abandoned and the app closes. 
 
+A win is determined in accordance to the aforementioned Wikipedia page: 'A player wins by capturing all of the 
+opponent's pieces or by leaving the opponent with no legal move'.
+
+Draws only occur by mutual consent. 
+
+A move is defined as the movement of a piece, which may or may not terminate with a change of turn.
+
 LIMITATIONS
 ===========
 
@@ -117,10 +124,13 @@ If the move is legal, the server does the following:
 - Updates the MoveStatus attribute of the Move object to COMPLETE. 
 - Updates the Board object. 
 - Checks whether the current player has another turn (because they have just jumped over a piece and another jump is 
-possible using the same piece that did the last jump). If another move is possible, the clients are informed of the new
-Board layout, so that it can update the GUI. 
-- If the turn is over, the client checks whether the game is now won by the current player or a stalemate. If either 
-of those conditions applies, both clients are informed of the new Board layout and of the game outcome.
+possible using the same piece that did the last jump). If another move is possible, the clients are informed of this and
+given the new board layout. 
+- If the turn is over, the client checks whether the game is now won by the current player. 
+- If the player who has just moved has won, both players' boards are updated and the clients are informed. 
+- If there is no win, the clients are told that the current move is over and given an updated board.
+
+The GUI messages and boards are updated in response to messages from the server. 
 
 **Offer a draw**. If a player offers a draw, the server is informed, which informs the other player. The offer is 
 cancelled once the next move has been made, and the GUIs are updated accordingly.
@@ -128,7 +138,5 @@ cancelled once the next move has been made, and the GUIs are updated accordingly
 **Accept a draw** If a draw is accepted, the server is informed, and it informs the other client. The game is then over.
 
 **Resign** If a player resigns, the server is informed, and it informs the other client. The game is then over.
-
-*A move is defined as the movement of a piece, which may or may not terminate with a change of turn.
 
 The server checks if moves are legal and promotes men to kings where required.

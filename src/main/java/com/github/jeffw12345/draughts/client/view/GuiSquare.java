@@ -9,16 +9,16 @@ import java.awt.geom.Ellipse2D;
 import javax.swing.JComponent;
 import javax.swing.JPanel;
 
-public class Square extends JPanel {
-    private SquareState state;
+public class GuiSquare extends JPanel {
+    private GuiSquareState state;
 
-    Square(SquareState state) {
+    GuiSquare(GuiSquareState state) {
         this.state = state;
     }
 
     @Override
     public void paintComponent(Graphics g) {
-        if (state == SquareState.RED_MAN) {
+        if (state == GuiSquareState.RED_MAN) {
             Graphics2D g2 = (Graphics2D) g;
             g2.setPaint(Color.RED);
             g2.fill(new Ellipse2D.Double(0, 10, 25, 25));
@@ -26,7 +26,7 @@ public class Square extends JPanel {
             g2.draw(new Ellipse2D.Double(0, 10, 25, 25));
         }
 
-        if (state == SquareState.WHITE_MAN) {
+        if (state == GuiSquareState.WHITE_MAN) {
             Graphics2D g2 = (Graphics2D) g;
             g2.setPaint(Color.WHITE);
             g2.fill(new Ellipse2D.Double(0, 10, 25, 25));
@@ -34,7 +34,7 @@ public class Square extends JPanel {
             g2.draw(new Ellipse2D.Double(0, 10, 25, 25));
         }
 
-        if (state == SquareState.RED_KING) {
+        if (state == GuiSquareState.RED_KING) {
             Graphics2D g2 = (Graphics2D) g;
             g2.setPaint(Color.RED);
             g2.fill(new Ellipse2D.Double(0, 10, 25, 25));
@@ -46,7 +46,7 @@ public class Square extends JPanel {
             g2.drawString("K", (getWidth() / 2) - 7, (getHeight() / 2) + 7);
         }
 
-        if (state == SquareState.WHITE_KING) {
+        if (state == GuiSquareState.WHITE_KING) {
             Graphics2D g2 = (Graphics2D) g;
             g2.setPaint(Color.WHITE);
             g2.fill(new Ellipse2D.Double(0, 10, 25, 25));
@@ -59,11 +59,11 @@ public class Square extends JPanel {
         }
     }
 
-    public void setState(SquareState state) {
+    public void setState(GuiSquareState state) {
         this.state = state;
     }
 
-    public static Square getComponent(JComponent component) {
-        return (Square) component.getComponents()[0];
+    public static GuiSquare getComponent(JComponent component) {
+        return (GuiSquare) component.getComponents()[0];
     }
 }

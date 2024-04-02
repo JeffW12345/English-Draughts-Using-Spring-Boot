@@ -16,7 +16,7 @@ import javax.swing.JOptionPane;
 public class MasterClientController {
     private final Client client;
     private final DraughtsBoardGui view = new DraughtsBoardGui(this);
-    private boolean amIRed, gameInProgress, isRedsTurn = true, bothClientsConnectedToServer;
+    private boolean amIRed, gameInProgress, isRedsTurn = true;
     private Move move = Move.builder().build();
     private final DrawController drawController;
     private final WinLossController winLossController;
@@ -147,31 +147,6 @@ public class MasterClientController {
         guiMessageController.resignButtonPressedMessage();
 
         client.getClientMessagingService().sendResignation(client);
-    }
-
-    public void repaintBoard(Board board) {
-        for(int row = 0; row < 8; row++){
-            for(int column = 0; column < 8; column++){
-                SquareContent squareContent = board.getSquareContentAtRowAndColumn(row, column);
-                if(squareContent == SquareContent.RED_MAN){
-                    view.addRedMan(column, row);
-                }
-                if(squareContent == SquareContent.WHITE_MAN){
-                    view.addWhiteMan(column, row);
-                }
-                if(squareContent == SquareContent.RED_KING){
-                    view.addRedKing(column, row);
-                }
-                if(squareContent == SquareContent.WHITE_KING){
-                    view.addWhiteKing(column, row);
-                }
-                if(squareContent == SquareContent.EMPTY){
-                    view.setBlank(column, row);
-                }
-            }
-        }
-        view.getFrame().repaint();
-        view.getFrame().setVisible(true);
     }
 
     public void setWelcomeMessage() {

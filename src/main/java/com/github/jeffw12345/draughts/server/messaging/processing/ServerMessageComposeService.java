@@ -1,6 +1,7 @@
 package com.github.jeffw12345.draughts.server.messaging.processing;
 
 import com.github.jeffw12345.draughts.models.game.Board;
+import com.github.jeffw12345.draughts.models.game.Colour;
 
 public class ServerMessageComposeService {
 
@@ -10,5 +11,11 @@ public class ServerMessageComposeService {
 
     public static void informClientsOfNewBoardAndThatTurnFinished(String id, Board board) {
         //TODO
+    }
+
+    public static void informClientsOfNewBoardAndThatGameWon(String id, Board board, Colour colour) {
+    }
+
+    public static void informClientThatMoveIllegal(String id) {
     }
 }
