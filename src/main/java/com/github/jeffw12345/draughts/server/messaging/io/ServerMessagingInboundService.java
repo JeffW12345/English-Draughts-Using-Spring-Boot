@@ -31,7 +31,7 @@ public class ServerMessagingInboundService {
     public static synchronized void onMessage(String message) {
         log.info(String.format("New message received by server: %s", message));
 
-        ClientMessageToServer messageFromClient = ServerMessagingUtility.getClientMessageObject(message);
+        ClientMessageToServer messageFromClient = ServerMessagingUtility.getClientMessageObjectFromJson(message);
 
         updateClientIdToSessionDictionary(messageFromClient);
 

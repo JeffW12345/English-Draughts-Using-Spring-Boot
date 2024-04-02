@@ -23,7 +23,7 @@ public class ServerMessagingUtility {
         return objectAsString;
     }
 
-    public static ClientMessageToServer getClientMessageObject(String json) {
+    public static ClientMessageToServer getClientMessageObjectFromJson(String json) {
         ClientMessageToServer message = null;
         try{
             message = new ObjectMapper().readValue(json, ClientMessageToServer.class);
@@ -32,7 +32,4 @@ public class ServerMessagingUtility {
         }
         return message;
     }
-
-    //TODO - Message both clients in game/message other client methods.
-
 }

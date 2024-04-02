@@ -82,7 +82,7 @@ public class MasterClientController {
         guiMessageController.bothPlayersReadyMessage();
     }
 
-    public void squareClicked(int column, int row) {
+    public void boardSquareClicked(int column, int row) {
         if (!gameInProgress) {
             JOptionPane.showMessageDialog(view.getFrame(), "You need to agree a game before playing.");
             return;
@@ -95,12 +95,17 @@ public class MasterClientController {
             JOptionPane.showMessageDialog(view.getFrame(), "It is not your turn, it is red's turn");
             return;
         }
-        if(move.noCoordinatesOnlyProvided()){
+        if (move.isEndCoordinatesProvided()) {
+            JOptionPane.showMessageDialog(view.getFrame(), "Please wait while your move is processed.");
+            return;
+        }
+        if(move.noStartOrEndSquareProvidedYet()){
             move.setStartCoordinates(column, row);
             return;
         }
         if(move.startCoordinatesOnlyProvided()){
             move.setEndCoordinates(column, row);
+            move.setStartAndEndCoordinatesProvided(true);
             client.getClientMessagingService().sendMoveToServer(move);
             move = Move.builder().build();
         }

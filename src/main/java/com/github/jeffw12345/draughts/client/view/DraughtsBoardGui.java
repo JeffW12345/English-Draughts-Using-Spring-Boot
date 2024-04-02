@@ -65,7 +65,7 @@ public class DraughtsBoardGui implements ActionListener {
                     for (int column = 0; column < 8; column++) {
                         for (int row = 0; row < 8; row++) {
                             if (e.getSource() == square[column][row]) {
-                                controller.squareClicked(column, row);
+                                controller.boardSquareClicked(column, row);
                             }
                         }
                     }

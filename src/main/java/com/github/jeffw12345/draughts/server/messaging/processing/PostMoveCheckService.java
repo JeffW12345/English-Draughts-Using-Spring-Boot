@@ -37,7 +37,7 @@ public class PostMoveCheckService {
         return anyLegalMovesForColour(game.getCurrentBoard(), colourOfPlayerWhoseTurnItIs);
     }
 
-    public static boolean isFollowUpJumpPossible(Board board, SquareContent startingSquareContent, Move move) {
+    public static boolean isFollowUpOvertakePossible(Board board, SquareContent startingSquareContent, Move move) {
         if (SquareContent.canPieceTypeJumpBothDirections(startingSquareContent)){
             return jumpPossibleForMoveType(board, startingSquareContent, move, ForwardJump.class) ||
                     jumpPossibleForMoveType(board, startingSquareContent, move, BackwardJump.class);
@@ -81,14 +81,13 @@ public class PostMoveCheckService {
         return false;
     }
 
-    public static boolean isTurnComplete(Game game, Move move) {
+    public static boolean isTurnOngoing(Game game, Move move) {
         Board board = game.getCurrentBoard();
         if (move.isOvertakingMove()){
             SquareContent destinationSquareContent = move.getMoveTerminationSquare(board).getSquareContent();
-            boolean turnOngoing = PostMoveCheckService.isFollowUpJumpPossible(board, destinationSquareContent, move);
-
+            return PostMoveCheckService.isFollowUpOvertakePossible(board, destinationSquareContent, move);
         }
-        return true;
+        return false;
     }
     public static boolean anyLegalMovesForColour(Board board, Colour colour) {
         for (int rowIndex = 0; rowIndex < 8; rowIndex++) {

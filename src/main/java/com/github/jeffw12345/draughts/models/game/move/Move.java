@@ -4,6 +4,7 @@ import com.github.jeffw12345.draughts.models.game.Board;
 import com.github.jeffw12345.draughts.models.game.Colour;
 import com.github.jeffw12345.draughts.models.game.Game;
 import com.github.jeffw12345.draughts.models.game.Square;
+import com.github.jeffw12345.draughts.models.game.SquareContent;
 import com.github.jeffw12345.draughts.server.messaging.processing.MoveValidationService;
 import lombok.Builder;
 import lombok.Getter;
@@ -28,11 +29,14 @@ public class Move {
     private int endSquareRow;
     private boolean endCoordinatesProvided;
 
+
+    private boolean startAndEndCoordinatesProvided;
+
     private boolean overtakingMove;
     private boolean oneSquareMove;
 
     private MoveStatus moveStatus = MoveStatus.PENDING;
-
+    private boolean isTurnComplete;
     Timestamp moveProcessedTimestamp;
 
 
@@ -90,12 +94,13 @@ public class Move {
     public boolean startCoordinatesOnlyProvided(){
         return startCoordinatesProvided && !endCoordinatesProvided;
     }
-    public boolean noCoordinatesOnlyProvided(){
+    public boolean noStartOrEndSquareProvidedYet(){
         return !startCoordinatesProvided && !endCoordinatesProvided;
     }
 
-    public boolean willMoveResultInCoronation(Game game){
-        Colour playerColour = game.getColourOfPlayerMakingMove(this);
+    public boolean willMoveResultInCoronation(Board board){
+        Colour playerColour = SquareContent
+                .getColour(board.getSquareContentAtRowAndColumn(startSquareRow, startSquareColumn));
         return (playerColour == Colour.RED && endSquareRow == 7) || (playerColour == Colour.WHITE && endSquareRow == 0);
     }
     public Square getStartOfMoveSquare(Board board){

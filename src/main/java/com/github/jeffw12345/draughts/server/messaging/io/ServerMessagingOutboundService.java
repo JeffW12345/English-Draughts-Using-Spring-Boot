@@ -1,5 +1,7 @@
 package com.github.jeffw12345.draughts.server.messaging.io;
 
+import com.github.jeffw12345.draughts.models.game.Game;
+import com.github.jeffw12345.draughts.server.mapping.ClientIdToGameMapping;
 import com.github.jeffw12345.draughts.server.mapping.ClientIdToSessionMapping;
 import jakarta.websocket.Session;
 import lombok.extern.slf4j.Slf4j;
@@ -30,5 +32,22 @@ public class ServerMessagingOutboundService {
                 }
             }
         }
+    }
+
+    public static synchronized void messageBothClientsInAGame(String json, String clientIdOfOneOfPlayers){
+        Game game = ClientIdToGameMapping.getGameForClientId(clientIdOfOneOfPlayers);
+        List<String> clientIdsForGame = ClientIdToGameMapping.getClientIdsForGame(game);
+        sendJsonMessage(json, clientIdsForGame.get(0), clientIdsForGame.get(1));
+    }
+
+    public static synchronized void messageOtherClientInGame(String json, String thisClient){
+        Game game = ClientIdToGameMapping.getGameForClientId(thisClient);
+        String otherClientId = ClientIdToGameMapping.getClientIdsForGame(game)
+                .stream()
+                .filter(clientId -> clientId != thisClient)
+                .toList()
+                .get(0);
+
+        sendJsonMessage(json, otherClientId);
     }
 }

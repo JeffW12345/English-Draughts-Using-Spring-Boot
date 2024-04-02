@@ -9,7 +9,7 @@ import java.util.concurrent.ConcurrentHashMap;
 public class PlayerIdToGameMapping {
     private static final ConcurrentHashMap<String, Game> playerIdToGame = new ConcurrentHashMap<>();
 
-    public synchronized static void assignPlayerToGame(Player player, Game game){
+    public synchronized static void add(Player player, Game game){
         playerIdToGame.put(player.getPlayerId(), game);
     }
 

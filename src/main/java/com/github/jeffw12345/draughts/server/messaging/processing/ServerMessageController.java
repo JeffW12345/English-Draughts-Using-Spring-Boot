@@ -4,8 +4,6 @@ import com.github.jeffw12345.draughts.models.game.Board;
 import com.github.jeffw12345.draughts.models.game.Colour;
 import com.github.jeffw12345.draughts.models.game.Game;
 import com.github.jeffw12345.draughts.models.game.Player;
-import com.github.jeffw12345.draughts.models.game.Square;
-import com.github.jeffw12345.draughts.models.game.SquareContent;
 import com.github.jeffw12345.draughts.models.game.move.Move;
 import com.github.jeffw12345.draughts.models.game.move.MoveStatus;
 import com.github.jeffw12345.draughts.server.ClientsAwaitingAGame;
@@ -92,9 +90,17 @@ public class ServerMessageController {
     }
 
     private static void legalMoveActions(Game game, Move move, String clientId, Colour playerColour) {
-        move.moveProcessedUpdate(MoveStatus.ILLEGAL);
+        move.moveProcessedUpdate(MoveStatus.COMPLETE);
 
-        boolean isTurnComplete = PostMoveCheckService.isTurnComplete(game, move);
+        Board board = game.getCurrentBoard();
+        board.updateForCompletedMove(move);
+
+        if(PostMoveCheckService.isTurnOngoing(game, move)){
+            ServerMessageComposeService.informClientsOfNewBoardAndThatTurnOngoing(clientId, board);
+        }else{
+            ServerMessageComposeService.informClientsOfNewBoardAndThatTurnFinished(clientId, board);
+            move.setTurnComplete(true);
+        }
 
     }
 
@@ -123,8 +129,8 @@ public class ServerMessageController {
         Player whitePlayer = new Player(whitePlayerClientId, Colour.WHITE);
         game.addPlayer(whitePlayer);
 
-        PlayerIdToGameMapping.assignPlayerToGame(redPlayer, game);
-        PlayerIdToGameMapping.assignPlayerToGame(whitePlayer, game);
+        PlayerIdToGameMapping.add(redPlayer, game);
+        PlayerIdToGameMapping.add(whitePlayer, game);
 
         ClientIdToGameMapping.assignClientIdToGame(redPlayerClientId, game);
         ClientIdToGameMapping.assignClientIdToGame(whitePlayerClientId, game);
