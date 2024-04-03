@@ -15,6 +15,7 @@ import jakarta.websocket.Session;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 
+import java.io.IOException;
 import java.net.URI;
 
 import static com.github.jeffw12345.draughts.models.messaging.ClientToServerMessageType.DRAW_ACCEPT;
@@ -120,8 +121,8 @@ public class ClientMessageDispatchService {
                     .connectToServer(this, new URI("ws://localhost:8080/webSocket"));
 
             ClientMessageToServer clientMessage = ClientMessageToServer.builder()
+                    .session(session)
                     .clientId(client.getClientId())
-                    .sessionId(sessionId)
                     .requestType(ESTABLISH_SESSION)
                     .build();
 
@@ -131,7 +132,7 @@ public class ClientMessageDispatchService {
         }
     }
 
-    public void tellServerExited(String windowClosedClientId, String message) {
+    public void tellServerClientExitedThenCloseSession(String windowClosedClientId, String message) {
         ClientMessageToServer requestForGame = ClientMessageToServer.builder()
                 .clientId(windowClosedClientId)
                 .requestType(EXIT)
@@ -139,5 +140,15 @@ public class ClientMessageDispatchService {
                 .build();
 
         convertMessageToJSONThenSendToServer(requestForGame);
+        closeSession();
+    }
+
+    private void closeSession(){
+        try {
+            session.close();
+        } catch (IOException e) {
+            log.error(String.format("Problem closing session: %s", e.getMessage()));
+            throw new RuntimeException(e);
+        }
     }
 }

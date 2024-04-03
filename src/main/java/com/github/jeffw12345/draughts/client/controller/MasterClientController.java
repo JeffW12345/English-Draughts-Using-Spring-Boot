@@ -2,9 +2,7 @@ package com.github.jeffw12345.draughts.client.controller;
 
 import com.github.jeffw12345.draughts.client.Client;
 import com.github.jeffw12345.draughts.client.view.DraughtsBoardGui;
-import com.github.jeffw12345.draughts.models.game.Board;
 import com.github.jeffw12345.draughts.models.game.Colour;
-import com.github.jeffw12345.draughts.models.game.SquareContent;
 import com.github.jeffw12345.draughts.models.game.move.Move;
 import com.github.jeffw12345.draughts.models.messaging.ServerMessageToClient;
 import com.github.jeffw12345.draughts.models.messaging.ServerToClientMessageType;
@@ -50,9 +48,6 @@ public class MasterClientController {
             case INFORM_OF_DRAW_ACCEPTED:
                 drawController.drawOfferAcceptedViewUpdate();
                 break;
-            case INFORM_OF_STALEMATE:
-                drawController.stalemateActions();
-                break;
             case INFORM_RED_IS_WINNER:
                 winLossController.winnerActions(Colour.RED);
                 break;
@@ -71,9 +66,16 @@ public class MasterClientController {
             case INFORM_DRAW_OFFER_MADE:
                 drawController.ifDrawOfferMadeByOtherClient();
                 break;
+            case INFORM_OTHER_CLIENT_CLOSED_WINDOW:
+                otherClientClosedGuiActions();
+                break;
             default:
                 throw new IllegalArgumentException("Unexpected response type: " + serverResponseType);
         }
+    }
+
+    private void otherClientClosedGuiActions() {
+        //TODO
     }
 
     public void assignColour(Colour colour) {
@@ -163,8 +165,8 @@ public class MasterClientController {
         }
     }
 
-    public void exitDueToGuiClose() {
-
-        client.getClientMessagingService().tellServerExited(client.getClientId(), "Exiting as a player has closed their window");
+    public void exitDueToThisClientGuiClose() {
+        client.getClientMessagingService()
+                .tellServerClientExitedThenCloseSession(client.getClientId(), "Exiting as other player has closed their window");
     }
 }

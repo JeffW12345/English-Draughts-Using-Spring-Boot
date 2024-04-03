@@ -50,7 +50,7 @@ public class ServerMessageController {
 
     private static void establishConnectionActions(ClientMessageToServer clientRequestToServer) {
         ClientIdToSessionMapping.add(clientRequestToServer.getClientId(),
-                clientRequestToServer.getClient().getClientMessagingService().getSession());
+                clientRequestToServer.getSession());
     }
     private static void exitActions(ClientMessageToServer clientRequestToServer, String requestingClientId) {
         String reasonForClosingSession = clientRequestToServer.getInformation();

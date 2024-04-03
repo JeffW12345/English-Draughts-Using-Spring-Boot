@@ -40,7 +40,7 @@ public class ServerMessagingInboundService {
 
     private static void updateClientIdToSessionDictionary(ClientMessageToServer message) {
         String clientId = message.getClientId();
-        Session session = SessionIdToSessionMapping.getSessionForSessionId(message.getSessionId());
+        Session session = SessionIdToSessionMapping.getSessionForSessionId(message.getSession().getId());
         ClientIdToSessionMapping.add(clientId, session);
     }
 

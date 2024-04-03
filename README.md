@@ -162,12 +162,10 @@ A ClientMessageToServer object is created for the following types of requests:
 
 **Establishing an initial connection with the server** In order for a message exchanges to take place, the client needs 
 to set up a session with the server. It does so using the establishSession() method in ClientMessageDispatchService.
-The ClientMessageToServer object contains the id of the Session object used to make the connection request. This is so 
-that the server can map the client id to the relevant session object when making outbound communications with this
-client (as the Session object on the client and server sides for a communications session has the same id).
-
-The ClientMessageToServer object also contains a String attribute containing the Client id as a String and a 
-ClientMessageToServer constant of 'ESTABLISH_SESSION'.
+The ClientMessageToServer object contains the Session object used to make the connection request, as well as a 
+String attribute containing the Client id as a String and a ClientMessageToServer constant of 'ESTABLISH_SESSION'.
+When the the Server receives the message, it stores the Session as a value in a hashmap, with the client id String as 
+the key.
 
 **Game requests**. The object contains String attribute containing the Client id as a String and a ClientMessageToServer 
 constant of 'WANT_GAME'. 
@@ -193,6 +191,9 @@ Messages are converted to JSON, and then sent to the server using the ClientMess
 
 ## B. Server sending messages
 
+When the server sends a message to a client, it creates a ServerMessageToClient object (which is later rendered into
+JSON). The ServerMessageToClient object contains a ServerToClientMessageType attribute, which is an enum representing
+the message type. 
 
 
 
