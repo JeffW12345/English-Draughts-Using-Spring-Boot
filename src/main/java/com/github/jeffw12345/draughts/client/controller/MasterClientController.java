@@ -151,19 +151,6 @@ public class MasterClientController {
         client.getClientMessagingService().sendResignation(client.getClientId());
     }
 
-    public void setWelcomeMessage() {
-        view.setTopLineMessageText("Welcome to English Draughts!");
-        view.setMiddleLineMessageText("");
-        view.setBottomLineMessageText(colourMessage());
-    }
-
-    public String colourMessage() {
-        if (amIRed) {
-            return "You are the red player";
-        } else {
-            return "You are the white player";
-        }
-    }
 
     public void exitDueToThisClientGuiClose() {
         client.getClientMessagingService()

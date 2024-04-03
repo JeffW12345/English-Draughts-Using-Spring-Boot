@@ -68,21 +68,7 @@ public class GuiMessageController {
         view.setBottomLineMessageText("");
         view.updateLabels();
     }
-
-    void whiteMoveOverMessage() {
-        view.setTopLineMessageText("White's move is over.");
-        view.setMiddleLineMessageText("It's now red's turn.");
-        view.setBottomLineMessageText("");
-        view.updateLabels();
-    }
-
-    void redMoveOverMessage() {
-        view.setTopLineMessageText("Red's move is over.");
-        view.setMiddleLineMessageText("It's now white's turn.");
-        view.setBottomLineMessageText("");
-        view.updateLabels();
-    }
-
+    
     void drawOfferExpiresMessage() {
         view.setTopLineMessageText("The draw offer has expired.");
         view.setMiddleLineMessageText(turnMessage());
@@ -147,6 +133,51 @@ public class GuiMessageController {
         } else {
             view.setBottomLineMessageText("You are the white player.");
         }
+        view.updateLabels();
+    }
+
+    void turnOverMessage(){
+        if (isRedsTurn){
+            redMoveOverMessage();
+        } else {
+            whiteMoveOverMessage();
+        }
+    }
+
+    private void whiteMoveOverMessage() {
+        view.setTopLineMessageText("White's turn is over.");
+        view.setMiddleLineMessageText("It's now red's turn.");
+        view.setBottomLineMessageText("");
+        view.updateLabels();
+    }
+
+    private void redMoveOverMessage() {
+        view.setTopLineMessageText("Red's turn is over.");
+        view.setMiddleLineMessageText("It's now white's turn.");
+        view.setBottomLineMessageText("");
+        view.updateLabels();
+    }
+
+
+    public void turnOngoingMessage() {
+        if (isRedsTurn){
+            redTurnOngoingMessage();
+        } else {
+            whiteTurnOngoingMessage();
+        }
+    }
+
+    private void whiteTurnOngoingMessage() {
+        view.setTopLineMessageText("White can overtake again.");
+        view.setMiddleLineMessageText("White's move is still ongoing.");
+        view.setBottomLineMessageText("");
+        view.updateLabels();
+    }
+
+    private void redTurnOngoingMessage() {
+        view.setTopLineMessageText("Red can overtake again.");
+        view.setMiddleLineMessageText("Red's move is still ongoing.");
+        view.setBottomLineMessageText("");
         view.updateLabels();
     }
 }

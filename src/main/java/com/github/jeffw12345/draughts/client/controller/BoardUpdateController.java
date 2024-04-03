@@ -10,11 +10,11 @@ public class BoardUpdateController {
     public void updateBoardChangeOfTurn(ServerMessageToClient message) {
         masterController.getView().repaintBoard(message.getBoard());
         masterController.changeTurns();
-        //TODO - Message
+        masterController.getGuiMessageController().turnOverMessage();
     }
     public void updateBoardSameTurn(ServerMessageToClient message) {
         masterController.getView().repaintBoard(message.getBoard());
-        // TODO - Message
+        masterController.getGuiMessageController().turnOngoingMessage();
 
     }
 }

@@ -6,19 +6,15 @@ import com.github.jeffw12345.draughts.models.game.SquareContent;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 
-import java.awt.Color;
-import java.awt.Font;
-import java.awt.GridLayout;
+import javax.swing.*;
+import javax.swing.border.EmptyBorder;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 
-import javax.swing.*;
-import javax.swing.border.EmptyBorder;
-
 @Slf4j
-//TODO- Explore adding other classes
 @Getter
 public class DraughtsBoardGui implements ActionListener {
     private JFrame frame;
@@ -36,8 +32,8 @@ public class DraughtsBoardGui implements ActionListener {
 
     public void setUp() {
         newBoardActions();
-        controller.setWelcomeMessage();
-        messagesToPlayer();
+        controller.getGuiMessageController().setWelcomeMessage();
+        labelSetup();
     }
 
     @Override
@@ -64,10 +60,10 @@ public class DraughtsBoardGui implements ActionListener {
             SwingWorker<Void, Void> squareClickWorker = new SwingWorker<>() {
                 @Override
                 protected Void doInBackground() {
-                    for (int column = 0; column < 8; column++) {
-                        for (int row = 0; row < 8; row++) {
-                            if (e.getSource() == square[column][row]) {
-                                controller.boardSquareClicked(column, row);
+                    for (int row = 0; row < 8; row++) {
+                        for (int col = 0; col < 8; col++) {
+                            if (e.getSource() == square[row][col]) {
+                                controller.boardSquareClicked(row, col);
                             }
                         }
                     }
@@ -78,51 +74,71 @@ public class DraughtsBoardGui implements ActionListener {
         }
     }
 
-    public void addRedKing(int col, int row) {
-        GuiSquare.getComponent(square[col][row]).setState(GuiSquareState.RED_KING);
+    public void addRedKingToSquare(int row, int col) {
+        GuiSquare.getComponent(square[row][col]).setState(GuiSquareState.RED_KING);
     }
-    public void addRedMan(int col, int row) {
-        GuiSquare.getComponent(square[col][row]).setState(GuiSquareState.RED_MAN);
+
+    public void addRedManToSquare(int row, int col) {
+        GuiSquare.getComponent(square[row][col]).setState(GuiSquareState.RED_MAN);
     }
 
     void addRedMenToBoardForInitialSetup() {
         for (int row = 0; row < 3; row++) {
-            for (int column = 1; column < 8; column += 2) {
+            for (int col = 1; col < 8; col += 2) {
                 if ((row == 0) || (row == 2)) {
-                    GuiSquare.getComponent(square[column][row]).setState(GuiSquareState.RED_MAN);
+                    GuiSquare.getComponent(square[row][col]).setState(GuiSquareState.RED_MAN);
                 }
             }
 
-            ((GuiSquare) (square[0][1].getComponents()[0])).setState(GuiSquareState.RED_MAN);
-            ((GuiSquare) (square[2][1].getComponents()[0])).setState(GuiSquareState.RED_MAN);
-            ((GuiSquare) (square[4][1].getComponents()[0])).setState(GuiSquareState.RED_MAN);
-            ((GuiSquare) (square[6][1].getComponents()[0])).setState(GuiSquareState.RED_MAN);
+            GuiSquare.getComponent(square[row][0]).setState(GuiSquareState.RED_MAN);
+            GuiSquare.getComponent(square[row][2]).setState(GuiSquareState.RED_MAN);
+            GuiSquare.getComponent(square[row][4]).setState(GuiSquareState.RED_MAN);
+            GuiSquare.getComponent(square[row][6]).setState(GuiSquareState.RED_MAN);
         }
     }
 
-    public void addWhiteKing(int col, int row) {
-        GuiSquare.getComponent(square[col][row]).setState(GuiSquareState.WHITE_KING);
+    public void addWhiteKing(int row, int col) {
+        GuiSquare.getComponent(square[row][col]).setState(GuiSquareState.WHITE_KING);
     }
 
+    public void addWhiteMan(int row, int col) {
+        GuiSquare.getComponent(square[row][col]).setState(GuiSquareState.WHITE_MAN);
+    }
+
+    void addWhiteMenToBoardForInitialSetup() {
+        for (int row = 5; row < 8; row++) {
+            for (int col = 0; col < 8; col += 2) {
+                if ((row == 5) || (row == 7)) {
+                    GuiSquare.getComponent(square[row][col]).setState(GuiSquareState.WHITE_MAN);
+                }
+            }
+
+            GuiSquare.getComponent(square[row][0]).setState(GuiSquareState.WHITE_MAN);
+            GuiSquare.getComponent(square[row][2]).setState(GuiSquareState.WHITE_MAN);
+            GuiSquare.getComponent(square[row][4]).setState(GuiSquareState.WHITE_MAN);
+            GuiSquare.getComponent(square[row][6]).setState(GuiSquareState.WHITE_MAN);
+        }
+    }
+
+
     public void repaintBoard(Board board) {
-        for(int row = 0; row < 8; row++){
-            for(int column = 0; column < 8; column++){
-                //TODO - Make row, column vs column, row uniform
-                SquareContent squareContent = board.getSquareContentAtRowAndColumn(row, column);
-                if(squareContent == SquareContent.RED_MAN){
-                    addRedMan(column, row);
+        for (int row = 0; row < 8; row++) {
+            for (int col = 0; col < 8; col++) {
+                SquareContent squareContent = board.getSquareContentAtRowAndColumn(row, col);
+                if (squareContent == SquareContent.RED_MAN) {
+                    addRedManToSquare(row, col);
                 }
-                if(squareContent == SquareContent.WHITE_MAN){
-                    addWhiteMan(column, row);
+                if (squareContent == SquareContent.WHITE_MAN) {
+                    addWhiteMan(row, col);
                 }
-                if(squareContent == SquareContent.RED_KING){
-                    addRedKing(column, row);
+                if (squareContent == SquareContent.RED_KING) {
+                    addRedKingToSquare(row, col);
                 }
-                if(squareContent == SquareContent.WHITE_KING){
-                    addWhiteKing(column, row);
+                if (squareContent == SquareContent.WHITE_KING) {
+                    addWhiteKing(row, col);
                 }
-                if(squareContent == SquareContent.EMPTY){
-                    setBlank(column, row);
+                if (squareContent == SquareContent.EMPTY) {
+                    setSquareBlank(row, col);
                 }
             }
         }
@@ -130,155 +146,8 @@ public class DraughtsBoardGui implements ActionListener {
         frame.setVisible(true);
     }
 
-    public void addWhiteMan(int col, int row) {
-        GuiSquare.getComponent(square[col][row]).setState(GuiSquareState.WHITE_MAN);
-    }
-
-    void addWhiteMenToBoardForInitialSetup() {
-        for (int row = 5; row < 8; row++) {
-            for (int column = 0; column < 8; column += 2) {
-                if ((row == 5) || (row == 7)) {
-                    GuiSquare.getComponent(square[column][row]).setState(GuiSquareState.WHITE_MAN);
-                }
-            }
-
-            GuiSquare.getComponent(square[1][6]).setState(GuiSquareState.WHITE_MAN);
-            ((GuiSquare) (square[3][6].getComponents()[0])).setState(GuiSquareState.WHITE_MAN);
-            ((GuiSquare) (square[5][6].getComponents()[0])).setState(GuiSquareState.WHITE_MAN);
-            ((GuiSquare) (square[7][6].getComponents()[0])).setState(GuiSquareState.WHITE_MAN);
-        }
-    }
-
-    JButton createAcceptDrawBtn() {
-        acceptDrawButton = new JButton("Accept draw");
-        acceptDrawButton.setFont(new Font("Arial", Font.BOLD, 18));
-        rightPanel.add(acceptDrawButton);
-        acceptDrawButton.setEnabled(false);
-        acceptDrawButton.addActionListener(this);
-        return acceptDrawButton;
-    }
-
-
-    void createEmptyBoard() {
-        leftPanel.setLayout(new GridLayout(8, 8));
-        for (int row = 0; row < 8; row++) {
-            for (int column = 0; column < 8; column++) {
-                square[column][row] = new JButton();
-                square[column][row].addActionListener(this);
-                leftPanel.add(square[column][row]);
-                if (((row + column) % 2) != 0) {
-                    square[column][row].setBackground(Color.BLACK);
-                    square[column][row].setOpaque(true);
-                } else {
-                    square[column][row].setBackground(Color.WHITE);
-                    square[column][row].setOpaque(true);
-                }
-                square[column][row].add(new GuiSquare(GuiSquareState.EMPTY));
-            }
-        }
-    }
-
-    JFrame createFrame() {
-        try {
-            UIManager.setLookAndFeel(UIManager.getCrossPlatformLookAndFeelClassName());
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        frame = new JFrame("English Draughts Game");
-        frame.setDefaultCloseOperation(WindowConstants.HIDE_ON_CLOSE);
-        frame.setSize(1000, 500);
-        frame.setLayout(new GridLayout(0, 2));
-        frame.addWindowListener(new WindowAdapter() {
-            @Override
-            public void windowClosing(WindowEvent e) {
-                controller.exitDueToThisClientGuiClose();
-            }
-        });
-        return frame;
-    }
-
-    JPanel createLeftPanel() {
-        leftPanel = new JPanel();
-        leftPanel.setBackground(Color.BLACK);
-        frame.add(leftPanel);
-        return leftPanel;
-    }
-
-    JButton createOfferDrawBtn() {
-        offerDrawButton = new JButton("Offer draw");
-        offerDrawButton.setFont(new Font("Arial", Font.BOLD, 18));
-        rightPanel.add(offerDrawButton);
-        offerDrawButton.setEnabled(false);
-        offerDrawButton.addActionListener(this);
-        return offerDrawButton;
-    }
-
-    JButton createOfferNewGameBtn() {
-        JButton offerNewGameButton = new JButton("Offer new game");
-        offerNewGameButton.setFont(new Font("Arial", Font.BOLD, 18));
-        rightPanel.add(offerNewGameButton);
-        offerNewGameButton.addActionListener(this);
-        return offerNewGameButton;
-    }
-
-    JButton createResignButton() {
-        resignButton = new JButton("Resign");
-        resignButton.setFont(new java.awt.Font("Arial", Font.BOLD, 18));
-        rightPanel.add(resignButton);
-        resignButton.setEnabled(false);
-        resignButton.addActionListener(this);
-        return resignButton;
-    }
-
-    JPanel createRightPanel() {
-        rightPanel = new JPanel();
-        rightPanel.setBackground(Color.decode("#FFFFCC"));
-        frame.add(rightPanel);
-        rightPanel.setLayout(new GridLayout(3, 0, 0, 20));
-        rightPanel.setBorder(new EmptyBorder(20, 20, 20, 20));
-        return rightPanel;
-    }
-
-    JPanel createUserInfoPanel() {
-        userInfoPanel = new JPanel();
-        userInfoPanel.setBackground(Color.WHITE);
-        userInfoPanel.setLayout(new GridLayout(4, 0, 0, 20));
-        rightPanel.add(userInfoPanel);
-        return userInfoPanel;
-    }
-
-    void newBoardActions() {
-        frame = createFrame();
-        leftPanel = createLeftPanel();
-        rightPanel = createRightPanel();
-        createEmptyBoard();
-        addRedMenToBoardForInitialSetup();
-        addWhiteMenToBoardForInitialSetup();
-        offerNewGameButton = createOfferNewGameBtn();
-        offerDrawButton = createOfferDrawBtn();
-        acceptDrawButton = createAcceptDrawBtn();
-        resignButton = createResignButton();
-        userInfoPanel = createUserInfoPanel();
-        frame.setVisible(true);
-    }
-
-    void messagesToPlayer() {
-        topMessageLabel = new JLabel();
-        topMessageLabel.setFont(messagesFont);
-        middleMessageLabel = new JLabel();
-        middleMessageLabel.setFont(messagesFont);
-        bottomMessageLabel = new JLabel();
-        bottomMessageLabel.setFont(messagesFont);
-        userInfoPanel.add(topMessageLabel);
-        userInfoPanel.add(middleMessageLabel);
-        userInfoPanel.add(bottomMessageLabel);
-        topMessageLabel.setText(bottomLineMessageText);
-        middleMessageLabel.setText(middleLineMessageText);
-        bottomMessageLabel.setText(topLineMessageText);
-    }
-
-    public void setBlank(int col, int row) {
-        GuiSquare.getComponent(square[col][row]).setState(GuiSquareState.EMPTY);
+    public void setSquareBlank(int row, int col) {
+        GuiSquare.getComponent(square[row][col]).setState(GuiSquareState.EMPTY);
     }
 
     public void updateLabels() {
@@ -294,7 +163,146 @@ public class DraughtsBoardGui implements ActionListener {
     public void setMiddleLineMessageText(String middleLineMessageText) {
         this.middleLineMessageText = middleLineMessageText;
     }
+
     public void setTopLineMessageText(String topLineMessageText) {
         this.topLineMessageText = topLineMessageText;
+    }
+
+    void newBoardActions() {
+        createAndConfigureFrame();
+
+        createAndConfigureLeftPanel();
+        createAndConfigureRightPanel();
+
+        createEmptyBoard();
+        addRedMenToBoardForInitialSetup();
+        addWhiteMenToBoardForInitialSetup();
+
+        createAndConfigureButtons();
+
+        frame.setVisible(true);
+    }
+
+    private void createAndConfigureButtons() {
+        createAndConfigureNewGameButton();
+        createAndConfigureOfferDrawButton();
+        createAndConfigureAcceptDrawButton();
+        createAndConfigureResignButton();
+        createAndConfigureInfoPanel();
+        createAndConfigureOfferNewGameButton();
+    }
+
+    void labelSetup() {
+        bottomMessageLabel = new JLabel();
+        bottomMessageLabel.setFont(messagesFont);
+        bottomMessageLabel.setText(topLineMessageText);
+        userInfoPanel.add(bottomMessageLabel);
+
+        middleMessageLabel = new JLabel();
+        middleMessageLabel.setFont(messagesFont);
+        middleMessageLabel.setText(middleLineMessageText);
+        userInfoPanel.add(middleMessageLabel);
+
+        topMessageLabel = new JLabel();
+        topMessageLabel.setFont(messagesFont);
+        topMessageLabel.setText(bottomLineMessageText);
+        userInfoPanel.add(topMessageLabel);
+    }
+
+    private void createAndConfigureAcceptDrawButton() {
+        acceptDrawButton = new JButton("Accept draw");
+        acceptDrawButton.setFont(new Font("Arial", Font.BOLD, 18));
+        rightPanel.add(acceptDrawButton);
+        acceptDrawButton.setEnabled(false);
+        acceptDrawButton.addActionListener(this);
+    }
+
+
+    private void createEmptyBoard() {
+        leftPanel.setLayout(new GridLayout(8, 8));
+        for (int row = 0; row < 8; row++) {
+            for (int col = 0; col < 8; col++) {
+                square[row][col] = new JButton();
+                square[row][col].addActionListener(this);
+                leftPanel.add(square[row][col]);
+                if (((row + col) % 2) != 0) {
+                    square[row][col].setBackground(Color.BLACK);
+                    square[row][col].setOpaque(true);
+                } else {
+                    square[row][col].setBackground(Color.WHITE);
+                    square[row][col].setOpaque(true);
+                }
+                square[row][col].add(new GuiSquare(GuiSquareState.EMPTY));
+            }
+        }
+    }
+
+    private void createAndConfigureFrame() {
+        try {
+            UIManager.setLookAndFeel(UIManager.getCrossPlatformLookAndFeelClassName());
+        } catch (Exception e) {
+            log.error(e.getMessage());
+        }
+        frame = new JFrame("English Draughts Game");
+        frame.setDefaultCloseOperation(WindowConstants.HIDE_ON_CLOSE);
+        frame.setSize(1000, 500);
+        frame.setLayout(new GridLayout(0, 2));
+        frame.addWindowListener(new WindowAdapter() {
+            @Override
+            public void windowClosing(WindowEvent e) {
+                controller.exitDueToThisClientGuiClose();
+            }
+        });
+    }
+
+    private void createAndConfigureLeftPanel() {
+        leftPanel = new JPanel();
+        leftPanel.setBackground(Color.BLACK);
+        frame.add(leftPanel);
+    }
+
+    private void createAndConfigureOfferDrawButton() {
+        offerDrawButton = new JButton("Offer draw");
+        offerDrawButton.setFont(new Font("Arial", Font.BOLD, 18));
+        rightPanel.add(offerDrawButton);
+        offerDrawButton.setEnabled(false);
+        offerDrawButton.addActionListener(this);
+    }
+
+    private void createAndConfigureNewGameButton() {
+        JButton offerNewGameButton = new JButton("Offer new game");
+        offerNewGameButton.setFont(new Font("Arial", Font.BOLD, 18));
+        rightPanel.add(offerNewGameButton);
+        offerNewGameButton.addActionListener(this);
+    }
+
+    private void createAndConfigureResignButton() {
+        resignButton = new JButton("Resign");
+        resignButton.setFont(new java.awt.Font("Arial", Font.BOLD, 18));
+        rightPanel.add(resignButton);
+        resignButton.setEnabled(false);
+        resignButton.addActionListener(this);
+    }
+
+    private void createAndConfigureRightPanel() {
+        rightPanel = new JPanel();
+        rightPanel.setBackground(Color.decode("#FFFFCC"));
+        frame.add(rightPanel);
+        rightPanel.setLayout(new GridLayout(3, 0, 0, 20));
+        rightPanel.setBorder(new EmptyBorder(20, 20, 20, 20));
+    }
+
+    private void createAndConfigureInfoPanel() {
+        userInfoPanel = new JPanel();
+        userInfoPanel.setBackground(Color.WHITE);
+        userInfoPanel.setLayout(new GridLayout(4, 0, 0, 20));
+        rightPanel.add(userInfoPanel);
+    }
+
+    private void createAndConfigureOfferNewGameButton() {
+        JButton offerNewGameButton = new JButton("Offer new game");
+        offerNewGameButton.setFont(new java.awt.Font("Arial", Font.BOLD, 18));
+        rightPanel.add(offerNewGameButton);
+        offerNewGameButton.addActionListener(this);
     }
 }
