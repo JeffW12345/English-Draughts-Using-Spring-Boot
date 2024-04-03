@@ -8,12 +8,12 @@ public class BoardUpdateController {
         this.masterController = controller;
     }
     public void updateBoardChangeOfTurn(ServerMessageToClient message) {
-        masterController.getView().repaintBoard(message.getGame().getCurrentBoard());
+        masterController.getView().repaintBoard(message.getBoard());
         masterController.changeTurns();
         //TODO - Message
     }
     public void updateBoardSameTurn(ServerMessageToClient message) {
-        masterController.getView().repaintBoard(message.getGame().getCurrentBoard());
+        masterController.getView().repaintBoard(message.getBoard());
         // TODO - Message
 
     }

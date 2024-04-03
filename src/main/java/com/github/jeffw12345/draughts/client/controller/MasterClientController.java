@@ -167,6 +167,7 @@ public class MasterClientController {
 
     public void exitDueToThisClientGuiClose() {
         client.getClientMessagingService()
-                .tellServerClientExitedThenCloseSession(client.getClientId(), "Exiting as other player has closed their window");
+                .tellServerClientExitedThenCloseSession
+                        (client.getClientId(), "Exiting as other player has closed their window");
     }
 }

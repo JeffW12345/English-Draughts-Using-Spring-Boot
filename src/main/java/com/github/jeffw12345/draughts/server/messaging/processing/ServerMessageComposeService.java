@@ -2,9 +2,6 @@ package com.github.jeffw12345.draughts.server.messaging.processing;
 
 import com.github.jeffw12345.draughts.models.game.Board;
 import com.github.jeffw12345.draughts.models.game.Colour;
-import com.github.jeffw12345.draughts.models.game.Game;
-import com.github.jeffw12345.draughts.server.mapping.ClientIdToGameMapping;
-import com.github.jeffw12345.draughts.server.messaging.io.ServerMessagingUtility;
 
 public class ServerMessageComposeService {
 

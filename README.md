@@ -9,6 +9,13 @@ The server runs a Spring Boot server. The client instances send messages to that
 library. The application code does not actively listen for messages to the clients - instead, they are received on a
 push basis, with the listening being handled by the library code.
 
+The server is able to send messages to either one of the Client objects relating to a game, or to both of them, in 
+response to a message from either client. This is possible because:
+
+- Server-side mappings are used such that, if the id of one of the Client objects is known, the id of the other Client 
+object can be determined. 
+- Mapping is also in place to make it so that, if the server knows a client's id, the relevant Session object used for 
+communication between that client and the server can be obtained. 
 
 RUNNING INSTRUCTIONS
 ====================
@@ -193,7 +200,28 @@ Messages are converted to JSON, and then sent to the server using the ClientMess
 
 When the server sends a message to a client, it creates a ServerMessageToClient object (which is later rendered into
 JSON). The ServerMessageToClient object contains a ServerToClientMessageType attribute, which is an enum representing
-the message type. 
+the message type, that tells the client the purpose of the message. These are the enum constants: 
+
+    ASSIGN_RED_COLOUR
+    ASSIGN_WHITE_COLOUR
+    UPDATE_BOARD_SAME_TURN
+    UPDATE_BOARD_CHANGE_OF_TURN
+    DECLINE_MOVE
+    INFORM_RED_IS_WINNER
+    INFORM_WHITE_IS_WINNER
+    INFORM_OF_DRAW_ACCEPTED
+    INFORM_OTHER_PLAYER_RESIGNED
+    INFORM_DRAW_OFFER_MADE
+    INFORM_OTHER_CLIENT_CLOSED_WINDOW
+
+The message is encoded in JSON format before being sent to the client. 
+
+The ServerMessageComposeService class contains methods that produce messages for one or both clients taking part in a 
+(as applicable), covering the scenarios described by the enums above. The client knows that the game is starting when 
+it receives a notification containing 'ASSIGN_RED_COLOUR' or 'ASSIGN_WHITE_COLOUR'. 
+
+Some of the communications contain a Board object, to enable the client GUIs to be updated. 
+
 
 
 
