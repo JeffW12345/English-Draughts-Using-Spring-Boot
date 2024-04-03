@@ -12,34 +12,33 @@ import com.github.jeffw12345.draughts.server.mapping.ClientIdToSessionMapping;
 import com.github.jeffw12345.draughts.models.messaging.ClientMessageToServer;
 import com.github.jeffw12345.draughts.models.messaging.ClientToServerMessageType;
 import com.github.jeffw12345.draughts.server.mapping.PlayerIdToGameMapping;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 public class ServerMessageController {
-    public static void processMessageFromClient(ClientMessageToServer clientRequestToServer) {
-        ClientToServerMessageType clientToServerRequestType= clientRequestToServer.getRequestType();
+    public static void processClientRequest(ClientMessageToServer clientRequestToServer) {
+        ClientToServerMessageType clientToServerRequestType = clientRequestToServer.getRequestType();
+        String requestingClientId = clientRequestToServer.getClientId();
         switch (clientToServerRequestType) {
             case WANT_GAME:
-                wantGameActions(clientRequestToServer);
+                wantGameActions(requestingClientId);
                 break;
             case MOVE_REQUEST:
-                moveRequestActions(clientRequestToServer);
+                Move move = clientRequestToServer.getMove();
+                Colour playerColour = clientRequestToServer.getColourOfClientPlayer();
+                moveRequestActions(requestingClientId, move, playerColour);
                 break;
             case DRAW_OFFER:
-                drawOfferActions(clientRequestToServer);
+                ServerMessageComposeService.tellOtherClientDrawAOffered(requestingClientId);
                 break;
             case DRAW_ACCEPT:
-                drawAcceptActions(clientRequestToServer);
+                ServerMessageComposeService.tellOtherClientDrawAccepted(requestingClientId);
                 break;
             case RESIGN:
-                resignationActions(clientRequestToServer);
-                break;
-            case ACCEPT_GAME:
-                acceptGameActions(clientRequestToServer);
+                ServerMessageComposeService.informOtherClientOfResignation(requestingClientId);
                 break;
             case EXIT:
-                exitActions(clientRequestToServer);
-                break;
-            case CHECK_FOR_UPDATE:
-                checkForUpdateActions(clientRequestToServer);
+                exitActions(clientRequestToServer, requestingClientId);
                 break;
             case ESTABLISH_SESSION:
                 establishConnectionActions(clientRequestToServer);
@@ -53,38 +52,20 @@ public class ServerMessageController {
         ClientIdToSessionMapping.add(clientRequestToServer.getClientId(),
                 clientRequestToServer.getClient().getClientMessagingService().getSession());
     }
-
-    private static void checkForUpdateActions(ClientMessageToServer clientRequestToServer) {
+    private static void exitActions(ClientMessageToServer clientRequestToServer, String requestingClientId) {
+        String reasonForClosingSession = clientRequestToServer.getInformation();
+        ServerMessageComposeService.tellOtherClientAboutShutDown(requestingClientId, reasonForClosingSession);
     }
-    private static void exitActions(ClientMessageToServer clientRequestToServer) {
-    }
-
-    private static void acceptGameActions(ClientMessageToServer clientRequestToServer) {
-    }
-
-    private static void resignationActions(ClientMessageToServer clientRequestToServer) {
-    }
-
-    private static void drawAcceptActions(ClientMessageToServer clientRequestToServer) {
-    }
-
-    private static void drawOfferActions(ClientMessageToServer clientRequestToServer) {
-    }
-
-    private static void moveRequestActions(ClientMessageToServer clientRequestToServer) {
-        String clientId = clientRequestToServer.getClientId();
-        Game game = ClientIdToGameMapping.getGameForClientId(clientId);
-        Move move = clientRequestToServer.getMove();
-        Colour playerColour = clientRequestToServer.getColourOfClientPlayer();
+    private static void moveRequestActions(String requestingClientId, Move move, Colour playerColour) {
+        Game game = ClientIdToGameMapping.getGameForClientId(requestingClientId);
 
         game.addMove(move, playerColour);
 
         boolean isMoveLegal = MoveValidationService.isMoveLegal(game, move);
-        if(isMoveLegal){
-            legalMoveActions(game, move, clientId, playerColour);
-        }
-        if (!isMoveLegal){
-            illegalMoveActions(move, clientRequestToServer);
+        if (isMoveLegal){
+            legalMoveActions(game, move, requestingClientId, playerColour);
+        } else {
+            illegalMoveActions(move, requestingClientId);
         }
     }
 
@@ -94,9 +75,9 @@ public class ServerMessageController {
         Board board = game.getCurrentBoard();
         board.updateForCompletedMove(move);
 
-        if(PostMoveCheckService.isTurnOngoing(game, move)){
+        if (PostMoveCheckService.isTurnOngoing(game, move)){
             ServerMessageComposeService.informClientsOfNewBoardAndThatTurnOngoing(clientId, board);
-        }else{
+        } else {
             boolean hasMoveResultedInWin = PostMoveCheckService.isWinForColour(playerColour, board);
             if (hasMoveResultedInWin){
                 ServerMessageComposeService.informClientsOfNewBoardAndThatGameWon(clientId, board, playerColour);
@@ -107,19 +88,18 @@ public class ServerMessageController {
         }
     }
 
-    private static void illegalMoveActions(Move move, ClientMessageToServer server) {
+    private static void illegalMoveActions(Move move, String clientId) {
         move.moveProcessedUpdate(MoveStatus.ILLEGAL);
-        ServerMessageComposeService.informClientThatMoveIllegal(server.getClientId());
+        ServerMessageComposeService.informClientThatMoveIllegal(clientId);
     }
 
-    private static void wantGameActions(ClientMessageToServer clientRequestToServer) {
-        String clientId = clientRequestToServer.getClient().getClientId();
+    private static void wantGameActions(String requestingClientId) {
         if (ClientsAwaitingAGame.atLeastOnePlayerSeekingGame()){
             String otherClientId = ClientsAwaitingAGame.pop();
-            newGameSetup(clientId, otherClientId);
+            newGameSetup(requestingClientId, otherClientId);
         }
         else{
-            ClientsAwaitingAGame.addClientId(clientId);
+            ClientsAwaitingAGame.addClientId(requestingClientId);
         }
     }
 

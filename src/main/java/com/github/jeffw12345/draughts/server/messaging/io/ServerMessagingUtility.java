@@ -2,8 +2,10 @@ package com.github.jeffw12345.draughts.server.messaging.io;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.github.jeffw12345.draughts.models.game.Game;
 import com.github.jeffw12345.draughts.models.messaging.ClientMessageToServer;
 import com.github.jeffw12345.draughts.models.messaging.ServerMessageToClient;
+import com.github.jeffw12345.draughts.server.mapping.ClientIdToGameMapping;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
@@ -31,5 +33,10 @@ public class ServerMessagingUtility {
             log.error(jsonProcessingException.getMessage()); //TODO - Code to exit gracefully
         }
         return message;
+    }
+
+    public static String getOtherClientIdForGame(String thisClientId){
+        Game game = ClientIdToGameMapping.getGameForClientId(thisClientId);
+        return game.getOtherClientId(thisClientId);
     }
 }

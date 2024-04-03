@@ -41,13 +41,7 @@ public class ServerMessagingOutboundService {
     }
 
     public static synchronized void messageOtherClientInGame(String json, String thisClient){
-        Game game = ClientIdToGameMapping.getGameForClientId(thisClient);
-        String otherClientId = ClientIdToGameMapping.getClientIdsForGame(game)
-                .stream()
-                .filter(clientId -> clientId != thisClient)
-                .toList()
-                .get(0);
-
+        String otherClientId = ServerMessagingUtility.getOtherClientIdForGame(thisClient);
         sendJsonMessage(json, otherClientId);
     }
 }

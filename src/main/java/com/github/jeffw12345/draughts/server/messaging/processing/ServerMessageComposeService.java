@@ -2,6 +2,9 @@ package com.github.jeffw12345.draughts.server.messaging.processing;
 
 import com.github.jeffw12345.draughts.models.game.Board;
 import com.github.jeffw12345.draughts.models.game.Colour;
+import com.github.jeffw12345.draughts.models.game.Game;
+import com.github.jeffw12345.draughts.server.mapping.ClientIdToGameMapping;
+import com.github.jeffw12345.draughts.server.messaging.io.ServerMessagingUtility;
 
 public class ServerMessageComposeService {
 
@@ -17,5 +20,19 @@ public class ServerMessageComposeService {
     }
 
     public static void informClientThatMoveIllegal(String clientId) {
+    }
+
+    public static void tellOtherClientAboutShutDown(String requestingClientId, String message){
+        //String otherClientId = ServerMessagingUtility.getOtherClientIdForGame(requestingClientId);
+
+    }
+
+    public static void informOtherClientOfResignation(String id) {
+    }
+
+    public static void tellOtherClientDrawAccepted(String id) {
+    }
+
+    public static void tellOtherClientDrawAOffered(String id) {
     }
 }

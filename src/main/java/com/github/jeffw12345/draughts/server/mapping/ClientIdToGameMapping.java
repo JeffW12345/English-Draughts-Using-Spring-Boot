@@ -23,4 +23,5 @@ public class ClientIdToGameMapping {
                 .map(Map.Entry::getKey)
                 .collect(Collectors.toList());
     }
+
 }

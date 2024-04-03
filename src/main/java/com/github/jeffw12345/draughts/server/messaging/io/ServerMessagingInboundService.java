@@ -35,7 +35,7 @@ public class ServerMessagingInboundService {
 
         updateClientIdToSessionDictionary(messageFromClient);
 
-        ServerMessageController.processMessageFromClient(messageFromClient);
+        ServerMessageController.processClientRequest(messageFromClient);
     }
 
     private static void updateClientIdToSessionDictionary(ClientMessageToServer message) {

@@ -18,4 +18,5 @@ public class ClientMessageToServer {
     private String sessionId;
     private Move move;
     private Colour colourOfClientPlayer;
+    private String information;
 }

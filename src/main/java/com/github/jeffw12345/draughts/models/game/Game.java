@@ -1,9 +1,11 @@
 package com.github.jeffw12345.draughts.models.game;
 
 import com.github.jeffw12345.draughts.models.game.move.Move;
+import com.github.jeffw12345.draughts.server.mapping.ClientIdToGameMapping;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentLinkedDeque;
 
@@ -94,6 +96,17 @@ public class Game {
             }
         }
         return Colour.WHITE;
+    }
+
+    public List<String> getClientIds(){
+        return ClientIdToGameMapping.getClientIdsForGame(this);
+    }
+
+    public String getOtherClientId(String aClientId){
+        return getClientIds().stream()
+                .filter(clientId -> !clientId.equals(aClientId))
+                .findFirst()
+                .orElse(null);
     }
 
     public Colour getColourOfPlayerWhoseTurnItIs() {
