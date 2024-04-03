@@ -114,7 +114,7 @@ public class MasterClientController {
     }
     public void changeTurns() {
         isRedsTurn = !isRedsTurn;
-        drawController.drawOfferExpiryActions();
+        guiMessageController.turnOverMessage();
     }
 
     public void offerNewGameButtonPressed() {

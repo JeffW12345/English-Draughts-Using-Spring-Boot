@@ -94,10 +94,10 @@ public class GuiMessageController {
         view.updateLabels();
     }
 
-    void ifDrawOfferAcceptedByOtherClientMessage() {
-        view.setTopLineMessageText("Your offer was accepted!");
+    void ifDrawOfferAcceptedMessage() {
+        view.setTopLineMessageText("The draw offer was accepted.");
         view.setMiddleLineMessageText("It's a draw.");
-        view.setBottomLineMessageText("");
+        view.setBottomLineMessageText("Game over.");
         view.updateLabels();
     }
 

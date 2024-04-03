@@ -8,17 +8,11 @@ public class DrawController {
     }
 
     public void drawOfferAcceptedViewUpdate() {
-        // Implementation
+        masterController.getGuiMessageController().ifDrawOfferAcceptedMessage();
+        // TODO - Set panels blank
     }
 
     public void ifDrawOfferMadeByOtherClient() {
         // Implementation
-    }
-
-    public void drawOfferExpiryActions() {
-        // Implementation
-    }
-
-    public void stalemateActions() {
     }
 }
