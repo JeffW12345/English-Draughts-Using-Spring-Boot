@@ -9,13 +9,13 @@ public class ServerMessageComposeService {
         //TODO
     }
 
-    public static void informClientsOfNewBoardAndThatTurnFinished(String id, Board board) {
+    public static void informClientsOfNewBoardAndThatTurnFinished(String clientId, Board board) {
         //TODO
     }
 
-    public static void informClientsOfNewBoardAndThatGameWon(String id, Board board, Colour colour) {
+    public static void informClientsOfNewBoardAndThatGameWon(String clientId, Board board, Colour colour) {
     }
 
-    public static void informClientThatMoveIllegal(String id) {
+    public static void informClientThatMoveIllegal(String clientId) {
     }
 }

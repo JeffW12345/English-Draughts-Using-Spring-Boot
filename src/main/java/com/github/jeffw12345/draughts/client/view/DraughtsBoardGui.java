@@ -151,7 +151,7 @@ public class DraughtsBoardGui implements ActionListener {
 
     JButton createAcceptDrawBtn() {
         acceptDrawButton = new JButton("Accept draw");
-        acceptDrawButton.setFont(new java.awt.Font("Arial", Font.BOLD, 18));
+        acceptDrawButton.setFont(new Font("Arial", Font.BOLD, 18));
         rightPanel.add(acceptDrawButton);
         acceptDrawButton.setEnabled(false);
         acceptDrawButton.addActionListener(this);
@@ -191,9 +191,7 @@ public class DraughtsBoardGui implements ActionListener {
         frame.addWindowListener(new WindowAdapter() {
             @Override
             public void windowClosing(WindowEvent e) {
-                //TODO - Add method to send a message to the server.
-                log.warn("Exiting as a player has closed their window");
-                System.exit(1);
+                controller.exitApplication("Exiting as a player has closed their window");
             }
         });
         return frame;
@@ -208,7 +206,7 @@ public class DraughtsBoardGui implements ActionListener {
 
     JButton createOfferDrawBtn() {
         offerDrawButton = new JButton("Offer draw");
-        offerDrawButton.setFont(new java.awt.Font("Arial", Font.BOLD, 18));
+        offerDrawButton.setFont(new Font("Arial", Font.BOLD, 18));
         rightPanel.add(offerDrawButton);
         offerDrawButton.setEnabled(false);
         offerDrawButton.addActionListener(this);
@@ -217,7 +215,7 @@ public class DraughtsBoardGui implements ActionListener {
 
     JButton createOfferNewGameBtn() {
         JButton offerNewGameButton = new JButton("Offer new game");
-        offerNewGameButton.setFont(new java.awt.Font("Arial", Font.BOLD, 18));
+        offerNewGameButton.setFont(new Font("Arial", Font.BOLD, 18));
         rightPanel.add(offerNewGameButton);
         offerNewGameButton.addActionListener(this);
         return offerNewGameButton;

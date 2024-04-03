@@ -8,10 +8,10 @@ public class GuiMessageController {
     DraughtsBoardGui view;
     boolean amIRed;
     boolean isRedsTurn;
-    public GuiMessageController(MasterClientController client){
-        this.view = client.getView();
-        this.amIRed = client.isAmIRed();
-        this.isRedsTurn = client.isRedsTurn();
+    public GuiMessageController(MasterClientController masterController){
+        this.view = masterController.getView();
+        this.amIRed = masterController.isAmIRed();
+        this.isRedsTurn = masterController.isRedsTurn();
     }
     void ifWhiteLostMessage() {
         if (amIRed) {

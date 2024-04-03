@@ -162,4 +162,8 @@ public class MasterClientController {
             return "You are the white player";
         }
     }
+
+    public void exitApplication(String s) {
+        //TODO
+    }
 }
