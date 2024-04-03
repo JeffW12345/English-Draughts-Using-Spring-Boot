@@ -12,7 +12,7 @@ import lombok.Getter;
 
 import javax.swing.JOptionPane;
 
-@Getter
+@Getter //TODO - Check encapsulation as tight as possible.
 public class MasterClientController {
     private final Client client;
     private final DraughtsBoardGui view = new DraughtsBoardGui(this);
@@ -119,7 +119,7 @@ public class MasterClientController {
         view.getOfferNewGameButton().setEnabled(false);
         guiMessageController.offerNewGameButtonPressedMessage();
 
-        client.getClientMessagingService().sendOfferNewGameRequest(client);
+        client.getClientMessagingService().sendOfferNewGameRequest(client.getClientId());
     }
 
     public void acceptDrawButtonPressed() {
@@ -128,14 +128,14 @@ public class MasterClientController {
         gameInProgress = false;
         guiMessageController.acceptDrawButtonPressedMessage();
 
-        client.getClientMessagingService().sendDrawOfferAcceptance(client);
+        client.getClientMessagingService().sendDrawOfferAcceptance(client.getClientId());
     }
 
     public void offerDrawButtonPressed() {
         view.getOfferDrawButton().setEnabled(false);
         drawController.drawOfferSentPending = true;
         guiMessageController.offerDrawButtonPressedMessage();
-        client.getClientMessagingService().sendDrawOfferProposal(client);
+        client.getClientMessagingService().sendDrawOfferProposal(client.getClientId());
     }
 
     public void resignButtonPressed() {
@@ -146,7 +146,7 @@ public class MasterClientController {
         gameInProgress = false;
         guiMessageController.resignButtonPressedMessage();
 
-        client.getClientMessagingService().sendResignation(client);
+        client.getClientMessagingService().sendResignation(client.getClientId());
     }
 
     public void setWelcomeMessage() {
@@ -163,7 +163,8 @@ public class MasterClientController {
         }
     }
 
-    public void exitApplication(String s) {
-        //TODO
+    public void exitDueToGuiClose() {
+
+        client.getClientMessagingService().tellServerExited(client.getClientId(), "Exiting as a player has closed their window");
     }
 }

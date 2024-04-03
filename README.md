@@ -5,8 +5,10 @@ This app allows two clients on the same host allow two users to play English dra
 also running locally. It is a revised and improved version of a project I did at university - 
 https://github.com/JeffW12345/EnglishDraughts. 
 
-The app uses the Model View Controller paradigm, and uses Spring Boot's WebSocket library to achieve push-based
-communications between the clients and the server.
+The server runs a Spring Boot server. The client instances send messages to that server using the Jakarta WebSocket
+library. The application code does not actively listen for messages to the clients - instead, they are received on a
+push basis, with the listening being handled by the library code.
+
 
 RUNNING INSTRUCTIONS
 ====================
@@ -59,7 +61,8 @@ SEQUENCE OF EVENTS
 
 ## Prior to requesting a game
 
-Two Client objects are created. For each Client, the following takes place:
+The DraughtsApplication class creates a Spring Boot server instance, and then creates two Client objects, each on a 
+separate thread. For each Client object, the following takes place:
 
 - The Client object gives itself a uuid as an id.
 
@@ -140,3 +143,56 @@ cancelled once the next move has been made, and the GUIs are updated accordingly
 **Resign** If a player resigns, the server is informed, and it informs the other client. The game is then over.
 
 The server checks if moves are legal and promotes men to kings where required.
+
+COMMUNICATIONS PROTOCOL
+=======================
+
+## A. Client sending messages
+
+When a client needs to send a message to a client, it is first created as an object of type ClientMessageToServer. This
+class contains an attribute of type ClientMessageToServer. This class is an enum class with the following attributes, 
+which describe the type of request being made: 
+
+WANT_GAME, MOVE_REQUEST, DRAW_OFFER, DRAW_ACCEPT, RESIGN, EXIT, ESTABLISH_SESSION
+
+The ClientMessageToServer also contains other instance variables, such as a Move object, which will be null if they are
+not relevant to the particular message being sent. 
+
+A ClientMessageToServer object is created for the following types of requests: 
+
+**Establishing an initial connection with the server** In order for a message exchanges to take place, the client needs 
+to set up a session with the server. It does so using the establishSession() method in ClientMessageDispatchService.
+The ClientMessageToServer object contains the id of the Session object used to make the connection request. This is so 
+that the server can map the client id to the relevant session object when making outbound communications with this
+client (as the Session object on the client and server sides for a communications session has the same id).
+
+The ClientMessageToServer object also contains a String attribute containing the Client id as a String and a 
+ClientMessageToServer constant of 'ESTABLISH_SESSION'.
+
+**Game requests**. The object contains String attribute containing the Client id as a String and a ClientMessageToServer 
+constant of 'WANT_GAME'. 
+
+**Move requests** The object incorporates the Client id (as a String), a Move object, a Colour object (representing the
+player's colour) and a ClientMessageToServer constant of MOVE_REQUEST.
+
+**Draw offers** The object contains String attribute containing the Client id as a String and a ClientMessageToServer
+constant of 'DRAW_OFFER'.
+
+**Draw acceptance** The object contains String attribute containing the Client id as a String and a ClientMessageToServer
+constant of 'DRAW_ACCEPT'.
+
+**Resignation** The object contains String attribute containing the Client id relating to the resigning player as a 
+String and a ClientMessageToServer constant of 'RESIGN'.
+
+**Exiting the game** When a client closes their GUI, this results in a message being sent from that client to the server,
+which sends a message to the other client to get it to shut down. In this instance, the client with the window being 
+closed sends a message to the server, using a ClientMessageToServer object with a ClientMessageToServer constant of 
+'EXIT', a String called 'Information' with a message about the exit, and the client id as a String. 
+
+Messages are converted to JSON, and then sent to the server using the ClientMessageDispatchService class. 
+
+## B. Server sending messages
+
+
+
+

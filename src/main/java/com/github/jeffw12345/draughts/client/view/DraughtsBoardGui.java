@@ -191,7 +191,7 @@ public class DraughtsBoardGui implements ActionListener {
         frame.addWindowListener(new WindowAdapter() {
             @Override
             public void windowClosing(WindowEvent e) {
-                controller.exitApplication("Exiting as a player has closed their window");
+                controller.exitDueToGuiClose();
             }
         });
         return frame;

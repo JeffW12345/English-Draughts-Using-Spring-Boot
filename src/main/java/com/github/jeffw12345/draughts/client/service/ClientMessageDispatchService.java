@@ -17,19 +17,23 @@ import lombok.extern.slf4j.Slf4j;
 
 import java.net.URI;
 
+import static com.github.jeffw12345.draughts.models.messaging.ClientToServerMessageType.DRAW_ACCEPT;
+import static com.github.jeffw12345.draughts.models.messaging.ClientToServerMessageType.DRAW_OFFER;
 import static com.github.jeffw12345.draughts.models.messaging.ClientToServerMessageType.ESTABLISH_SESSION;
+import static com.github.jeffw12345.draughts.models.messaging.ClientToServerMessageType.EXIT;
 import static com.github.jeffw12345.draughts.models.messaging.ClientToServerMessageType.MOVE_REQUEST;
+import static com.github.jeffw12345.draughts.models.messaging.ClientToServerMessageType.RESIGN;
 import static com.github.jeffw12345.draughts.models.messaging.ClientToServerMessageType.WANT_GAME;
 
 @ClientEndpoint
 @Slf4j
 @Getter
-public class ClientMessagingService {
+public class ClientMessageDispatchService {
     private Session session;
     private final Client client;
     private String sessionId;
 
-    public ClientMessagingService(Client client) {
+    public ClientMessageDispatchService(Client client) {
         this.client = client;
     }
 
@@ -49,13 +53,13 @@ public class ClientMessagingService {
             log.error(jsonProcessingException.getMessage());}
     }
 
-    public void sendMessageToServer(String message) {
+    public void sendJsonMessageToServer(String jsonMessage) {
         if (session != null && session.isOpen()) {
-            session.getAsyncRemote().sendText(message);
+            session.getAsyncRemote().sendText(jsonMessage);
         }
     }
 
-    public void sendMessageToServer(ClientMessageToServer messageAsObject) {
+    public void convertMessageToJSONThenSendToServer(ClientMessageToServer messageAsObject) {
         String messageAsJSON = ClientMessagingUtility.convertClientMessageToJSON(messageAsObject);
         if (session != null && session.isOpen()) {
             session.getAsyncRemote().sendText(messageAsJSON);
@@ -71,28 +75,43 @@ public class ClientMessagingService {
                 .requestType(MOVE_REQUEST)
                 .build();
 
-        sendMessageToServer(moveRequest);
+        convertMessageToJSONThenSendToServer(moveRequest);
     }
 
-    public void sendOfferNewGameRequest(Client client){
+    public void sendOfferNewGameRequest(String clientId){
         ClientMessageToServer requestForGame = ClientMessageToServer.builder()
-                .client(client)
+                .clientId(clientId)
                 .requestType(WANT_GAME)
                 .build();
 
-        sendMessageToServer(requestForGame);
+        convertMessageToJSONThenSendToServer(requestForGame);
     }
 
-    public void sendDrawOfferAcceptance(Client client){
-        //TODO
+    public void sendDrawOfferAcceptance(String clientId){
+        ClientMessageToServer requestForGame = ClientMessageToServer.builder()
+                .clientId(clientId)
+                .requestType(DRAW_ACCEPT)
+                .build();
+
+        convertMessageToJSONThenSendToServer(requestForGame);
     }
 
-    public void sendDrawOfferProposal(Client client){
-        //TODO
+    public void sendDrawOfferProposal(String clientId){
+        ClientMessageToServer requestForGame = ClientMessageToServer.builder()
+                .clientId(clientId)
+                .requestType(DRAW_OFFER)
+                .build();
+
+        convertMessageToJSONThenSendToServer(requestForGame);
     }
 
-    public void sendResignation(Client client){
-        //TODO
+    public void sendResignation(String resigningClientId){
+        ClientMessageToServer requestForGame = ClientMessageToServer.builder()
+                .clientId(resigningClientId)
+                .requestType(RESIGN)
+                .build();
+
+        convertMessageToJSONThenSendToServer(requestForGame);
     }
 
     public void establishSession() {
@@ -106,11 +125,19 @@ public class ClientMessagingService {
                     .requestType(ESTABLISH_SESSION)
                     .build();
 
-            String connectionMessage = ClientMessagingUtility.convertClientMessageToJSON(clientMessage);
-
-            sendMessageToServer(connectionMessage);
+            convertMessageToJSONThenSendToServer(clientMessage);
         } catch (Exception e) {
             log.error(e.getMessage());
         }
+    }
+
+    public void tellServerExited(String windowClosedClientId, String message) {
+        ClientMessageToServer requestForGame = ClientMessageToServer.builder()
+                .clientId(windowClosedClientId)
+                .requestType(EXIT)
+                .information(message)
+                .build();
+
+        convertMessageToJSONThenSendToServer(requestForGame);
     }
 }
