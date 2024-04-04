@@ -7,8 +7,11 @@ import com.github.jeffw12345.draughts.models.game.Colour;
 import com.github.jeffw12345.draughts.models.game.move.Move;
 import com.github.jeffw12345.draughts.models.messaging.ClientMessageToServer;
 import com.github.jeffw12345.draughts.models.messaging.ServerMessageToClient;
+import com.github.jeffw12345.draughts.server.mapping.ClientIdToSessionMapping;
+import com.github.jeffw12345.draughts.server.mapping.SessionIdToSessionMapping;
 import jakarta.websocket.ClientEndpoint;
 import jakarta.websocket.ContainerProvider;
+import jakarta.websocket.OnClose;
 import jakarta.websocket.OnMessage;
 import jakarta.websocket.OnOpen;
 import jakarta.websocket.Session;
@@ -52,6 +55,11 @@ public class ClientMessageDispatchService {
             client.getClientController().processMessageFromServer(messageFromServer);
         } catch(JsonProcessingException jsonProcessingException){
             log.error(jsonProcessingException.getMessage());}
+    }
+
+    @OnClose
+    public static synchronized void onClose(Session session) {
+        log.info("Session disconnected");
     }
 
     public void sendJsonMessageToServer(String jsonMessage) {
@@ -143,8 +151,9 @@ public class ClientMessageDispatchService {
         closeSession();
     }
 
-    private void closeSession(){
+    public void closeSession(){
         try {
+            log.warn("About to close communication session with server. You will receive a confirmation message.");
             session.close();
         } catch (IOException e) {
             log.error(String.format("Problem closing session: %s", e.getMessage()));

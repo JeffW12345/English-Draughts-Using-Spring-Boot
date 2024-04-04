@@ -7,10 +7,14 @@ import com.github.jeffw12345.draughts.models.game.move.Move;
 import com.github.jeffw12345.draughts.models.messaging.ServerMessageToClient;
 import com.github.jeffw12345.draughts.models.messaging.ServerToClientMessageType;
 import lombok.Getter;
+import lombok.extern.slf4j.Slf4j;
 
 import javax.swing.JOptionPane;
+import java.awt.event.WindowEvent;
 
-@Getter //TODO - Check encapsulation as tight as possible.
+@Getter
+@Slf4j
+//TODO - Check encapsulation as tight as possible.
 public class MasterClientController {
     private final Client client;
     private final DraughtsBoardGui view = new DraughtsBoardGui(this);
@@ -75,7 +79,9 @@ public class MasterClientController {
     }
 
     private void otherClientClosedGuiActions() {
-        //TODO
+        log.warn("Shutting down as your opponent closed their window");
+        view.getFrame().dispatchEvent(new WindowEvent(view.getFrame(), WindowEvent.WINDOW_CLOSING));
+        client.getClientMessagingService().closeSession();
     }
 
     void gameOverActions(){

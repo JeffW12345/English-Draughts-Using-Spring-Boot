@@ -6,5 +6,6 @@ public enum GameStatus {
     WHITE_VICTORY,
     ABANDONED,
     AGREED_DRAW,
+    TERMINATED_BY_WINDOW_CLOSE,
     AWAITING_NEW_GAME
 }
