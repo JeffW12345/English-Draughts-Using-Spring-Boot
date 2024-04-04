@@ -2,6 +2,7 @@ package com.github.jeffw12345.draughts.client.view;
 
 import com.github.jeffw12345.draughts.client.controller.DrawController;
 import com.github.jeffw12345.draughts.client.controller.MasterClientController;
+import com.github.jeffw12345.draughts.client.controller.WinLossController;
 import com.github.jeffw12345.draughts.models.game.Board;
 import com.github.jeffw12345.draughts.models.game.SquareContent;
 import lombok.Getter;
@@ -27,11 +28,12 @@ public class DraughtsBoardGui implements ActionListener {
     private String bottomLineMessageText, middleLineMessageText, topLineMessageText;
     private final MasterClientController controller;
     private final DrawController drawController;
+    private final WinLossController winLossController;
 
     public DraughtsBoardGui(MasterClientController controller) {
-
         this.controller = controller;
         this.drawController = controller.getDrawController();
+        this.winLossController = controller.getWinLossController();
     }
 
     public void setUp() {
@@ -54,7 +56,7 @@ public class DraughtsBoardGui implements ActionListener {
                     } else if (e.getSource() == acceptDrawButton) {
                         drawController.acceptDrawButtonPressed();
                     } else if (e.getSource() == resignButton) {
-                        controller.resignButtonPressed();
+                        winLossController.resignButtonPressed();
                     }
                     return null;
                 }

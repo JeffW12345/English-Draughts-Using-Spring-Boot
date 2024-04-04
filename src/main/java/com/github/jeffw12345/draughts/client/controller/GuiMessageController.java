@@ -180,4 +180,5 @@ public class GuiMessageController {
         view.setBottomLineMessageText("");
         view.updateLabels();
     }
+
 }

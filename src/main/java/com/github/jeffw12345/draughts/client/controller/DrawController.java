@@ -2,7 +2,6 @@ package com.github.jeffw12345.draughts.client.controller;
 
 import com.github.jeffw12345.draughts.client.service.ClientMessageDispatchService;
 import com.github.jeffw12345.draughts.client.view.DraughtsBoardGui;
-import lombok.Setter;
 
 public class DrawController {
     private final MasterClientController masterController;

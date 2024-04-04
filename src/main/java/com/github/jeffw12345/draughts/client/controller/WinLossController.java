@@ -1,34 +1,40 @@
 package com.github.jeffw12345.draughts.client.controller;
 
+import com.github.jeffw12345.draughts.client.service.ClientMessageDispatchService;
 import com.github.jeffw12345.draughts.models.game.Colour;
 
 public class WinLossController {
-    private MasterClientController controller;
+    private final MasterClientController controller;
+    private final GuiMessageController guiMessageController;
+    private final ClientMessageDispatchService clientMessageDispatchService;
+    private final String clientId;
 
     public WinLossController(MasterClientController controller) {
         this.controller = controller;
-    }
-
-    void winnerActions(Colour winnerColour) {
-        if(winnerColour == Colour.RED){
-            viewUpdateIfWhiteLost();
-        } else{
-            viewUpdateIfRedLost();
-        }
+        this.guiMessageController = controller.getGuiMessageController();
+        this.clientMessageDispatchService = controller.getClient().getClientMessagingService();
+        this.clientId = controller.getClient().getClientId();
     }
 
     public void otherPlayerResignationActions() {
-        // Implementation
+        guiMessageController.ifOtherPlayerResignsMessage();
+        controller.gameOverActions();
     }
 
     public void viewUpdateIfRedLost() {
-        // Implementation
+        guiMessageController.ifRedLostMessage();
+        controller.gameOverActions();
     }
 
     public void viewUpdateIfWhiteLost() {
-        // Implementation
+        guiMessageController.ifWhiteLostMessage();
+        controller.gameOverActions();
     }
 
-    public void resignationActions(Colour white) {
+    public void resignButtonPressed() {
+        guiMessageController.resignButtonPressedMessage();
+        controller.gameOverActions();
+
+        clientMessageDispatchService.sendResignation(clientId);
     }
 }

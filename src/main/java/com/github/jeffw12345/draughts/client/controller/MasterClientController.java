@@ -49,10 +49,10 @@ public class MasterClientController {
                 drawController.drawOfferAcceptedViewUpdate();
                 break;
             case INFORM_RED_IS_WINNER:
-                winLossController.winnerActions(Colour.RED);
+                winLossController.viewUpdateIfWhiteLost();
                 break;
             case INFORM_WHITE_IS_WINNER:
-                winLossController.winnerActions(Colour.WHITE);
+                winLossController.viewUpdateIfRedLost();
                 break;
             case UPDATE_BOARD_CHANGE_OF_TURN:
                 boardUpdateController.updateBoardChangeOfTurn(serverResponseToClient);
@@ -134,16 +134,7 @@ public class MasterClientController {
         client.getClientMessagingService().sendOfferNewGameRequest(client.getClientId());
     }
 
-    public void resignButtonPressed() {
-        view.getOfferNewGameButton().setEnabled(true);
-        view.getAcceptDrawButton().setEnabled(false);
-        view.getResignButton().setEnabled(false);
-        view.getOfferDrawButton().setEnabled(false);
-        gameInProgress = false;
-        guiMessageController.resignButtonPressedMessage();
 
-        client.getClientMessagingService().sendResignation(client.getClientId());
-    }
     public void exitDueToThisClientGuiClose() {
         client.getClientMessagingService()
                 .tellServerClientExitedThenCloseSession
