@@ -1,6 +1,6 @@
 package com.github.jeffw12345.draughts.client.controller;
 
-import com.github.jeffw12345.draughts.client.service.ClientOutboundMessageService;
+import com.github.jeffw12345.draughts.client.io.ClientOutboundMessageService;
 import com.github.jeffw12345.draughts.client.view.DraughtsBoardGui;
 
 public class DrawController {

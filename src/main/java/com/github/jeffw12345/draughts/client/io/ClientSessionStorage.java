@@ -1,4 +1,4 @@
-package com.github.jeffw12345.draughts.client.service;
+package com.github.jeffw12345.draughts.client.io;
 
 import jakarta.websocket.Session;
 public class ClientSessionStorage {

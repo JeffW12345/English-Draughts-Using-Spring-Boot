@@ -2,8 +2,8 @@ package com.github.jeffw12345.draughts.client;
 
 import com.github.jeffw12345.draughts.client.controller.MasterClientController;
 
-import com.github.jeffw12345.draughts.client.service.ClientInboundMessageService;
-import com.github.jeffw12345.draughts.client.service.ClientOutboundMessageService;
+import com.github.jeffw12345.draughts.client.io.ClientInboundMessageService;
+import com.github.jeffw12345.draughts.client.io.ClientOutboundMessageService;
 import lombok.Getter;
 
 import java.util.UUID;
