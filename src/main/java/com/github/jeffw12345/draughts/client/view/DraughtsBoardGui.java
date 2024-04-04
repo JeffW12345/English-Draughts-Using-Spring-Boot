@@ -6,6 +6,7 @@ import com.github.jeffw12345.draughts.client.controller.WinLossController;
 import com.github.jeffw12345.draughts.models.game.Board;
 import com.github.jeffw12345.draughts.models.game.SquareContent;
 import lombok.Getter;
+import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 
 import javax.swing.*;
@@ -15,6 +16,9 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+
+import static com.github.jeffw12345.draughts.client.view.ViewUtils.createJLabel;
+import static com.github.jeffw12345.draughts.client.view.ViewUtils.makeGuiDisplayProperlyOnWindowsAndMacs;
 
 @Slf4j
 @Getter
@@ -27,8 +31,8 @@ public class DraughtsBoardGui implements ActionListener {
     private JPanel leftPanel, rightPanel, userInfoPanel;
     private JButton offerNewGameButton, offerDrawButton, acceptDrawButton, resignButton;
     private final JButton[][] grid = new JButton[8][8];
-    private final Font messagesFont = new Font("Aerial", Font.BOLD, 14);
     private JLabel topMessageLabel, middleMessageLabel, bottomMessageLabel;
+    @Setter
     private String bottomLineMessageText, middleLineMessageText, topLineMessageText;
     private final MasterClientController controller;
     private final DrawController drawController;
@@ -59,7 +63,6 @@ public class DraughtsBoardGui implements ActionListener {
         createAndConfigureButtons();
 
         createAndConfigureInfoPanel();
-        //createAndConfigureInfoPanel();
 
         frame.setVisible(true);
     }
@@ -79,12 +82,18 @@ public class DraughtsBoardGui implements ActionListener {
     }
 
     private void createAndConfigureButtons() {
-        createAndConfigureNewGameButton();
-        createAndConfigureOfferDrawButton();
-        createAndConfigureAcceptDrawButton();
-        createAndConfigureResignButton();
-    }
+        offerNewGameButton = ViewUtils.createButton("Offer new game", true, this);
+        rightPanel.add(offerNewGameButton);
 
+        offerDrawButton = ViewUtils.createButton("Offer draw", false, this);
+        rightPanel.add(offerDrawButton);
+
+        resignButton = ViewUtils.createButton("Accept draw", false, this);
+        rightPanel.add(resignButton);
+
+        resignButton = ViewUtils.createButton("Resign", false, this);
+        rightPanel.add(resignButton);
+    }
 
     private void createAndConfigureFrame() {
         makeGuiDisplayProperlyOnWindowsAndMacs();
@@ -98,15 +107,6 @@ public class DraughtsBoardGui implements ActionListener {
                 //controller.thisClientGuiCloseActions(); TODO - Reinstate when fixed
             }
         });
-    }
-
-
-    private static void makeGuiDisplayProperlyOnWindowsAndMacs() {
-        try {
-            UIManager.setLookAndFeel(UIManager.getCrossPlatformLookAndFeelClassName());
-        } catch (Exception e) {
-            log.error(e.getMessage());
-        }
     }
 
     @Override
@@ -227,44 +227,17 @@ public class DraughtsBoardGui implements ActionListener {
         middleMessageLabel.setText(middleLineMessageText);
         bottomMessageLabel.setText(bottomLineMessageText);
     }
-
-    public void setBottomLineMessageText(String bottomLineMessageText) {
-        this.bottomLineMessageText = bottomLineMessageText;
-    }
-
-    public void setMiddleLineMessageText(String middleLineMessageText) {
-        this.middleLineMessageText = middleLineMessageText;
-    }
-
-    public void setTopLineMessageText(String topLineMessageText) {
-        this.topLineMessageText = topLineMessageText;
-    }
-
     void labelSetup() {
-        bottomMessageLabel = new JLabel();
-        bottomMessageLabel.setFont(messagesFont);
-        bottomMessageLabel.setText(topLineMessageText);
+        Font messagesFont = new Font("Aerial", Font.BOLD, 14);
+        bottomMessageLabel = createJLabel(messagesFont, bottomLineMessageText);
         userInfoPanel.add(bottomMessageLabel);
 
-        middleMessageLabel = new JLabel();
-        middleMessageLabel.setFont(messagesFont);
-        middleMessageLabel.setText(middleLineMessageText);
+        middleMessageLabel = createJLabel(messagesFont, middleLineMessageText);
         userInfoPanel.add(middleMessageLabel);
 
-        topMessageLabel = new JLabel();
-        topMessageLabel.setFont(messagesFont);
-        topMessageLabel.setText(bottomLineMessageText);
+        topMessageLabel = createJLabel(messagesFont, topLineMessageText);
         userInfoPanel.add(topMessageLabel);
     }
-
-    private void createAndConfigureAcceptDrawButton() {
-        acceptDrawButton = new JButton("Accept draw");
-        acceptDrawButton.setFont(new Font("Arial", Font.BOLD, 18));
-        acceptDrawButton.setEnabled(false);
-        acceptDrawButton.addActionListener(this);
-        rightPanel.add(acceptDrawButton);
-    }
-
 
     private void createEmptyBoard() {
         leftPanel.setLayout(new GridLayout(8, 8));
@@ -285,36 +258,10 @@ public class DraughtsBoardGui implements ActionListener {
         }
     }
 
-    private void createAndConfigureOfferDrawButton() {
-        offerDrawButton = new JButton("Offer draw");
-        offerDrawButton.setFont(new Font("Arial", Font.BOLD, 18));
-        rightPanel.add(offerDrawButton);
-        offerDrawButton.setEnabled(false);
-        offerDrawButton.addActionListener(this);
-    }
-
-    private void createAndConfigureNewGameButton() {
-        offerNewGameButton = new JButton("Offer new game");
-        offerNewGameButton.setFont(new Font("Arial", Font.BOLD, 18));
-        offerNewGameButton.addActionListener(this);
-        rightPanel.add(offerNewGameButton);
-    }
-
-    // TODO - Consider button factory
-
-    private void createAndConfigureResignButton() {
-        resignButton = new JButton("Resign");
-        resignButton.setFont(new java.awt.Font("Arial", Font.BOLD, 18));
-        resignButton.setEnabled(false);
-        resignButton.addActionListener(this);
-        rightPanel.add(resignButton);
-    }
-
     private void createAndConfigureInfoPanel() {
         userInfoPanel = new JPanel();
         userInfoPanel.setBackground(Color.GREEN);
         userInfoPanel.setLayout(new GridLayout(4, 0, 0, 20));
-        rightPanel.add(userInfoPanel);
-        rightPanel.add(userInfoPanel);
+        rightPanel.add(userInfoPanel);;
     }
 }
