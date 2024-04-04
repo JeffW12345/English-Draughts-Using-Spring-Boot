@@ -58,8 +58,33 @@ public class DraughtsBoardGui implements ActionListener {
 
         createAndConfigureButtons();
 
+        createAndConfigureInfoPanel();
+        //createAndConfigureInfoPanel();
+
         frame.setVisible(true);
     }
+
+    private void createAndConfigureLeftPanel() {
+        leftPanel = new JPanel();
+        leftPanel.setBackground(Color.BLACK);
+        frame.add(leftPanel);
+    }
+
+    private void createAndConfigureRightPanel() {
+        rightPanel = new JPanel();
+        rightPanel.setBackground(Color.decode("#FFFFCC"));
+        rightPanel.setLayout(new GridLayout(3, 0, 0, 20));
+        rightPanel.setBorder(new EmptyBorder(20, 20, 20, 20));
+        frame.add(rightPanel);
+    }
+
+    private void createAndConfigureButtons() {
+        createAndConfigureNewGameButton();
+        createAndConfigureOfferDrawButton();
+        createAndConfigureAcceptDrawButton();
+        createAndConfigureResignButton();
+    }
+
 
     private void createAndConfigureFrame() {
         makeGuiDisplayProperlyOnWindowsAndMacs();
@@ -70,7 +95,7 @@ public class DraughtsBoardGui implements ActionListener {
         frame.addWindowListener(new WindowAdapter() {
             @Override
             public void windowClosing(WindowEvent e) {
-                controller.thisClientGuiCloseActions();
+                //controller.thisClientGuiCloseActions(); TODO - Reinstate when fixed
             }
         });
     }
@@ -215,15 +240,6 @@ public class DraughtsBoardGui implements ActionListener {
         this.topLineMessageText = topLineMessageText;
     }
 
-    private void createAndConfigureButtons() {
-        createAndConfigureNewGameButton();
-        createAndConfigureOfferDrawButton();
-        createAndConfigureAcceptDrawButton();
-        createAndConfigureResignButton();
-        createAndConfigureInfoPanel();
-        createAndConfigureOfferNewGameButton();
-    }
-
     void labelSetup() {
         bottomMessageLabel = new JLabel();
         bottomMessageLabel.setFont(messagesFont);
@@ -244,9 +260,9 @@ public class DraughtsBoardGui implements ActionListener {
     private void createAndConfigureAcceptDrawButton() {
         acceptDrawButton = new JButton("Accept draw");
         acceptDrawButton.setFont(new Font("Arial", Font.BOLD, 18));
-        rightPanel.add(acceptDrawButton);
         acceptDrawButton.setEnabled(false);
         acceptDrawButton.addActionListener(this);
+        rightPanel.add(acceptDrawButton);
     }
 
 
@@ -269,13 +285,6 @@ public class DraughtsBoardGui implements ActionListener {
         }
     }
 
-
-    private void createAndConfigureLeftPanel() {
-        leftPanel = new JPanel();
-        leftPanel.setBackground(Color.BLACK);
-        frame.add(leftPanel);
-    }
-
     private void createAndConfigureOfferDrawButton() {
         offerDrawButton = new JButton("Offer draw");
         offerDrawButton.setFont(new Font("Arial", Font.BOLD, 18));
@@ -287,37 +296,25 @@ public class DraughtsBoardGui implements ActionListener {
     private void createAndConfigureNewGameButton() {
         offerNewGameButton = new JButton("Offer new game");
         offerNewGameButton.setFont(new Font("Arial", Font.BOLD, 18));
-        rightPanel.add(offerNewGameButton);
         offerNewGameButton.addActionListener(this);
+        rightPanel.add(offerNewGameButton);
     }
+
+    // TODO - Consider button factory
 
     private void createAndConfigureResignButton() {
         resignButton = new JButton("Resign");
         resignButton.setFont(new java.awt.Font("Arial", Font.BOLD, 18));
-        rightPanel.add(resignButton);
         resignButton.setEnabled(false);
         resignButton.addActionListener(this);
-    }
-
-    private void createAndConfigureRightPanel() {
-        rightPanel = new JPanel();
-        rightPanel.setBackground(Color.decode("#FFFFCC"));
-        frame.add(rightPanel);
-        rightPanel.setLayout(new GridLayout(3, 0, 0, 20));
-        rightPanel.setBorder(new EmptyBorder(20, 20, 20, 20));
+        rightPanel.add(resignButton);
     }
 
     private void createAndConfigureInfoPanel() {
         userInfoPanel = new JPanel();
-        userInfoPanel.setBackground(Color.WHITE);
+        userInfoPanel.setBackground(Color.GREEN);
         userInfoPanel.setLayout(new GridLayout(4, 0, 0, 20));
         rightPanel.add(userInfoPanel);
-    }
-
-    private void createAndConfigureOfferNewGameButton() {
-        JButton offerNewGameButton = new JButton("Offer new game");
-        offerNewGameButton.setFont(new java.awt.Font("Arial", Font.BOLD, 18));
-        rightPanel.add(offerNewGameButton);
-        offerNewGameButton.addActionListener(this);
+        rightPanel.add(userInfoPanel);
     }
 }
