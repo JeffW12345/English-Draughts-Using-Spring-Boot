@@ -33,7 +33,7 @@ public class DraughtsBoardGui implements ActionListener {
     private final JButton[][] grid = new JButton[8][8];
     private JLabel topMessageLabel, middleMessageLabel, bottomMessageLabel;
     @Setter
-    private String bottomLineMessageText, middleLineMessageText, topLineMessageText;
+    private String bottomLineMessageText = "", middleLineMessageText = "", topLineMessageText = "";
     private final MasterClientController controller;
     private final DrawController drawController;
     private final WinLossController winLossController;
@@ -46,8 +46,8 @@ public class DraughtsBoardGui implements ActionListener {
 
     public void setUp() {
         newBoardActions();
-        controller.getGuiMessageController().setWelcomeMessage();
         labelSetup();
+        controller.getGuiMessageController().setWelcomeMessage();
     }
 
     void newBoardActions() {
