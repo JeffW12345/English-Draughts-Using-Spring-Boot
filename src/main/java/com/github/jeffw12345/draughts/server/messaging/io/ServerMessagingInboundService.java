@@ -17,12 +17,10 @@ import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
-@ClientEndpoint
 @Getter
 @Slf4j
 @Component
 @ServerEndpoint(value = "/webSocket")
-
 public class ServerMessagingInboundService {
     @OnOpen
     public static synchronized void onOpen(Session session) {
@@ -32,6 +30,7 @@ public class ServerMessagingInboundService {
 
     @OnMessage
     public static synchronized void onMessage(String message) {
+        log.error("TEST"); //TODO - Delete
         ClientMessageToServer messageFromClient = ServerMessagingUtility.getClientMessageObjectFromJson(message);
 
         log.info(String.format("New message received from client id %s by server: %s",
@@ -60,6 +59,6 @@ public class ServerMessagingInboundService {
     }
     @OnError
     public static synchronized void onError(Session session, Throwable throwable) {
-        log.error(throwable.getMessage());
+        log.error(String.format("Session exception thrown. Details: %s", throwable.getMessage()));
     }
 }

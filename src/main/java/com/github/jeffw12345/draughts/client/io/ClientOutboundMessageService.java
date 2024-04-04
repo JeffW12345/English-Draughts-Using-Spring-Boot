@@ -7,6 +7,7 @@ import com.github.jeffw12345.draughts.models.messaging.ClientMessageToServer;
 import jakarta.websocket.ClientEndpoint;
 import jakarta.websocket.ContainerProvider;
 import jakarta.websocket.Session;
+import jakarta.websocket.WebSocketContainer;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 
@@ -27,12 +28,16 @@ public class ClientOutboundMessageService {
     }
 
     public void sendJsonMessageToServer(String jsonMessage) {
-        if (session == null){
-            session = ClientSessionStorage.retrieveSession();
-        }
-        if (session != null && session.isOpen()) {
-            session.getAsyncRemote().sendText(jsonMessage);
-            log.info(String.format("Client %s sent message to server: %s", client.getClientId(), jsonMessage));
+        try {
+            WebSocketContainer container = ContainerProvider.getWebSocketContainer();
+            container.connectToServer(this, new URI("ws://localhost:8080/webSocket"));
+
+            if (session != null && session.isOpen()) {
+                session.getAsyncRemote().sendText(jsonMessage);
+                log.info(String.format("Client %s sent message to server: %s", client.getClientId(), jsonMessage));
+            }
+        } catch (Exception e) {
+            log.error(e.getMessage());
         }
     }
 

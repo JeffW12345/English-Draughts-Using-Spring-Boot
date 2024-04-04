@@ -106,6 +106,8 @@ public class DraughtsBoardGui implements ActionListener {
         frame.addWindowListener(new WindowAdapter() {
             @Override
             public void windowClosing(WindowEvent e) {
+                log.warn("Closing app due to window close");
+                System.exit(1);
                 //controller.thisClientGuiCloseActions(); TODO - Reinstate when fixed
             }
         });

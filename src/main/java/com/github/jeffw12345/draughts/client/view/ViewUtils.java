@@ -1,7 +1,5 @@
 package com.github.jeffw12345.draughts.client.view;
 
-import com.github.jeffw12345.draughts.models.game.Board;
-import com.github.jeffw12345.draughts.models.game.SquareContent;
 import lombok.extern.slf4j.Slf4j;
 
 import javax.swing.*;

@@ -9,13 +9,20 @@ The server runs a Spring Boot server. The client instances send messages to that
 library. The application code does not actively listen for messages to the clients - instead, they are received on a
 push basis, with the listening being handled by the library code.
 
+The Jakarta WebSocket library is used for client-server communication. With WebSocket, when the client sends the server 
+a message, the server gets passed a Session object specific to that client via the method annotated with @OnOpen. If the 
+server wishes to send a message to that client, it can use 'session.getBasicRemote().sendText(message)' to send a 
+message to that client. Similarly, the client has a Session object relating to the server, it can 
+
 The server is able to send messages to either one of the Client objects relating to a game, or to both of them, in 
 response to a message from either client. This is possible because:
 
 - Server-side mappings are used such that, if the id of one of the Client objects is known, the id of the other Client 
 object can be determined. 
 - Mapping is also in place to make it so that, if the server knows a client's id, the relevant Session object used for 
-communication between that client and the server can be obtained. 
+communication between that client and the server can be obtained.
+
+
 
 RUNNING INSTRUCTIONS
 ====================
