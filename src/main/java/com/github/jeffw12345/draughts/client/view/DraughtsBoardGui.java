@@ -1,5 +1,6 @@
 package com.github.jeffw12345.draughts.client.view;
 
+import com.github.jeffw12345.draughts.client.controller.DrawController;
 import com.github.jeffw12345.draughts.client.controller.MasterClientController;
 import com.github.jeffw12345.draughts.models.game.Board;
 import com.github.jeffw12345.draughts.models.game.SquareContent;
@@ -25,9 +26,12 @@ public class DraughtsBoardGui implements ActionListener {
     private JLabel topMessageLabel, middleMessageLabel, bottomMessageLabel;
     private String bottomLineMessageText, middleLineMessageText, topLineMessageText;
     private final MasterClientController controller;
+    private final DrawController drawController;
 
     public DraughtsBoardGui(MasterClientController controller) {
+
         this.controller = controller;
+        this.drawController = controller.getDrawController();
     }
 
     public void setUp() {
@@ -46,9 +50,9 @@ public class DraughtsBoardGui implements ActionListener {
                     if (e.getSource() == offerNewGameButton) {
                         controller.offerNewGameButtonPressed();
                     } else if (e.getSource() == offerDrawButton) {
-                        controller.offerDrawButtonPressed();
+                        drawController.offerDrawButtonPressedActions();
                     } else if (e.getSource() == acceptDrawButton) {
-                        controller.acceptDrawButtonPressed();
+                        drawController.acceptDrawButtonPressed();
                     } else if (e.getSource() == resignButton) {
                         controller.resignButtonPressed();
                     }
@@ -270,7 +274,7 @@ public class DraughtsBoardGui implements ActionListener {
     }
 
     private void createAndConfigureNewGameButton() {
-        JButton offerNewGameButton = new JButton("Offer new game");
+        offerNewGameButton = new JButton("Offer new game");
         offerNewGameButton.setFont(new Font("Arial", Font.BOLD, 18));
         rightPanel.add(offerNewGameButton);
         offerNewGameButton.addActionListener(this);

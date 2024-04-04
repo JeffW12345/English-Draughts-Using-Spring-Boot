@@ -41,7 +41,7 @@ public class GuiMessageController {
         }
     }
 
-    void offerDrawButtonPressedMessage() {
+    void youHaveOfferedDrawMessage() {
         view.setTopLineMessageText("You've offered a draw.");
         view.setMiddleLineMessageText("Waiting for a response...");
         view.setBottomLineMessageText("Expires end of turn.");
@@ -87,14 +87,14 @@ public class GuiMessageController {
         }
     }
 
-    void ifDrawOfferMadeByOtherClientMessage() {
+    void drawOfferMadeByOtherClientMessage() {
         view.setTopLineMessageText("You've been offered a draw.");
         view.setMiddleLineMessageText("Click the button to accept.");
         view.setBottomLineMessageText("");
         view.updateLabels();
     }
 
-    void ifDrawOfferAcceptedMessage() {
+    void drawOfferAcceptedMessage() {
         view.setTopLineMessageText("The draw offer was accepted.");
         view.setMiddleLineMessageText("It's a draw.");
         view.setBottomLineMessageText("Game over.");

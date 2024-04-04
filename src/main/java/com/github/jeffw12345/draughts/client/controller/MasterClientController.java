@@ -64,7 +64,7 @@ public class MasterClientController {
                 winLossController.otherPlayerResignationActions();
                 break;
             case INFORM_DRAW_OFFER_MADE:
-                drawController.ifDrawOfferMadeByOtherClient();
+                drawController.drawOfferMadeByOtherClientViewUpdate();
                 break;
             case INFORM_OTHER_CLIENT_CLOSED_WINDOW:
                 otherClientClosedGuiActions();
@@ -76,6 +76,15 @@ public class MasterClientController {
 
     private void otherClientClosedGuiActions() {
         //TODO
+    }
+
+    void gameOverActions(){
+        view.getOfferNewGameButton().setEnabled(true);
+        view.getAcceptDrawButton().setEnabled(false);
+        view.getResignButton().setEnabled(false);
+        view.getOfferDrawButton().setEnabled(false);
+
+        gameInProgress = false;
     }
 
     public void assignColour(Colour colour) {
@@ -115,6 +124,7 @@ public class MasterClientController {
     public void changeTurns() {
         isRedsTurn = !isRedsTurn;
         guiMessageController.turnOverMessage();
+        drawController.withDrawOfferIfPending();
     }
 
     public void offerNewGameButtonPressed() {
@@ -122,22 +132,6 @@ public class MasterClientController {
         guiMessageController.offerNewGameButtonPressedMessage();
 
         client.getClientMessagingService().sendOfferNewGameRequest(client.getClientId());
-    }
-
-    public void acceptDrawButtonPressed() {
-        view.getAcceptDrawButton().setEnabled(false);
-        view.getOfferNewGameButton().setEnabled(true);
-        gameInProgress = false;
-        guiMessageController.acceptDrawButtonPressedMessage();
-
-        client.getClientMessagingService().sendDrawOfferAcceptance(client.getClientId());
-    }
-
-    public void offerDrawButtonPressed() {
-        view.getOfferDrawButton().setEnabled(false);
-        drawController.drawOfferSentPending = true;
-        guiMessageController.offerDrawButtonPressedMessage();
-        client.getClientMessagingService().sendDrawOfferProposal(client.getClientId());
     }
 
     public void resignButtonPressed() {
@@ -150,8 +144,6 @@ public class MasterClientController {
 
         client.getClientMessagingService().sendResignation(client.getClientId());
     }
-
-
     public void exitDueToThisClientGuiClose() {
         client.getClientMessagingService()
                 .tellServerClientExitedThenCloseSession
