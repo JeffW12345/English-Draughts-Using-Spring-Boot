@@ -182,4 +182,6 @@ public class Board {
 
         return row < 0 || row > 7 || column < 0 || column > 7;
     }
+
+    //TODO - Do toString() of Board for testing.
 }

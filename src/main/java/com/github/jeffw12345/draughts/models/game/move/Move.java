@@ -40,13 +40,13 @@ public class Move {
     Timestamp moveProcessedTimestamp;
 
 
-    public void setStartCoordinates(int column, int row){
+    public void setStartCoordinates(int row, int column){
         startSquareColumn = column;
         startSquareRow = row;
         startCoordinatesProvided = true;
     }
 
-    public void setEndCoordinates(int column, int row){
+    public void setEndCoordinates(int row, int column){
         endSquareColumn = column;
         endSquareRow = row;
         endCoordinatesProvided = true;

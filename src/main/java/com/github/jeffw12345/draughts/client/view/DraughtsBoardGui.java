@@ -26,7 +26,7 @@ public class DraughtsBoardGui implements ActionListener {
     private JFrame frame;
     private JPanel leftPanel, rightPanel, userInfoPanel;
     private JButton offerNewGameButton, offerDrawButton, acceptDrawButton, resignButton;
-    private final JButton[][] square = new JButton[8][8];
+    private final JButton[][] grid = new JButton[8][8];
     private final Font messagesFont = new Font("Aerial", Font.BOLD, 14);
     private JLabel topMessageLabel, middleMessageLabel, bottomMessageLabel;
     private String bottomLineMessageText, middleLineMessageText, topLineMessageText;
@@ -63,9 +63,6 @@ public class DraughtsBoardGui implements ActionListener {
 
     private void createAndConfigureFrame() {
         makeGuiDisplayProperlyOnWindowsAndMacs();
-
-        System.out.println("Second check: " + java.awt.GraphicsEnvironment.isHeadless()); // Prints 'true' TODO - Delete
-
         frame = new JFrame("English Draughts Game");
         frame.setDefaultCloseOperation(WindowConstants.HIDE_ON_CLOSE);
         frame.setSize(1000, 500);
@@ -113,7 +110,7 @@ public class DraughtsBoardGui implements ActionListener {
                 protected Void doInBackground() {
                     for (int row = 0; row < 8; row++) {
                         for (int col = 0; col < 8; col++) {
-                            if (e.getSource() == square[row][col]) {
+                            if (e.getSource() == grid[row][col]) {
                                 controller.boardSquareClicked(row, col);
                             }
                         }
@@ -126,51 +123,50 @@ public class DraughtsBoardGui implements ActionListener {
     }
 
     public void addRedKingToSquare(int row, int col) {
-        GuiSquare.getComponent(square[row][col]).setState(GuiSquareState.RED_KING);
+        GuiSquare.getComponent(grid[row][col]).setState(GuiSquareState.RED_KING);
     }
 
     public void addRedManToSquare(int row, int col) {
-        GuiSquare.getComponent(square[row][col]).setState(GuiSquareState.RED_MAN);
-    }
-
-    void addRedMenToBoardForInitialSetup() {
-        for (int row = 0; row < 3; row++) {
-            for (int col = 1; col < 8; col += 2) {
-                if ((row == 0) || (row == 2)) {
-                    GuiSquare.getComponent(square[row][col]).setState(GuiSquareState.RED_MAN);
-                }
-            }
-
-            GuiSquare.getComponent(square[row][0]).setState(GuiSquareState.RED_MAN);
-            GuiSquare.getComponent(square[row][2]).setState(GuiSquareState.RED_MAN);
-            GuiSquare.getComponent(square[row][4]).setState(GuiSquareState.RED_MAN);
-            GuiSquare.getComponent(square[row][6]).setState(GuiSquareState.RED_MAN);
-        }
+        GuiSquare.getComponent(grid[row][col]).setState(GuiSquareState.RED_MAN);
     }
 
     public void addWhiteKing(int row, int col) {
-        GuiSquare.getComponent(square[row][col]).setState(GuiSquareState.WHITE_KING);
+        GuiSquare.getComponent(grid[row][col]).setState(GuiSquareState.WHITE_KING);
     }
 
     public void addWhiteMan(int row, int col) {
-        GuiSquare.getComponent(square[row][col]).setState(GuiSquareState.WHITE_MAN);
+        GuiSquare.getComponent(grid[row][col]).setState(GuiSquareState.WHITE_MAN);
     }
 
     void addWhiteMenToBoardForInitialSetup() {
         for (int row = 5; row < 8; row++) {
-            for (int col = 0; col < 8; col += 2) {
-                if ((row == 5) || (row == 7)) {
-                    GuiSquare.getComponent(square[row][col]).setState(GuiSquareState.WHITE_MAN);
+            for (int column = 1; column < 8; column += 2) {
+                if (row == 5 || row == 7) {
+                    GuiSquare.getComponent(grid[row][column]).setState(GuiSquareState.WHITE_MAN);
                 }
             }
+            GuiSquare.getComponent(grid[6][0]).setState(GuiSquareState.WHITE_MAN);
+            GuiSquare.getComponent(grid[6][2]).setState(GuiSquareState.WHITE_MAN);
+            GuiSquare.getComponent(grid[6][4]).setState(GuiSquareState.WHITE_MAN);
+            GuiSquare.getComponent(grid[6][6]).setState(GuiSquareState.WHITE_MAN);
 
-            GuiSquare.getComponent(square[row][0]).setState(GuiSquareState.WHITE_MAN);
-            GuiSquare.getComponent(square[row][2]).setState(GuiSquareState.WHITE_MAN);
-            GuiSquare.getComponent(square[row][4]).setState(GuiSquareState.WHITE_MAN);
-            GuiSquare.getComponent(square[row][6]).setState(GuiSquareState.WHITE_MAN);
         }
     }
 
+    void addRedMenToBoardForInitialSetup() {
+        for (int row = 0; row < 3; row++) {
+            for (int column = 0; column < 8; column += 2) {
+                if ((row == 0) || (row == 2)) {
+                    GuiSquare.getComponent(grid[row][column]).setState(GuiSquareState.RED_MAN);
+                }
+            }
+
+            GuiSquare.getComponent(grid[1][1]).setState(GuiSquareState.RED_MAN);
+            GuiSquare.getComponent(grid[1][3]).setState(GuiSquareState.RED_MAN);
+            GuiSquare.getComponent(grid[1][5]).setState(GuiSquareState.RED_MAN);
+            GuiSquare.getComponent(grid[1][7]).setState(GuiSquareState.RED_MAN);
+        }
+    }
 
     public void repaintBoard(Board board) {
         for (int row = 0; row < 8; row++) {
@@ -198,7 +194,7 @@ public class DraughtsBoardGui implements ActionListener {
     }
 
     public void setSquareBlank(int row, int col) {
-        GuiSquare.getComponent(square[row][col]).setState(GuiSquareState.EMPTY);
+        GuiSquare.getComponent(grid[row][col]).setState(GuiSquareState.EMPTY);
     }
 
     public void updateLabels() {
@@ -256,19 +252,19 @@ public class DraughtsBoardGui implements ActionListener {
 
     private void createEmptyBoard() {
         leftPanel.setLayout(new GridLayout(8, 8));
-        for (int row = 0; row < 8; row++) {
+        for (int row = 7; row > -1; row--) {
             for (int col = 0; col < 8; col++) {
-                square[row][col] = new JButton();
-                square[row][col].addActionListener(this);
-                leftPanel.add(square[row][col]);
-                if (((row + col) % 2) != 0) {
-                    square[row][col].setBackground(Color.BLACK);
-                    square[row][col].setOpaque(true);
+                grid[row][col] = new JButton();
+                grid[row][col].addActionListener(this);
+                leftPanel.add(grid[row][col]);
+                if (((row + col) % 2) == 0) {
+                    grid[row][col].setBackground(Color.BLACK);
+                    grid[row][col].setOpaque(true);
                 } else {
-                    square[row][col].setBackground(Color.WHITE);
-                    square[row][col].setOpaque(true);
+                    grid[row][col].setBackground(Color.WHITE);
+                    grid[row][col].setOpaque(true);
                 }
-                square[row][col].add(new GuiSquare(GuiSquareState.EMPTY));
+                grid[row][col].add(new GuiSquare(GuiSquareState.EMPTY));
             }
         }
     }

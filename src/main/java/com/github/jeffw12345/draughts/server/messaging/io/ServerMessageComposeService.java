@@ -6,7 +6,10 @@ import com.github.jeffw12345.draughts.models.messaging.ServerMessageToClient;
 import com.github.jeffw12345.draughts.models.messaging.ServerToClientMessageType;
 
 import static com.github.jeffw12345.draughts.models.messaging.ServerToClientMessageType.DECLINE_MOVE;
+import static com.github.jeffw12345.draughts.models.messaging.ServerToClientMessageType.INFORM_DRAW_OFFER_MADE;
+import static com.github.jeffw12345.draughts.models.messaging.ServerToClientMessageType.INFORM_OF_DRAW_ACCEPTED;
 import static com.github.jeffw12345.draughts.models.messaging.ServerToClientMessageType.INFORM_OTHER_CLIENT_CLOSED_WINDOW;
+import static com.github.jeffw12345.draughts.models.messaging.ServerToClientMessageType.INFORM_OTHER_PLAYER_RESIGNED;
 import static com.github.jeffw12345.draughts.models.messaging.ServerToClientMessageType.UPDATE_BOARD_CHANGE_OF_TURN;
 import static com.github.jeffw12345.draughts.models.messaging.ServerToClientMessageType.UPDATE_BOARD_SAME_TURN;
 
@@ -70,15 +73,33 @@ public class ServerMessageComposeService {
         ServerMessagingOutboundService.messageOtherClientInGame(messageAsJson, idOfClientWhoClosedGui);
     }
 
-    public static void informOtherClientOfResignation(String id) {
-        //TODO
+    public static void informOtherClientOfResignation(String resigningClientId) {
+        ServerMessageToClient serverMessageToClient = ServerMessageToClient.builder()
+                .serverResponseType(INFORM_OTHER_PLAYER_RESIGNED)
+                .build();
+
+        String messageAsJson = ServerMessagingUtility.convertServerMessageToJSON(serverMessageToClient);
+
+        ServerMessagingOutboundService.messageOtherClientInGame(messageAsJson, resigningClientId);
     }
 
-    public static void tellOtherClientDrawAccepted(String id) {
-        //TODO
+    public static void tellOtherClientDrawAccepted(String clientAcceptingDrawId) {
+        ServerMessageToClient serverMessageToClient = ServerMessageToClient.builder()
+                .serverResponseType(INFORM_OF_DRAW_ACCEPTED)
+                .build();
+
+        String messageAsJson = ServerMessagingUtility.convertServerMessageToJSON(serverMessageToClient);
+
+        ServerMessagingOutboundService.messageOtherClientInGame(messageAsJson, clientAcceptingDrawId);
     }
 
-    public static void tellOtherClientDrawAOffered(String id) {
-        //TODO
+    public static void tellOtherClientDrawAOffered(String clientOfferingDrawId) {
+        ServerMessageToClient serverMessageToClient = ServerMessageToClient.builder()
+                .serverResponseType(INFORM_DRAW_OFFER_MADE)
+                .build();
+
+        String messageAsJson = ServerMessagingUtility.convertServerMessageToJSON(serverMessageToClient);
+
+        ServerMessagingOutboundService.messageOtherClientInGame(messageAsJson, clientOfferingDrawId);
     }
 }
