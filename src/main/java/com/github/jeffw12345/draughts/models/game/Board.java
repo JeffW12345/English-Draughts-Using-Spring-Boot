@@ -45,7 +45,6 @@ public class Board {
         if (isValidPosition(rowNumber, columnNumber)) {
             return rows[rowNumber].getSquareAtColumn(columnNumber).getSquareContent();
         } else {
-            // TODO - Code to exit gracefully
             throw new IllegalArgumentException("Invalid row or column index");
         }
     }
@@ -54,7 +53,6 @@ public class Board {
         if (isValidPosition(rowNumber, columnNumber)) {
             return rows[rowNumber].getSquareAtColumn(columnNumber);
         } else {
-            // TODO - Code to exit gracefully
             throw new IllegalArgumentException("Invalid row or column index");
         }
     }
@@ -66,7 +64,6 @@ public class Board {
     public void updateForCompletedMove(Move move) {
         if (move == null) {
             throw new IllegalArgumentException("Invalid move: null");
-            // TODO - Code to exit gracefully
         }
 
         Square startSquareOnBoard = move.getStartOfMoveSquare(this);
@@ -89,9 +86,9 @@ public class Board {
                                                       Colour colourOfPieceBeingMoved,
                                                       Board board) {
         if (move.willMoveResultInCoronation(board)){
-            destinationSquare.setSquareContent(Colour.getKingSquareContent(colourOfPieceBeingMoved));
+            destinationSquare.setSquareContent(Colour.getKingSquareContentForColour(colourOfPieceBeingMoved));
         }else{
-            destinationSquare.setSquareContent(Colour.getManSquareContent(colourOfPieceBeingMoved));
+            destinationSquare.setSquareContent(Colour.getManSquareContentForColour(colourOfPieceBeingMoved));
         }
         middleSquare.setSquareContent(SquareContent.EMPTY);
     }
@@ -101,9 +98,9 @@ public class Board {
                                                       Colour colourOfPieceBeingMoved,
                                                       Board board) {
         if (move.willMoveResultInCoronation(board)) {
-            destinationSquare.setSquareContent(Colour.getKingSquareContent(colourOfPieceBeingMoved));
+            destinationSquare.setSquareContent(Colour.getKingSquareContentForColour(colourOfPieceBeingMoved));
         } else {
-            destinationSquare.setSquareContent(Colour.getManSquareContent(colourOfPieceBeingMoved));
+            destinationSquare.setSquareContent(Colour.getManSquareContentForColour(colourOfPieceBeingMoved));
         }
     }
 
@@ -170,7 +167,7 @@ public class Board {
 
                 SquareContent middleSquareContent = getSquareContentAtRowAndColumn(jumpedSquareRow, jumpedSquareColumn);
                 Colour startingSquare = SquareContent.getColour(startingSquareContent);
-                Colour opponentColour = Colour.otherPlayerColour(startingSquare);
+                Colour opponentColour = Colour.getOtherPlayerColour(startingSquare);
                 if(SquareContent.getColour(middleSquareContent) == opponentColour){
                     return true;
                 }

@@ -19,7 +19,7 @@ public class ClientMessagingUtility {
         } catch (JsonProcessingException e) {
             log.error(e.getMessage());
             log.error("Exiting program due to JSON processing error.");
-            System.exit(1); // TODO - Add method to controller for closing both clients gracefully and informing the server
+            System.exit(1);
         }
         return objectAsString;
     }
@@ -29,7 +29,9 @@ public class ClientMessagingUtility {
         try{
             serverMessageToClient = new ObjectMapper().readValue(json, ServerMessageToClient.class);
         } catch(JsonProcessingException jsonProcessingException){
-            log.error(jsonProcessingException.getMessage()); //TODO - Code to exit gracefully
+            log.error(jsonProcessingException.getMessage());
+            log.error("Exiting program due to JSON processing error.");
+            System.exit(1);
         }
         return serverMessageToClient;
     }

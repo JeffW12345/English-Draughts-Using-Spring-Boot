@@ -8,7 +8,6 @@ import lombok.Setter;
 @Setter
 public class BoardRow {
     private Square[] squaresOnRow = new Square[8];
-
     public Square getSquareAtColumn(int column){
         return squaresOnRow[column];
     }

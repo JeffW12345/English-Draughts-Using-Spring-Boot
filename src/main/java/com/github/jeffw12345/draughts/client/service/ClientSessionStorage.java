@@ -7,7 +7,6 @@ public class ClientSessionStorage {
     public static void storeSession(Session sessionToStore){
         session = sessionToStore;
     }
-
     public static Session retrieveSession(){
         return session;
     }

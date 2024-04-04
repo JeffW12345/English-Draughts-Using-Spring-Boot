@@ -1,7 +1,6 @@
 package com.github.jeffw12345.draughts.models.game;
 
 import com.github.jeffw12345.draughts.models.messaging.ServerMessageToClient;
-import com.github.jeffw12345.draughts.server.mapping.PlayerToClientIdMapping;
 import com.github.jeffw12345.draughts.server.messaging.io.ServerMessagingOutboundService;
 import com.github.jeffw12345.draughts.server.messaging.io.ServerMessagingUtility;
 import lombok.Getter;
@@ -28,14 +27,12 @@ public class Player {
         this.amIRedPlayer = red == Colour.RED;
     }
 
-    public void newGameClientNotifications(Game game) {
+    public void newGameClientNotifications() {
         ServerMessageToClient serverMessageToClient = ServerMessageToClient.builder()
                 .serverResponseType(amIRedPlayer ? ASSIGN_RED_COLOUR : ASSIGN_WHITE_COLOUR)
-                .clientId(clientId)
-                .game(game)
                 .build();
 
         String messageAsJson = ServerMessagingUtility.convertServerMessageToJSON(serverMessageToClient);
-        ServerMessagingOutboundService.sendJsonMessage(messageAsJson, PlayerToClientIdMapping.retrieveClientId(this));
+        ServerMessagingOutboundService.sendJsonMessage(messageAsJson, clientId);
     }
 }

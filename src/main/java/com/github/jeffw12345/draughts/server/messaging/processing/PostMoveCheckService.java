@@ -33,7 +33,7 @@ public class PostMoveCheckService {
     }
 
     public static boolean isWinForColour(Colour colourOfPlayerWhoseTurnItIs, Board board) {
-        Colour otherColour = Colour.otherPlayerColour(colourOfPlayerWhoseTurnItIs);
+        Colour otherColour = Colour.getOtherPlayerColour(colourOfPlayerWhoseTurnItIs);
         return board.hasNoLegalMovesForColour(otherColour) || board.hasNoSquaresOfColour(otherColour);
     }
 }

@@ -11,7 +11,6 @@ import com.github.jeffw12345.draughts.server.mapping.ClientIdToGameMapping;
 import com.github.jeffw12345.draughts.server.mapping.ClientIdToSessionMapping;
 import com.github.jeffw12345.draughts.models.messaging.ClientMessageToServer;
 import com.github.jeffw12345.draughts.models.messaging.ClientToServerMessageType;
-import com.github.jeffw12345.draughts.server.mapping.PlayerIdToGameMapping;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
@@ -112,13 +111,9 @@ public class ServerMessageController {
         Player whitePlayer = new Player(whitePlayerClientId, Colour.WHITE);
         game.addPlayer(whitePlayer);
 
-        PlayerIdToGameMapping.add(redPlayer, game);
-        PlayerIdToGameMapping.add(whitePlayer, game);
-
         ClientIdToGameMapping.assignClientIdToGame(redPlayerClientId, game);
         ClientIdToGameMapping.assignClientIdToGame(whitePlayerClientId, game);
 
-        redPlayer.newGameClientNotifications(game);
-        whitePlayer.newGameClientNotifications(game);
+        game.newGamePlayerNotificationActions();
     }
 }

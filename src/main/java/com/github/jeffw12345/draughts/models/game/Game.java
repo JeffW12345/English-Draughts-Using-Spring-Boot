@@ -9,7 +9,6 @@ import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentLinkedDeque;
 
-import java.util.LinkedList;
 
 @Setter
 @Getter
@@ -63,12 +62,11 @@ public class Game {
     }
 
     public void newGamePlayerNotificationActions() {
-        redPlayer.newGameClientNotifications(this);
-        whitePlayer.newGameClientNotifications(this);
+        redPlayer.newGameClientNotifications();
+        whitePlayer.newGameClientNotifications();
     }
 
     public void changeTurns(){
-        // TODO - Check how much of this is necessary
         isRedTurn = !isRedTurn;
 
         redPlayer.setPlayersTurn(isRedTurn);
