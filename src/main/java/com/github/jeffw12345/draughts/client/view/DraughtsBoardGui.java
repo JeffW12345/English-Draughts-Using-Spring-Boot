@@ -19,6 +19,10 @@ import java.awt.event.WindowEvent;
 @Slf4j
 @Getter
 public class DraughtsBoardGui implements ActionListener {
+
+    static {
+        System.setProperty("java.awt.headless", "false");
+    }
     private JFrame frame;
     private JPanel leftPanel, rightPanel, userInfoPanel;
     private JButton offerNewGameButton, offerDrawButton, acceptDrawButton, resignButton;
@@ -40,6 +44,47 @@ public class DraughtsBoardGui implements ActionListener {
         newBoardActions();
         controller.getGuiMessageController().setWelcomeMessage();
         labelSetup();
+    }
+
+    void newBoardActions() {
+        createAndConfigureFrame();
+
+        createAndConfigureLeftPanel();
+        createAndConfigureRightPanel();
+
+        createEmptyBoard();
+        addRedMenToBoardForInitialSetup();
+        addWhiteMenToBoardForInitialSetup();
+
+        createAndConfigureButtons();
+
+        frame.setVisible(true);
+    }
+
+    private void createAndConfigureFrame() {
+        makeGuiDisplayProperlyOnWindowsAndMacs();
+
+        System.out.println("Second check: " + java.awt.GraphicsEnvironment.isHeadless()); // Prints 'true' TODO - Delete
+
+        frame = new JFrame("English Draughts Game");
+        frame.setDefaultCloseOperation(WindowConstants.HIDE_ON_CLOSE);
+        frame.setSize(1000, 500);
+        frame.setLayout(new GridLayout(0, 2));
+        frame.addWindowListener(new WindowAdapter() {
+            @Override
+            public void windowClosing(WindowEvent e) {
+                controller.thisClientGuiCloseActions();
+            }
+        });
+    }
+
+
+    private static void makeGuiDisplayProperlyOnWindowsAndMacs() {
+        try {
+            UIManager.setLookAndFeel(UIManager.getCrossPlatformLookAndFeelClassName());
+        } catch (Exception e) {
+            log.error(e.getMessage());
+        }
     }
 
     @Override
@@ -174,21 +219,6 @@ public class DraughtsBoardGui implements ActionListener {
         this.topLineMessageText = topLineMessageText;
     }
 
-    void newBoardActions() {
-        createAndConfigureFrame();
-
-        createAndConfigureLeftPanel();
-        createAndConfigureRightPanel();
-
-        createEmptyBoard();
-        addRedMenToBoardForInitialSetup();
-        addWhiteMenToBoardForInitialSetup();
-
-        createAndConfigureButtons();
-
-        frame.setVisible(true);
-    }
-
     private void createAndConfigureButtons() {
         createAndConfigureNewGameButton();
         createAndConfigureOfferDrawButton();
@@ -243,23 +273,6 @@ public class DraughtsBoardGui implements ActionListener {
         }
     }
 
-    private void createAndConfigureFrame() {
-        try {
-            UIManager.setLookAndFeel(UIManager.getCrossPlatformLookAndFeelClassName());
-        } catch (Exception e) {
-            log.error(e.getMessage());
-        }
-        frame = new JFrame("English Draughts Game");
-        frame.setDefaultCloseOperation(WindowConstants.HIDE_ON_CLOSE);
-        frame.setSize(1000, 500);
-        frame.setLayout(new GridLayout(0, 2));
-        frame.addWindowListener(new WindowAdapter() {
-            @Override
-            public void windowClosing(WindowEvent e) {
-                controller.thisClientGuiCloseActions();
-            }
-        });
-    }
 
     private void createAndConfigureLeftPanel() {
         leftPanel = new JPanel();

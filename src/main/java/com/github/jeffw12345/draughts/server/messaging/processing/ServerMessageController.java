@@ -11,6 +11,7 @@ import com.github.jeffw12345.draughts.server.mapping.ClientIdToGameMapping;
 import com.github.jeffw12345.draughts.server.mapping.ClientIdToSessionMapping;
 import com.github.jeffw12345.draughts.models.messaging.ClientMessageToServer;
 import com.github.jeffw12345.draughts.models.messaging.ClientToServerMessageType;
+import com.github.jeffw12345.draughts.server.messaging.io.ServerMessageComposeService;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
@@ -36,8 +37,8 @@ public class ServerMessageController {
             case RESIGN:
                 ServerMessageComposeService.informOtherClientOfResignation(requestingClientId);
                 break;
-            case EXIT:
-                exitActions(clientRequestToServer, requestingClientId);
+            case EXITING_DUE_TO_GUI_CLOSE:
+                exitDueToGuiCloseActions(requestingClientId);
                 break;
             case ESTABLISH_SESSION:
                 establishConnectionActions(clientRequestToServer);
@@ -51,9 +52,8 @@ public class ServerMessageController {
         ClientIdToSessionMapping.add(clientRequestToServer.getClientId(),
                 clientRequestToServer.getSession());
     }
-    private static void exitActions(ClientMessageToServer clientRequestToServer, String requestingClientId) {
-        String reasonForClosingSession = clientRequestToServer.getInformation();
-        ServerMessageComposeService.tellOtherClientAboutShutDown(requestingClientId, reasonForClosingSession);
+    private static void exitDueToGuiCloseActions(String requestingClientId) {
+        ServerMessageComposeService.tellOtherClientAboutShutDown(requestingClientId);
     }
     private static void moveRequestActions(String requestingClientId, Move move, Colour playerColour) {
         Game game = ClientIdToGameMapping.getGameForClientId(requestingClientId);
@@ -75,13 +75,13 @@ public class ServerMessageController {
         board.updateForCompletedMove(move);
 
         if (PostMoveCheckService.isTurnOngoing(game, move)){
-            ServerMessageComposeService.informClientsOfNewBoardAndThatTurnOngoing(clientId, board);
+            ServerMessageComposeService.informClientsBoardUpdateTurnOngoing(clientId, board);
         } else {
             boolean hasMoveResultedInWin = PostMoveCheckService.isWinForColour(playerColour, board);
             if (hasMoveResultedInWin){
                 ServerMessageComposeService.informClientsOfNewBoardAndThatGameWon(clientId, board, playerColour);
             } else{
-                ServerMessageComposeService.informClientsOfNewBoardAndThatTurnFinished(clientId, board);
+                ServerMessageComposeService.informClientsBoardUpdateTurnFinished(clientId, board);
             }
             move.setTurnComplete(true);
         }

@@ -160,7 +160,7 @@ When a client needs to send a message to a client, it is first created as an obj
 class contains an attribute of type ClientMessageToServer. This class is an enum class with the following attributes, 
 which describe the type of request being made: 
 
-WANT_GAME, MOVE_REQUEST, DRAW_OFFER, DRAW_ACCEPT, RESIGN, EXIT, ESTABLISH_SESSION
+WANT_GAME, MOVE_REQUEST, DRAW_OFFER, DRAW_ACCEPT, RESIGN, EXITING_DUE_TO_GUI_CLOSE, ESTABLISH_SESSION
 
 The ClientMessageToServer also contains other instance variables, such as a Move object, which will be null if they are
 not relevant to the particular message being sent. 
@@ -192,7 +192,7 @@ String and a ClientMessageToServer constant of 'RESIGN'.
 **Exiting the game** When a client closes their GUI, this results in a message being sent from that client to the server,
 which sends a message to the other client to get it to shut down. In this instance, the client with the window being 
 closed sends a message to the server, using a ClientMessageToServer object with a ClientMessageToServer constant of 
-'EXIT', a String called 'Information' with a message about the exit, and the client id as a String. 
+'EXITING_DUE_TO_GUI_CLOSE', and the client id as a String. 
 
 Messages are converted to JSON, and then sent to the server using the ClientMessageDispatchService class. 
 

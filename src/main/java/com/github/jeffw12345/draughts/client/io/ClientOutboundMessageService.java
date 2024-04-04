@@ -113,8 +113,7 @@ public class ClientOutboundMessageService {
     public void tellServerClientExitedThenCloseSession(String windowClosedClientId, String message) {
         ClientMessageToServer requestForGame = ClientMessageToServer.builder()
                 .clientId(windowClosedClientId)
-                .requestType(EXIT)
-                .information(message)
+                .requestType(EXITING_DUE_TO_GUI_CLOSE)
                 .build();
 
         convertMessageToJSONThenSendToServer(requestForGame);

@@ -11,7 +11,6 @@ import java.util.UUID;
 @Getter
 public class Client {
     private final String clientId = String.valueOf(UUID.randomUUID());
-
     private final ClientInboundMessageService clientInboundMessagingService = new ClientInboundMessageService(this);
     private final ClientOutboundMessageService clientOutboundMessagingService = new ClientOutboundMessageService(this);
     private final MasterClientController clientController = new MasterClientController(this);
