@@ -33,7 +33,7 @@ public class DraughtsBoardGui implements ActionListener {
     private final JButton[][] grid = new JButton[8][8];
     private JLabel topMessageLabel, middleMessageLabel, bottomMessageLabel;
     @Setter
-    private String bottomLineMessageText = "", middleLineMessageText = "", topLineMessageText = "";
+    private String bottomLineMessageText, middleLineMessageText, topLineMessageText;
     private final MasterClientController controller;
     private final DrawController drawController;
     private final WinLossController winLossController;
@@ -63,6 +63,7 @@ public class DraughtsBoardGui implements ActionListener {
         createAndConfigureButtons();
 
         createAndConfigureInfoPanel();
+        addEmptyPanel();
 
         frame.setVisible(true);
     }
@@ -75,6 +76,7 @@ public class DraughtsBoardGui implements ActionListener {
 
     private void createAndConfigureRightPanel() {
         rightPanel = new JPanel();
+
         rightPanel.setBackground(Color.decode("#FFFFCC"));
         rightPanel.setLayout(new GridLayout(3, 0, 0, 20));
         rightPanel.setBorder(new EmptyBorder(20, 20, 20, 20));
@@ -88,17 +90,17 @@ public class DraughtsBoardGui implements ActionListener {
         offerDrawButton = ViewUtils.createButton("Offer draw", false, this);
         rightPanel.add(offerDrawButton);
 
-        resignButton = ViewUtils.createButton("Accept draw", false, this);
-        rightPanel.add(resignButton);
-
         resignButton = ViewUtils.createButton("Resign", false, this);
         rightPanel.add(resignButton);
+
+        acceptDrawButton = ViewUtils.createButton("Accept draw", false, this);
+        rightPanel.add(acceptDrawButton);
     }
 
     private void createAndConfigureFrame() {
         makeGuiDisplayProperlyOnWindowsAndMacs();
+
         frame = new JFrame("English Draughts Game");
-        frame.setDefaultCloseOperation(WindowConstants.HIDE_ON_CLOSE);
         frame.setSize(1000, 500);
         frame.setLayout(new GridLayout(0, 2));
         frame.addWindowListener(new WindowAdapter() {
@@ -229,14 +231,14 @@ public class DraughtsBoardGui implements ActionListener {
     }
     void labelSetup() {
         Font messagesFont = new Font("Aerial", Font.BOLD, 14);
-        bottomMessageLabel = createJLabel(messagesFont, bottomLineMessageText);
-        userInfoPanel.add(bottomMessageLabel);
+        topMessageLabel = createJLabel(messagesFont, topLineMessageText);
+        userInfoPanel.add(topMessageLabel);
 
         middleMessageLabel = createJLabel(messagesFont, middleLineMessageText);
         userInfoPanel.add(middleMessageLabel);
 
-        topMessageLabel = createJLabel(messagesFont, topLineMessageText);
-        userInfoPanel.add(topMessageLabel);
+        bottomMessageLabel = createJLabel(messagesFont, bottomLineMessageText);
+        userInfoPanel.add(bottomMessageLabel);
     }
 
     private void createEmptyBoard() {
@@ -260,8 +262,14 @@ public class DraughtsBoardGui implements ActionListener {
 
     private void createAndConfigureInfoPanel() {
         userInfoPanel = new JPanel();
-        userInfoPanel.setBackground(Color.GREEN);
+        userInfoPanel.setBackground(Color.YELLOW);
         userInfoPanel.setLayout(new GridLayout(4, 0, 0, 20));
         rightPanel.add(userInfoPanel);;
+    }
+
+    private void addEmptyPanel() {
+        JPanel panel = new JPanel();
+        panel.setBackground(Color.YELLOW);
+        rightPanel.add(panel);;
     }
 }
