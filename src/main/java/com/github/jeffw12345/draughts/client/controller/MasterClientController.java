@@ -81,7 +81,7 @@ public class MasterClientController {
     private void otherClientClosedGuiActions() {
         log.warn("Shutting down as your opponent closed their window");
         view.getFrame().dispatchEvent(new WindowEvent(view.getFrame(), WindowEvent.WINDOW_CLOSING));
-        client.getClientMessagingService().closeSession();
+        client.getClientOutboundMessagingService().closeSession();
     }
 
     void gameOverActions(){
@@ -123,7 +123,7 @@ public class MasterClientController {
         if(move.startCoordinatesOnlyProvided()){
             move.setEndCoordinates(column, row);
             move.setStartAndEndCoordinatesProvided(true);
-            client.getClientMessagingService().sendMoveToServer(move);
+            client.getClientOutboundMessagingService().sendMoveToServer(move);
             move = Move.builder().build();
         }
     }
@@ -137,12 +137,11 @@ public class MasterClientController {
         view.getOfferNewGameButton().setEnabled(false);
         guiMessageController.offerNewGameButtonPressedMessage();
 
-        client.getClientMessagingService().sendOfferNewGameRequest(client.getClientId());
+        client.getClientOutboundMessagingService().sendOfferNewGameRequest(client.getClientId());
     }
 
-
-    public void exitDueToThisClientGuiClose() {
-        client.getClientMessagingService()
+    public void thisClientGuiCloseActions() {
+        client.getClientOutboundMessagingService()
                 .tellServerClientExitedThenCloseSession
                         (client.getClientId(), "Exiting as other player has closed their window");
     }

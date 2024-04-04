@@ -5,9 +5,9 @@ import com.github.jeffw12345.draughts.client.view.DraughtsBoardGui;
 import javax.swing.*;
 
 public class GuiMessageController {
-    DraughtsBoardGui view;
-    boolean amIRed;
-    boolean isRedsTurn;
+    private final DraughtsBoardGui view;
+    private final boolean amIRed;
+    private final boolean isRedsTurn;
     public GuiMessageController(MasterClientController masterController){
         this.view = masterController.getView();
         this.amIRed = masterController.isAmIRed();

@@ -256,7 +256,7 @@ public class DraughtsBoardGui implements ActionListener {
         frame.addWindowListener(new WindowAdapter() {
             @Override
             public void windowClosing(WindowEvent e) {
-                controller.exitDueToThisClientGuiClose();
+                controller.thisClientGuiCloseActions();
             }
         });
     }

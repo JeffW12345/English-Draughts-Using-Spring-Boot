@@ -24,7 +24,7 @@ public class ClientMessagingUtility {
         return objectAsString;
     }
 
-    public static ServerMessageToClient getServerMessageObject(String json) {
+    public static ServerMessageToClient getServerMessageObjectFromJson(String json) {
         ServerMessageToClient serverMessageToClient = null;
         try{
             serverMessageToClient = new ObjectMapper().readValue(json, ServerMessageToClient.class);
@@ -33,6 +33,4 @@ public class ClientMessagingUtility {
         }
         return serverMessageToClient;
     }
-
-
 }

@@ -2,7 +2,8 @@ package com.github.jeffw12345.draughts.client;
 
 import com.github.jeffw12345.draughts.client.controller.MasterClientController;
 
-import com.github.jeffw12345.draughts.client.service.ClientMessageDispatchService;
+import com.github.jeffw12345.draughts.client.service.ClientInboundMessageService;
+import com.github.jeffw12345.draughts.client.service.ClientOutboundMessageService;
 import lombok.Getter;
 
 import java.util.UUID;
@@ -10,10 +11,12 @@ import java.util.UUID;
 @Getter
 public class Client {
     private final String clientId = String.valueOf(UUID.randomUUID());
-    private final ClientMessageDispatchService clientMessagingService = new ClientMessageDispatchService(this);
+
+    private final ClientInboundMessageService clientInboundMessagingService = new ClientInboundMessageService(this);
+    private final ClientOutboundMessageService clientOutboundMessagingService = new ClientOutboundMessageService(this);
     private final MasterClientController clientController = new MasterClientController(this);
     public void setUp() {
-        clientMessagingService.establishSession();
+        clientOutboundMessagingService.establishSession();
         clientController.setUp();
     }
 }
