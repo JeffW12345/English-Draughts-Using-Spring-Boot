@@ -1,20 +1,34 @@
 package com.github.jeffw12345.draughts.game.models;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.github.jeffw12345.draughts.game.models.move.type.KingMoveType;
 import com.github.jeffw12345.draughts.game.models.move.type.MoveType;
 import com.github.jeffw12345.draughts.game.models.move.type.RedManMoveType;
 import com.github.jeffw12345.draughts.game.models.move.type.WhiteManMoveType;
 import com.github.jeffw12345.draughts.game.models.move.Move;
+import lombok.Builder;
 import lombok.Getter;
+import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 
-@Getter
+
 @Slf4j
+@Builder
+@Setter
+@Getter
 public class Board {
+    @JsonProperty("rows")
     private final BoardRow[] rows = new BoardRow[8];
+
+    @JsonProperty("EMPTY_SQUARE")
     private final Square EMPTY_SQUARE = Square.builder().squareContent(SquareContent.EMPTY).build();
+
+    @JsonProperty("WHITE_MAN")
     private final Square WHITE_MAN = Square.builder().squareContent(SquareContent.WHITE_MAN).build();
+
+    @JsonProperty("RED_MAN")
     private final Square RED_MAN = Square.builder().squareContent(SquareContent.RED_MAN).build();
+
 
     public Board() {
         initializeBoard();
@@ -183,5 +197,33 @@ public class Board {
         return row < 0 || row > 7 || column < 0 || column > 7;
     }
 
-    //TODO - Do toString() of Board for testing.
+    @Override
+    public String toString() {
+        StringBuilder stringBuilder = new StringBuilder();
+        for (int row = 0; row < 8; row++) {
+            for (int column = 0; column < 8; column++) {
+                SquareContent squareContent = rows[row].getSquaresOnRow()[column].getSquareContent();
+                stringBuilder.append(getStringRepresentation(squareContent)).append(" ");
+            }
+            stringBuilder.append("\n");
+        }
+        return stringBuilder.toString();
+    }
+
+    private char getStringRepresentation(SquareContent squareContent) {
+        switch (squareContent) {
+            case RED_MAN:
+                return 'r';
+            case WHITE_MAN:
+                return 'w';
+            case RED_KING:
+                return 'R';
+            case WHITE_KING:
+                return 'W';
+            case EMPTY:
+                return 'e';
+            default:
+                return ' ';
+        }
+    }
 }
