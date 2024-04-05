@@ -24,6 +24,9 @@ To run the application, follow these steps:
 - Open two separate instances of the application to simulate two players.
 - Follow the on-screen instructions to play the game.
 
+Alternatively, once you have obtained the required libraries, you can run the app from 
+the main method in the DraughtsApplication class. 
+
 This application was built using Java 17, though it may work with earlier versions of Java. 
 
 ASSUMPTIONS
