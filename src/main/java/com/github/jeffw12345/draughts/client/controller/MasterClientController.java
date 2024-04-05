@@ -33,10 +33,6 @@ public class MasterClientController {
         this.guiMessageController = new GuiMessageController(this);
     }
 
-    public void setUp() {
-        view.setUp();
-    }
-
     public void processMessageFromServer(ServerMessageToClient serverResponseToClient) {
         ServerToClientMessageType serverResponseType = serverResponseToClient.getServerResponseType();
         switch (serverResponseType) {
@@ -74,7 +70,8 @@ public class MasterClientController {
                 otherClientClosedGuiActions();
                 break;
             case INFORM_CLIENT_OF_ID:
-                updateClientId(serverResponseToClient.getClientId());
+                String clientId = serverResponseToClient.getClientId();
+                updateClientId(clientId);
                 break;
 
             default:
@@ -84,6 +81,7 @@ public class MasterClientController {
 
     private void updateClientId(String clientId) {
         client.setClientId(clientId);
+        view.setUp();
         view.clientIdProvidedActions();
     }
 

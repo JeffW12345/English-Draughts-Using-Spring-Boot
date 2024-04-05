@@ -16,6 +16,5 @@ public class Client {
     private final MasterClientController clientController = new MasterClientController(this);
     public void setUp() {
         clientOutboundMessagingService.establishSession();
-        clientController.setUp();
     }
 }
