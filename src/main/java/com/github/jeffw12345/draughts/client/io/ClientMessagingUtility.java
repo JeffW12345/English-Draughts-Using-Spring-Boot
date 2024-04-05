@@ -9,7 +9,7 @@ import lombok.extern.slf4j.Slf4j; //TODO - Add to other classes
 @Slf4j
 public class ClientMessagingUtility {
 
-    public static String convertClientMessageToJSON(ClientMessageToServer clientRequestToServer) {
+    public synchronized static String convertClientMessageToJSON(ClientMessageToServer clientRequestToServer) {
         String objectAsString = "";
         try {
             objectAsString = new ObjectMapper()
@@ -24,7 +24,7 @@ public class ClientMessagingUtility {
         return objectAsString;
     }
 
-    public static ServerMessageToClient getServerMessageObjectFromJson(String json) {
+    public synchronized static ServerMessageToClient getServerMessageObjectFromJson(String json) {
         ServerMessageToClient serverMessageToClient = null;
         try{
             serverMessageToClient = new ObjectMapper().readValue(json, ServerMessageToClient.class);

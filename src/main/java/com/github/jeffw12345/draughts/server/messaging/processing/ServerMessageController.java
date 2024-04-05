@@ -40,9 +40,6 @@ public class ServerMessageController {
             case EXITING_DUE_TO_GUI_CLOSE:
                 exitDueToGuiCloseActions(requestingClientId);
                 break;
-            case ESTABLISH_SESSION:
-                establishConnectionActions(clientRequestToServer);
-                break;
             default:
                 throw new IllegalArgumentException("Unexpected response type: " + clientToServerRequestType);
         }

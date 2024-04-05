@@ -80,9 +80,24 @@ with the listening being handled in the background by the library code. This is 
 Whenever a message is received, the aforementioned 'onOpen' method is called and passed a Session object. In addition, 
 a method annotated with @onMessage is called and passed the sent message as a String. 
 
-Overall, this architecture allows for efficient client-server communication using WebSocket, with the server being able 
-to manage multiple clients, their IDs, game states, and communication in a structured manner. The push-based message 
+Overall, this architecture allows for efficient client-server communication using WebSocket, with the server being able
+to manage multiple clients, their IDs, game states, and communication in a structured manner. The push-based message
 handling ensures that communication between clients and the server is responsive and event-driven.
+
+COMMUNICATIONS CONFIGURATION
+============================
+
+The WebSocketConfiguration class configures the settings that enable the client to be able to communicate with the 
+Spring Boot generated server. This class has a single method, which is never called directly by the application code. 
+Instead, the @Configuration annotation ensures that it is called by the library code. 
+
+When the first message is sent by a client, its establishConnection() method instantiates 
+the Session object it will use for outbound messages like so:
+
+            WebSocketContainer container = ContainerProvider.getWebSocketContainer();
+            session = container.connectToServer(this, new URI("ws://localhost:8080/webSocket"));
+
+Although this app is not web-based, the server and the client use 'ws://localhost:8080/webSocket' to exchange messages.
 
 SEQUENCE OF EVENTS
 ==================
@@ -170,7 +185,6 @@ cancelled once the next move has been made, and the GUIs are updated accordingly
 **Resign** If a player resigns, the server is informed, and it informs the other client. The game is then over.
 
 The server checks if moves are legal and promotes men to kings where required.
-
 
 COMMUNICATIONS PROTOCOL
 =======================

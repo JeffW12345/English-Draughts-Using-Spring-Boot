@@ -23,6 +23,7 @@ public class ServerMessagingOutboundService {
                 synchronized (session) {
                     try {
                         session.getBasicRemote().sendText(json);
+                        log.info(String.format("Successfully sent message from server: %s", json));
                     } catch (IOException e) {
                         log.error("Caught exception while sending message to Session Id: " + session.getId(),
                                 e.getMessage(),
