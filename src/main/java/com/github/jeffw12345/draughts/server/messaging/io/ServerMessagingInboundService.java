@@ -27,18 +27,20 @@ import static com.github.jeffw12345.draughts.server.messaging.io.models.ServerTo
 @Component
 @ServerEndpoint(value = "/webSocket")
 public class ServerMessagingInboundService {
-    private final static Set<Session> SESSIONS = new CopyOnWriteArraySet<>();
-    @OnOpen
-    public static synchronized void onOpen(Session session) {
-        SESSIONS.add(session);
-        log.info(String.format("New server session established. Number of sessions: %s", SESSIONS.size()));
 
-        String clientId = String.valueOf(UUID.randomUUID());
+    private final static Set<Session> SESSIONS = new CopyOnWriteArraySet<>();
+
+    @OnOpen
+    public void onOpen(Session session) {
+        SESSIONS.add(session);
+        log.info("New server session established. Number of sessions: {}", SESSIONS.size());
+
+        String clientId = UUID.randomUUID().toString();
         ClientIdToSessionMapping.addMapping(clientId, session);
         sendClientIdToClient(clientId);
     }
 
-    private static void sendClientIdToClient(String clientId) {
+    private void sendClientIdToClient(String clientId) {
         ServerMessageToClient informClientOfIdAsObject = ServerMessageToClient.builder()
                 .serverResponseType(INFORM_CLIENT_OF_ID)
                 .clientId(clientId)
@@ -46,26 +48,22 @@ public class ServerMessagingInboundService {
 
         String informClientOfIdAsJson = ServerMessagingUtility.convertServerMessageToJSON(informClientOfIdAsObject);
 
-        log.info("About to inform client {} of its id", clientId);
+        log.info("Informing client {} of its ID", clientId);
 
         ServerMessagingOutboundService.sendJsonMessage(informClientOfIdAsJson, clientId);
     }
 
     @OnMessage
-    public static synchronized void onMessage(String message) {
-        log.error("TEST"); //TODO - Delete
+    public void onMessage(String message) {
+        log.info("New message received from client: {}", message);
         ClientMessageToServer messageFromClient = ServerMessagingUtility.getClientMessageObjectFromJson(message);
-
-        log.info(String.format("New message received from client id %s by server: %s",
-                messageFromClient.getClientId(),
-                message));
 
         updateClientIdToSessionDictionary(messageFromClient);
 
         ServerMessageController.processClientRequest(messageFromClient);
     }
 
-    private static void updateClientIdToSessionDictionary(ClientMessageToServer message) {
+    private void updateClientIdToSessionDictionary(ClientMessageToServer message) {
         String clientId = message.getClientId();
         if (clientId != null){
             Session session = ClientIdToSessionMapping.getSessionFromClientId(clientId);
@@ -74,14 +72,15 @@ public class ServerMessagingInboundService {
     }
 
     @OnClose
-    public static synchronized void onClose(Session session) {
+    public void onClose(Session session) {
         String clientIdForSession = ClientIdToSessionMapping.getClientIdForSession(session);
         ClientIdToSessionMapping.remove(clientIdForSession);
 
-        log.info(String.format("Session disconnected. Number of sessions: %s", SESSIONS.size()));
+        log.info("Session disconnected. Number of sessions: {}", SESSIONS.size());
     }
+
     @OnError
-    public static synchronized void onError(Session session, Throwable throwable) {
-        log.error(String.format("Session exception thrown. Details: %s", throwable.getMessage()));
+    public void onError(Session session, Throwable throwable) {
+        log.error("Session exception thrown. Details: {}", throwable.getMessage());
     }
 }

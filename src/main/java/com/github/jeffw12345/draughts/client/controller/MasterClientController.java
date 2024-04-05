@@ -148,10 +148,4 @@ public class MasterClientController {
 
         client.getClientOutboundMessagingService().sendOfferNewGameRequest(client.getClientId());
     }
-
-    public void thisClientGuiCloseActions() {
-        client.getClientOutboundMessagingService()
-                .tellServerGuiClosedThenCloseSession
-                        (client.getClientId());
-    }
 }

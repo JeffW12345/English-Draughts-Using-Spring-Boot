@@ -4,6 +4,7 @@ import com.github.jeffw12345.draughts.client.Client;
 import com.github.jeffw12345.draughts.client.io.models.ClientMessageToServer;
 import com.github.jeffw12345.draughts.game.models.Colour;
 import com.github.jeffw12345.draughts.game.models.move.Move;
+import jakarta.websocket.ClientEndpoint;
 import jakarta.websocket.ContainerProvider;
 import jakarta.websocket.DeploymentException;
 import jakarta.websocket.Session;
@@ -19,6 +20,7 @@ import static com.github.jeffw12345.draughts.client.io.models.ClientToServerMess
 
 @Slf4j
 @Getter
+@ClientEndpoint
 public class ClientOutboundMessageService {
     private Session session;
     private final Client client;
@@ -33,7 +35,6 @@ public class ClientOutboundMessageService {
             log.info("Client {} sent message to server: {}", client.getClientId(), jsonMessage);
         } else {
             log.warn("Cannot send message: session is closed");
-            // Handle the situation gracefully, such as by logging a warning or taking alternative action.
         }
     }
 
@@ -101,7 +102,6 @@ public class ClientOutboundMessageService {
             log.info("WebSocket session established");
         } catch (IOException | DeploymentException | URISyntaxException e) {
             log.error("Error establishing WebSocket session: {}", e.getMessage());
-            // Handle the error gracefully, such as by retrying or notifying the user.
         }
     }
 
@@ -122,7 +122,6 @@ public class ClientOutboundMessageService {
                 session.close();
             } catch (IOException e) {
                 log.error("Problem closing session: {}", e.getMessage());
-                // Handle the error gracefully, such as logging or retrying.
             }
         }
     }

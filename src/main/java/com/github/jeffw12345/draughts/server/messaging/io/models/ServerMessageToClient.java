@@ -1,14 +1,19 @@
 package com.github.jeffw12345.draughts.server.messaging.io.models;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.github.jeffw12345.draughts.game.models.Board;
 import lombok.Builder;
 import lombok.Getter;
 
-@Builder
 @Getter
+@Builder
 public class ServerMessageToClient {
-    private Board board;
-    private ServerToClientMessageType serverResponseType;
+    @JsonProperty("board_state")
+    private final Board board;
 
-    public String clientId;
+    @JsonProperty("response_type")
+    private final ServerToClientMessageType serverResponseType;
+
+    @JsonProperty("client_id")
+    private final String clientId;
 }

@@ -5,19 +5,11 @@ import com.github.jeffw12345.draughts.game.models.Colour;
 import com.github.jeffw12345.draughts.server.messaging.io.models.ServerMessageToClient;
 import com.github.jeffw12345.draughts.server.messaging.io.models.ServerToClientMessageType;
 
-import static com.github.jeffw12345.draughts.server.messaging.io.models.ServerToClientMessageType.DECLINE_MOVE;
-import static com.github.jeffw12345.draughts.server.messaging.io.models.ServerToClientMessageType.INFORM_DRAW_OFFER_MADE;
-import static com.github.jeffw12345.draughts.server.messaging.io.models.ServerToClientMessageType.INFORM_OF_DRAW_ACCEPTED;
-import static com.github.jeffw12345.draughts.server.messaging.io.models.ServerToClientMessageType.INFORM_OTHER_CLIENT_CLOSED_WINDOW;
-import static com.github.jeffw12345.draughts.server.messaging.io.models.ServerToClientMessageType.INFORM_OTHER_PLAYER_RESIGNED;
-import static com.github.jeffw12345.draughts.server.messaging.io.models.ServerToClientMessageType.UPDATE_BOARD_CHANGE_OF_TURN;
-import static com.github.jeffw12345.draughts.server.messaging.io.models.ServerToClientMessageType.UPDATE_BOARD_SAME_TURN;
-
 public class ServerMessageComposeService {
 
     public static void informClientsBoardUpdateTurnOngoing(String clientId, Board board) {
         ServerMessageToClient serverMessageToClient = ServerMessageToClient.builder()
-                .serverResponseType(UPDATE_BOARD_SAME_TURN)
+                .serverResponseType(ServerToClientMessageType.UPDATE_BOARD_SAME_TURN)
                 .board(board)
                 .build();
 
@@ -28,7 +20,7 @@ public class ServerMessageComposeService {
 
     public static void informClientsBoardUpdateTurnFinished(String clientId, Board board) {
         ServerMessageToClient serverMessageToClient = ServerMessageToClient.builder()
-                .serverResponseType(UPDATE_BOARD_CHANGE_OF_TURN)
+                .serverResponseType(ServerToClientMessageType.UPDATE_BOARD_CHANGE_OF_TURN)
                 .board(board)
                 .build();
 
@@ -55,7 +47,7 @@ public class ServerMessageComposeService {
 
     public static void informClientThatMoveIllegal(String idOfClientSubmittingMove) {
         ServerMessageToClient serverMessageToClient = ServerMessageToClient.builder()
-                .serverResponseType(DECLINE_MOVE)
+                .serverResponseType(ServerToClientMessageType.DECLINE_MOVE)
                 .build();
 
         String messageAsJson = ServerMessagingUtility.convertServerMessageToJSON(serverMessageToClient);
@@ -65,7 +57,7 @@ public class ServerMessageComposeService {
 
     public static void tellOtherClientAboutShutDown(String idOfClientWhoClosedGui){
         ServerMessageToClient serverMessageToClient = ServerMessageToClient.builder()
-                .serverResponseType(INFORM_OTHER_CLIENT_CLOSED_WINDOW)
+                .serverResponseType(ServerToClientMessageType.INFORM_OTHER_CLIENT_CLOSED_WINDOW)
                 .build();
 
         String messageAsJson = ServerMessagingUtility.convertServerMessageToJSON(serverMessageToClient);
@@ -75,7 +67,7 @@ public class ServerMessageComposeService {
 
     public static void informOtherClientOfResignation(String resigningClientId) {
         ServerMessageToClient serverMessageToClient = ServerMessageToClient.builder()
-                .serverResponseType(INFORM_OTHER_PLAYER_RESIGNED)
+                .serverResponseType(ServerToClientMessageType.INFORM_OTHER_PLAYER_RESIGNED)
                 .build();
 
         String messageAsJson = ServerMessagingUtility.convertServerMessageToJSON(serverMessageToClient);
@@ -85,7 +77,7 @@ public class ServerMessageComposeService {
 
     public static void tellOtherClientDrawAccepted(String clientAcceptingDrawId) {
         ServerMessageToClient serverMessageToClient = ServerMessageToClient.builder()
-                .serverResponseType(INFORM_OF_DRAW_ACCEPTED)
+                .serverResponseType(ServerToClientMessageType.INFORM_OF_DRAW_ACCEPTED)
                 .build();
 
         String messageAsJson = ServerMessagingUtility.convertServerMessageToJSON(serverMessageToClient);
@@ -95,7 +87,7 @@ public class ServerMessageComposeService {
 
     public static void tellOtherClientDrawAOffered(String clientOfferingDrawId) {
         ServerMessageToClient serverMessageToClient = ServerMessageToClient.builder()
-                .serverResponseType(INFORM_DRAW_OFFER_MADE)
+                .serverResponseType(ServerToClientMessageType.INFORM_DRAW_OFFER_MADE)
                 .build();
 
         String messageAsJson = ServerMessagingUtility.convertServerMessageToJSON(serverMessageToClient);
