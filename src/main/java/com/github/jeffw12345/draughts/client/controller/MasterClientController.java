@@ -73,9 +73,18 @@ public class MasterClientController {
             case INFORM_OTHER_CLIENT_CLOSED_WINDOW:
                 otherClientClosedGuiActions();
                 break;
+            case INFORM_CLIENT_OF_ID:
+                updateClientId(serverResponseToClient.getClientId());
+                break;
+
             default:
                 throw new IllegalArgumentException("Unexpected response type: " + serverResponseType);
         }
+    }
+
+    private void updateClientId(String clientId) {
+        client.setClientId(clientId);
+        view.clientIdProvidedActions();
     }
 
     private void otherClientClosedGuiActions() {
@@ -143,6 +152,6 @@ public class MasterClientController {
     public void thisClientGuiCloseActions() {
         client.getClientOutboundMessagingService()
                 .tellServerClientExitedThenCloseSession
-                        (client.getClientId(), "Exiting as other player has closed their window");
+                        (client.getClientId());
     }
 }

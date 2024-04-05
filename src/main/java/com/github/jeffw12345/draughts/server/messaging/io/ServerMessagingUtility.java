@@ -17,22 +17,26 @@ public class ServerMessagingUtility {
                     .writer()
                     .withDefaultPrettyPrinter()
                     .writeValueAsString(serverMessage);
+            log.info(String.format("Successfully created JSON from ServerMessageToClient object: %s", objectAsString));
+
         } catch (JsonProcessingException e) {
             log.error(e.getMessage());
             log.error("Exiting program due to JSON processing error.");
-            System.exit(1); // TODO - Add method to controller for closing both clients gracefully and informing the server
+            System.exit(1); //TODO - Add method to controller for closing both clients gracefully and informing the server
         }
         return objectAsString;
     }
 
     public static ClientMessageToServer getClientMessageObjectFromJson(String json) {
-        ClientMessageToServer message = null;
-        try{
-            message = new ObjectMapper().readValue(json, ClientMessageToServer.class);
-        } catch(JsonProcessingException jsonProcessingException){
-            log.error(jsonProcessingException.getMessage()); //TODO - Code to exit gracefully
+        try {
+            ClientMessageToServer message = new ObjectMapper().readValue(json, ClientMessageToServer.class);
+            log.info(String.format("Successfully rendered the following JSON into a ClientMessageToServer object: %s", json));
+            return message;
+        } catch (JsonProcessingException jsonProcessingException) {
+            log.error("Error converting JSON to ClientMessageToServer object: {}", jsonProcessingException.getMessage());
+            System.exit(1);
+            return null; // TODO - Explore how to exit more gracefully.
         }
-        return message;
     }
 
     public static String getOtherClientIdForGame(String thisClientId){

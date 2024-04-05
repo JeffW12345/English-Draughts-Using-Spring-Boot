@@ -5,24 +5,10 @@ This app allows two clients on the same host allow two users to play English dra
 also running locally. It is a revised and improved version of a project I did at university - 
 https://github.com/JeffW12345/EnglishDraughts. 
 
-The server runs a Spring Boot server. The client instances send messages to that server using the Jakarta WebSocket
-library. The application code does not actively listen for messages to the clients - instead, they are received on a
-push basis, with the listening being handled by the library code.
+The server runs a Spring Boot server. The communication between the clients and the server are done using the Jakarta 
+WebSocket library. 
 
-The Jakarta WebSocket library is used for client-server communication. With WebSocket, when the client sends the server 
-a message, the server gets passed a Session object specific to that client via the method annotated with @OnOpen. If the 
-server wishes to send a message to that client, it can use 'session.getBasicRemote().sendText(message)' to send a 
-message to that client. Similarly, the client has a Session object relating to the server, it can 
-
-The server is able to send messages to either one of the Client objects relating to a game, or to both of them, in 
-response to a message from either client. This is possible because:
-
-- Server-side mappings are used such that, if the id of one of the Client objects is known, the id of the other Client 
-object can be determined. 
-- Mapping is also in place to make it so that, if the server knows a client's id, the relevant Session object used for 
-communication between that client and the server can be obtained.
-
-
+The game uses the Model View Controller paradigm, and also has service classes. 
 
 RUNNING INSTRUCTIONS
 ====================
@@ -50,7 +36,7 @@ If a player closes their GUI, the other player is informed, and the game is aban
 A win is determined in accordance to the aforementioned Wikipedia page: 'A player wins by capturing all of the 
 opponent's pieces or by leaving the opponent with no legal move'.
 
-Draws only occur by mutual consent. 
+Draws only occur by mutual consent for the purposes of this app. 
 
 A move is defined as the movement of a piece, which may or may not terminate with a change of turn.
 
@@ -70,6 +56,34 @@ This is an MVP version, and won't cover:
 
 These features may be added in a future update, however. 
 
+COMMUNICATIONS OVERVIEW
+=======================
+
+The Jakarta WebSocket library is used for client-server communication. With WebSocket, when the client sends the server
+a message, a server-side method called 'onOpen', which is annotated with @OnOpen, is passed a Session object. This 
+Session object is specific to the client, and can be used to send communications to the client. The server then assigns 
+the client a unique ID, and does the following:
+
+- Stores the Session object as a value in a HashMap, with the client id as the key.
+- Uses the Session object to message the client back to tell its ID.
+
+When the client sends the server future messages, it includes its ID within the message. This means that the server can 
+reply to that client, using the Session object stored in the dictionary. Also, there are other server side hashmaps 
+in place to make it so that:
+
+- The server can access the state of the game that the client is playing.
+- The server can message both of the clients playing in a game (if it needs to give them an updated board following a 
+player move, for example).
+
+The application code does not actively listen for messages to the clients - instead, they are received on a push basis, 
+with the listening being handled in the background by the library code. This is achieved through inversion of control. 
+Whenever a message is received, the aforementioned 'onOpen' method is called and passed a Session object. In addition, 
+a method annotated with @onMessage is called and passed the sent message as a String. 
+
+Overall, this architecture allows for efficient client-server communication using WebSocket, with the server being able 
+to manage multiple clients, their IDs, game states, and communication in a structured manner. The push-based message 
+handling ensures that communication between clients and the server is responsive and event-driven.
+
 SEQUENCE OF EVENTS
 ==================
 
@@ -78,13 +92,11 @@ SEQUENCE OF EVENTS
 The DraughtsApplication class creates a Spring Boot server instance, and then creates two Client objects, each on a 
 separate thread. For each Client object, the following takes place:
 
-- The Client object gives itself a uuid as an id.
-
 - The Client creates a ClientMessagingService object as an instance variable, passing in its id to the
   ClientMessagingService constructor and invoking the ClientMessagingService establishConnection() method. The
   establishConnection() sends a message to the server to establish a connection with the server. When a connection is
-  created, the server puts the Session object in a hashmap with the client id as the key (via a static method in the
-  ClientIdToSessionMapping class).
+  created, the server messages the client back with a client ID, which the client assigns itself. The server put the 
+  Session object in a hashmap with the client id as the key (via a static method in the ClientIdToSessionMapping class).
 
 - The Client object creates a MasterClientController object, and passes itself to the ClientController constructor. The
   MasterClientController constructor creates its own instance of a DraughtsBoardGui object, which is the class 
@@ -92,11 +104,12 @@ separate thread. For each Client object, the following takes place:
   classes.
 
 - The Client calls the newly created MasterClientController object's setUp() method, which fires up a GUI, using its 
-instance of the DraughtBoardView class. It does so by invoking its DraughtsBoardGui object's setUp method.
-
+instance of the DraughtBoardView class. It does so by invoking its DraughtsBoardGui object's setUp method. 
 ## New game requests
 
-The GUI gives the user an option to request a game. When the user selects this option, a request is sent to the server.
+The
+DraughtsBoardGui disables GUI button presses until the id is assigned. Once an ID is assigned the user has the option
+to request a game. When the user selects this option, a request is sent to the server.
 
 The server then consults a static linked list of client ids relating to clients awaiting games (stored in the
 ClientsAwaitingAGame class). If there is at least one client id in the list, then that client id is popped and a game is 
@@ -158,31 +171,38 @@ cancelled once the next move has been made, and the GUIs are updated accordingly
 
 The server checks if moves are legal and promotes men to kings where required.
 
+
 COMMUNICATIONS PROTOCOL
 =======================
 
 ## A. Client sending messages
 
 When a client needs to send a message to a client, it is first created as an object of type ClientMessageToServer. This
-class contains an attribute of type ClientMessageToServer. This class is an enum class with the following attributes, 
-which describe the type of request being made: 
+class contains an attribute of type ClientMessageToServer. This class is an enum class with the following attributes,
+which describe the type of request being made:
 
-WANT_GAME, MOVE_REQUEST, DRAW_OFFER, DRAW_ACCEPT, RESIGN, EXITING_DUE_TO_GUI_CLOSE, ESTABLISH_SESSION
+    WANT_GAME
+    MOVE_REQUEST 
+    DRAW_OFFER
+    DRAW_ACCEPT 
+    RESIGN
+    EXITING_DUE_TO_GUI_CLOSE 
+    ESTABLISH_SESSION
 
 The ClientMessageToServer also contains other instance variables, such as a Move object, which will be null if they are
 not relevant to the particular message being sent. 
 
-A ClientMessageToServer object is created for the following types of requests: 
+A ClientMessageToServer object is created for the following types of requests:
 
-**Establishing an initial connection with the server** In order for a message exchanges to take place, the client needs 
+**Establishing an initial connection with the server** In order for a message exchanges to take place, the client needs
 to set up a session with the server. It does so using the establishSession() method in ClientMessageDispatchService.
-The ClientMessageToServer object contains the Session object used to make the connection request, as well as a 
+The ClientMessageToServer object contains the Session object used to make the connection request, as well as a
 String attribute containing the Client id as a String and a ClientMessageToServer constant of 'ESTABLISH_SESSION'.
-When the the Server receives the message, it stores the Session as a value in a hashmap, with the client id String as 
+When the Server receives the message, it stores the Session as a value in a hashmap, with the client id String as
 the key.
 
-**Game requests**. The object contains String attribute containing the Client id as a String and a ClientMessageToServer 
-constant of 'WANT_GAME'. 
+**Game requests**. The object contains String attribute containing the Client id as a String and a ClientMessageToServer
+constant of 'WANT_GAME'.
 
 **Move requests** The object incorporates the Client id (as a String), a Move object, a Colour object (representing the
 player's colour) and a ClientMessageToServer constant of MOVE_REQUEST.
@@ -193,42 +213,46 @@ constant of 'DRAW_OFFER'.
 **Draw acceptance** The object contains String attribute containing the Client id as a String and a ClientMessageToServer
 constant of 'DRAW_ACCEPT'.
 
-**Resignation** The object contains String attribute containing the Client id relating to the resigning player as a 
+**Resignation** The object contains String attribute containing the Client id relating to the resigning player as a
 String and a ClientMessageToServer constant of 'RESIGN'.
 
 **Exiting the game** When a client closes their GUI, this results in a message being sent from that client to the server,
-which sends a message to the other client to get it to shut down. In this instance, the client with the window being 
-closed sends a message to the server, using a ClientMessageToServer object with a ClientMessageToServer constant of 
-'EXITING_DUE_TO_GUI_CLOSE', and the client id as a String. 
+which sends a message to the other client to get it to shut down. In this instance, the client with the window being
+closed sends a message to the server, using a ClientMessageToServer object with a ClientMessageToServer constant of
+'EXITING_DUE_TO_GUI_CLOSE', and the client id as a String.
 
-Messages are converted to JSON, and then sent to the server using the ClientMessageDispatchService class. 
+Messages are converted to JSON, and then sent to the server using the ClientMessageDispatchService class.
 
 ## B. Server sending messages
 
 When the server sends a message to a client, it creates a ServerMessageToClient object (which is later rendered into
 JSON). The ServerMessageToClient object contains a ServerToClientMessageType attribute, which is an enum representing
-the message type, that tells the client the purpose of the message. These are the enum constants: 
+the message type, that tells the client the purpose of the message. These are the enum constants:
 
-    ASSIGN_RED_COLOUR
-    ASSIGN_WHITE_COLOUR
-    UPDATE_BOARD_SAME_TURN
-    UPDATE_BOARD_CHANGE_OF_TURN
-    DECLINE_MOVE
-    INFORM_RED_IS_WINNER
-    INFORM_WHITE_IS_WINNER
-    INFORM_OF_DRAW_ACCEPTED
-    INFORM_OTHER_PLAYER_RESIGNED
-    INFORM_DRAW_OFFER_MADE
-    INFORM_OTHER_CLIENT_CLOSED_WINDOW
+    ASSIGN_RED_COLOUR,
+    ASSIGN_WHITE_COLOUR,
+    UPDATE_BOARD_SAME_TURN,
+    UPDATE_BOARD_CHANGE_OF_TURN,
+    DECLINE_MOVE,
+    INFORM_RED_IS_WINNER,
+    INFORM_WHITE_IS_WINNER,
+    INFORM_OF_DRAW_ACCEPTED,
+    INFORM_OTHER_PLAYER_RESIGNED,
+    INFORM_DRAW_OFFER_MADE,
+    INFORM_OTHER_CLIENT_CLOSED_WINDOW,
+    INFORM_CLIENT_OF_ID
 
-The message is encoded in JSON format before being sent to the client. 
+The message is encoded in JSON format before being sent to the client.
 
-The ServerMessageComposeService class contains methods that produce messages for one or both clients taking part in a 
-(as applicable), covering the scenarios described by the enums above. The client knows that the game is starting when 
-it receives a notification containing 'ASSIGN_RED_COLOUR' or 'ASSIGN_WHITE_COLOUR'. 
+The ServerMessageComposeService class contains methods that produce messages for one or both clients taking part in a
+(as applicable), covering the scenarios described by the enums above. 
 
-Some of the communications contain a Board object, to enable the client GUIs to be updated. 
+The client knows that the game is starting when
+it receives a notification containing 'ASSIGN_RED_COLOUR' or 'ASSIGN_WHITE_COLOUR'.
 
+Some communications contain a Board object, to enable the client GUIs to be updated. Also, when giving the client its
+id, a String field is used. That string is also used in subsequent communications with the client, for debugging 
+purposes.
 
 
 

@@ -108,13 +108,6 @@ public class GuiMessageController {
         view.updateLabels();
     }
 
-    public void setWelcomeMessage() {
-        view.setTopLineMessageText("Welcome to English Draughts!");
-        view.setMiddleLineMessageText("");
-        view.setBottomLineMessageText(colourMessage(amIRed));
-        view.updateLabels();
-    }
-
     private String colourMessage(boolean amIRed) {
         if (amIRed) {
             return "You are the red player";
@@ -178,6 +171,20 @@ public class GuiMessageController {
         view.setTopLineMessageText("Red can overtake again.");
         view.setMiddleLineMessageText("Red's move is still ongoing.");
         view.setBottomLineMessageText("");
+        view.updateLabels();
+    }
+
+    public void setWelcomeMessageWithColours() {
+        view.setTopLineMessageText("Welcome to English Draughts!");
+        view.setMiddleLineMessageText("");
+        view.setBottomLineMessageText(colourMessage(amIRed));
+        view.updateLabels();
+    }
+
+    public void setWelcomeMessageWithoutColours() {
+        view.setTopLineMessageText("Welcome to English Draughts!");
+        view.setMiddleLineMessageText("");
+        view.setBottomLineMessageText("Waiting for player assignment");
         view.updateLabels();
     }
 }

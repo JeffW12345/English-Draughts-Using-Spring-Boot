@@ -9,4 +9,6 @@ import lombok.Getter;
 public class ServerMessageToClient {
     private Board board;
     private ServerToClientMessageType serverResponseType;
+
+    public String clientId;
 }

@@ -28,16 +28,9 @@ public class ClientOutboundMessageService {
     }
 
     public void sendJsonMessageToServer(String jsonMessage) {
-        try {
-            WebSocketContainer container = ContainerProvider.getWebSocketContainer();
-            container.connectToServer(this, new URI("ws://localhost:8080/webSocket"));
-
-            if (session != null && session.isOpen()) {
-                session.getAsyncRemote().sendText(jsonMessage);
-                log.info(String.format("Client %s sent message to server: %s", client.getClientId(), jsonMessage));
-            }
-        } catch (Exception e) {
-            log.error(e.getMessage());
+        if (session != null && session.isOpen()) {
+            session.getAsyncRemote().sendText(jsonMessage);
+            log.info(String.format("Client %s sent message to server: %s", client.getClientId(), jsonMessage));
         }
     }
 
@@ -100,22 +93,15 @@ public class ClientOutboundMessageService {
 
     public void establishSession() {
         try {
-            ContainerProvider.getWebSocketContainer()
-                    .connectToServer(this, new URI("ws://localhost:8080/webSocket"));
-
-            ClientMessageToServer clientMessage = ClientMessageToServer.builder()
-                    .session(session)
-                    .clientId(client.getClientId())
-                    .requestType(ESTABLISH_SESSION)
-                    .build();
-
-            convertMessageToJSONThenSendToServer(clientMessage);
+            WebSocketContainer container = ContainerProvider.getWebSocketContainer();
+            session = container.connectToServer(this, new URI("ws://localhost:8080/webSocket"));
+            log.info("WebSocket session established");
         } catch (Exception e) {
-            log.error(e.getMessage());
+            log.error("Error establishing WebSocket session: " + e.getMessage());
         }
     }
 
-    public void tellServerClientExitedThenCloseSession(String windowClosedClientId, String message) {
+    public void tellServerClientExitedThenCloseSession(String windowClosedClientId) {
         ClientMessageToServer requestForGame = ClientMessageToServer.builder()
                 .clientId(windowClosedClientId)
                 .requestType(EXITING_DUE_TO_GUI_CLOSE)

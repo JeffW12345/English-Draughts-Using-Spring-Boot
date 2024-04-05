@@ -37,6 +37,7 @@ public class DraughtsBoardGui implements ActionListener {
     private final MasterClientController controller;
     private final DrawController drawController;
     private final WinLossController winLossController;
+    private boolean clientIdProvided, colourAssigned;
 
     public DraughtsBoardGui(MasterClientController controller) {
         this.controller = controller;
@@ -47,7 +48,11 @@ public class DraughtsBoardGui implements ActionListener {
     public void setUp() {
         newBoardActions();
         labelSetup();
-        controller.getGuiMessageController().setWelcomeMessage();
+        if (!colourAssigned){
+            controller.getGuiMessageController().setWelcomeMessageWithoutColours();
+        } else {
+            controller.getGuiMessageController().setWelcomeMessageWithColours();
+        }
     }
 
     void newBoardActions() {
@@ -84,7 +89,7 @@ public class DraughtsBoardGui implements ActionListener {
     }
 
     private void createAndConfigureButtons() {
-        offerNewGameButton = ViewUtils.createButton("Offer new game", true, this);
+        offerNewGameButton = ViewUtils.createButton("Offer new game", false, this);
         rightPanel.add(offerNewGameButton);
 
         offerDrawButton = ViewUtils.createButton("Offer draw", false, this);
@@ -273,5 +278,10 @@ public class DraughtsBoardGui implements ActionListener {
         JPanel panel = new JPanel();
         panel.setBackground(Color.YELLOW);
         rightPanel.add(panel);;
+    }
+
+    public void clientIdProvidedActions() {
+        clientIdProvided = true;
+        offerNewGameButton.setEnabled(true);
     }
 }
