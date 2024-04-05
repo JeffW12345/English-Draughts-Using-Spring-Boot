@@ -151,7 +151,7 @@ public class MasterClientController {
 
     public void thisClientGuiCloseActions() {
         client.getClientOutboundMessagingService()
-                .tellServerClientExitedThenCloseSession
+                .tellServerGuiClosedThenCloseSession
                         (client.getClientId());
     }
 }

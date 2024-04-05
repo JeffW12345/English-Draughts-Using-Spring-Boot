@@ -1,11 +1,11 @@
 package com.github.jeffw12345.draughts.client.io;
 
 import com.github.jeffw12345.draughts.client.Client;
-import com.github.jeffw12345.draughts.client.io.models.ClientMessagingUtility;
+import com.github.jeffw12345.draughts.client.io.models.ClientMessageToServer;
 import com.github.jeffw12345.draughts.game.models.Colour;
 import com.github.jeffw12345.draughts.game.models.move.Move;
-import jakarta.websocket.ClientEndpoint;
 import jakarta.websocket.ContainerProvider;
+import jakarta.websocket.DeploymentException;
 import jakarta.websocket.Session;
 import jakarta.websocket.WebSocketContainer;
 import lombok.Getter;
@@ -13,10 +13,10 @@ import lombok.extern.slf4j.Slf4j;
 
 import java.io.IOException;
 import java.net.URI;
+import java.net.URISyntaxException;
 
 import static com.github.jeffw12345.draughts.client.io.models.ClientToServerMessageType.*;
 
-@ClientEndpoint
 @Slf4j
 @Getter
 public class ClientOutboundMessageService {
@@ -30,7 +30,10 @@ public class ClientOutboundMessageService {
     public void sendJsonMessageToServer(String jsonMessage) {
         if (session != null && session.isOpen()) {
             session.getAsyncRemote().sendText(jsonMessage);
-            log.info(String.format("Client %s sent message to server: %s", client.getClientId(), jsonMessage));
+            log.info("Client {} sent message to server: {}", client.getClientId(), jsonMessage);
+        } else {
+            log.warn("Cannot send message: session is closed");
+            // Handle the situation gracefully, such as by logging a warning or taking alternative action.
         }
     }
 
@@ -65,30 +68,30 @@ public class ClientOutboundMessageService {
     }
 
     public void sendDrawOfferAcceptance(String clientId) {
-        ClientMessageToServer requestForGame = ClientMessageToServer.builder()
+        ClientMessageToServer acceptDrawMessage = ClientMessageToServer.builder()
                 .clientId(clientId)
                 .requestType(DRAW_ACCEPT)
                 .build();
 
-        convertMessageToJSONThenSendToServer(requestForGame);
+        convertMessageToJSONThenSendToServer(acceptDrawMessage);
     }
 
     public void sendDrawOfferProposal(String clientId) {
-        ClientMessageToServer requestForGame = ClientMessageToServer.builder()
+        ClientMessageToServer offerDrawMessage = ClientMessageToServer.builder()
                 .clientId(clientId)
                 .requestType(DRAW_OFFER)
                 .build();
 
-        convertMessageToJSONThenSendToServer(requestForGame);
+        convertMessageToJSONThenSendToServer(offerDrawMessage);
     }
 
     public void sendResignation(String resigningClientId) {
-        ClientMessageToServer requestForGame = ClientMessageToServer.builder()
+        ClientMessageToServer resignationRequest = ClientMessageToServer.builder()
                 .clientId(resigningClientId)
                 .requestType(RESIGN)
                 .build();
 
-        convertMessageToJSONThenSendToServer(requestForGame);
+        convertMessageToJSONThenSendToServer(resignationRequest);
     }
 
     public void establishSession() {
@@ -96,28 +99,31 @@ public class ClientOutboundMessageService {
             WebSocketContainer container = ContainerProvider.getWebSocketContainer();
             session = container.connectToServer(this, new URI("ws://localhost:8080/webSocket"));
             log.info("WebSocket session established");
-        } catch (Exception e) {
-            log.error("Error establishing WebSocket session: " + e.getMessage());
+        } catch (IOException | DeploymentException | URISyntaxException e) {
+            log.error("Error establishing WebSocket session: {}", e.getMessage());
+            // Handle the error gracefully, such as by retrying or notifying the user.
         }
     }
 
-    public void tellServerClientExitedThenCloseSession(String windowClosedClientId) {
-        ClientMessageToServer requestForGame = ClientMessageToServer.builder()
+    public void sendGuiCloseMessageAndCloseSession(String windowClosedClientId) {
+        ClientMessageToServer guiCloseMessage = ClientMessageToServer.builder()
                 .clientId(windowClosedClientId)
                 .requestType(EXITING_DUE_TO_GUI_CLOSE)
                 .build();
 
-        convertMessageToJSONThenSendToServer(requestForGame);
+        convertMessageToJSONThenSendToServer(guiCloseMessage);
         closeSession();
     }
 
     public void closeSession() {
-        try {
-            log.warn("About to close communication session with server. You will receive a confirmation message.");
-            session.close();
-        } catch (IOException e) {
-            log.error(String.format("Problem closing session: %s", e.getMessage()));
-            throw new RuntimeException(e);
+        if (session != null && session.isOpen()) {
+            try {
+                log.warn("Closing communication session with server. You will receive a confirmation message.");
+                session.close();
+            } catch (IOException e) {
+                log.error("Problem closing session: {}", e.getMessage());
+                // Handle the error gracefully, such as logging or retrying.
+            }
         }
     }
 }

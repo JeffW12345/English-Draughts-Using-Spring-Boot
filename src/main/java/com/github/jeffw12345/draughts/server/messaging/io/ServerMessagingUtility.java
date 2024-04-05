@@ -3,7 +3,7 @@ package com.github.jeffw12345.draughts.server.messaging.io;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.jeffw12345.draughts.game.models.Game;
-import com.github.jeffw12345.draughts.client.io.ClientMessageToServer;
+import com.github.jeffw12345.draughts.client.io.models.ClientMessageToServer;
 import com.github.jeffw12345.draughts.server.messaging.io.models.ServerMessageToClient;
 import com.github.jeffw12345.draughts.server.mapping.ClientIdToGameMapping;
 import lombok.extern.slf4j.Slf4j;

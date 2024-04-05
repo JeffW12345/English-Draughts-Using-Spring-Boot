@@ -1,6 +1,6 @@
 package com.github.jeffw12345.draughts.server.messaging.io;
 
-import com.github.jeffw12345.draughts.client.io.ClientMessageToServer;
+import com.github.jeffw12345.draughts.client.io.models.ClientMessageToServer;
 import com.github.jeffw12345.draughts.server.messaging.io.models.ServerMessageToClient;
 import com.github.jeffw12345.draughts.server.mapping.ClientIdToSessionMapping;
 import com.github.jeffw12345.draughts.server.messaging.processing.ServerMessageController;

@@ -8,7 +8,7 @@ import com.github.jeffw12345.draughts.game.models.move.Move;
 import com.github.jeffw12345.draughts.game.models.move.MoveStatus;
 import com.github.jeffw12345.draughts.server.ClientsAwaitingAGame;
 import com.github.jeffw12345.draughts.server.mapping.ClientIdToGameMapping;
-import com.github.jeffw12345.draughts.client.io.ClientMessageToServer;
+import com.github.jeffw12345.draughts.client.io.models.ClientMessageToServer;
 import com.github.jeffw12345.draughts.client.io.models.ClientToServerMessageType;
 import com.github.jeffw12345.draughts.server.messaging.io.ServerMessageComposeService;
 import lombok.extern.slf4j.Slf4j;

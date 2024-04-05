@@ -7,9 +7,6 @@ import com.github.jeffw12345.draughts.client.io.ClientOutboundMessageService;
 import lombok.Getter;
 import lombok.Setter;
 
-import java.util.concurrent.CountDownLatch;
-
-
 @Getter
 public class Client {
     @Setter
