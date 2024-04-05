@@ -59,16 +59,28 @@ These features may be added in a future update, however.
 COMMUNICATIONS OVERVIEW
 =======================
 
-The Jakarta WebSocket library is used for client-server communication. With WebSocket, when the client sends the server
-a message, a server-side method called 'onOpen', which is annotated with @OnOpen, is passed a Session object. This 
-Session object is specific to the client, and can be used to send communications to the client. The server then assigns 
-the client a unique ID, and does the following:
+The Jakarta WebSocket library is used for client-server communication. 
+
+The WebSocketConfiguration class configures the settings that enable the client to be able to communicate with the
+Spring Boot generated server. This class has a single method, which is never called directly by the application code.
+Instead, the @Configuration annotation ensures that it is called by the library code.
+
+The client establishes communication with the server by running the WebSocketContainer connectToServer method, like so:
+
+            WebSocketContainer container = ContainerProvider.getWebSocketContainer();
+            session = container.connectToServer(this, new URI("ws://localhost:8080/webSocket"));
+
+The server and the client use the URI 'ws://localhost:8080/webSocket' to exchange messages.
+
+Running this method causes a server-side method called 'onOpen', which is annotated with @OnOpen, to be passed a Session 
+object. This Session object is specific to the client, and can be used to send communications to the client. 
+The server then creates a unique ID for the client, and does the following:
 
 - Stores the Session object as a value in a HashMap, with the client id as the key.
 - Uses the Session object to message the client back to tell its ID.
 
 When the client sends the server future messages, it includes its ID within the message. This means that the server can 
-reply to that client, using the Session object stored in the dictionary. Also, there are other server side hashmaps 
+reply to that client, using the Session object stored in the hashmap. Also, there are other server side hashmaps 
 in place to make it so that:
 
 - The server can access the state of the game that the client is playing.
@@ -77,27 +89,11 @@ player move, for example).
 
 The application code does not actively listen for messages to the clients - instead, they are received on a push basis, 
 with the listening being handled in the background by the library code. This is achieved through inversion of control. 
-Whenever a message is received, the aforementioned 'onOpen' method is called and passed a Session object. In addition, 
-a method annotated with @onMessage is called and passed the sent message as a String. 
+Whenever a message is received, a method annotated with @onMessage is called and passed the message as a String. 
 
 Overall, this architecture allows for efficient client-server communication using WebSocket, with the server being able
 to manage multiple clients, their IDs, game states, and communication in a structured manner. The push-based message
 handling ensures that communication between clients and the server is responsive and event-driven.
-
-COMMUNICATIONS CONFIGURATION
-============================
-
-The WebSocketConfiguration class configures the settings that enable the client to be able to communicate with the 
-Spring Boot generated server. This class has a single method, which is never called directly by the application code. 
-Instead, the @Configuration annotation ensures that it is called by the library code. 
-
-When the first message is sent by a client, its establishConnection() method instantiates 
-the Session object it will use for outbound messages like so:
-
-            WebSocketContainer container = ContainerProvider.getWebSocketContainer();
-            session = container.connectToServer(this, new URI("ws://localhost:8080/webSocket"));
-
-Although this app is not web-based, the server and the client use 'ws://localhost:8080/webSocket' to exchange messages.
 
 SEQUENCE OF EVENTS
 ==================
