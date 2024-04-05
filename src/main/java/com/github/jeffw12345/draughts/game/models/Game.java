@@ -14,17 +14,13 @@ import java.util.concurrent.ConcurrentLinkedDeque;
 @Getter
 public class Game {
     private String gameId = String.valueOf(UUID.randomUUID());
-    private Board currentBoard;
+    private Board currentBoard = new Board();
     private Player redPlayer;
     private Player whitePlayer;
-    private boolean isRedTurn;
+    private boolean isRedTurn = true;
     private GameStatus gameStatus = GameStatus.AWAITING_NEW_GAME;
     private static final ConcurrentLinkedDeque<Move>  redPlayerMoves = new ConcurrentLinkedDeque<>();
     private static final ConcurrentLinkedDeque<Move>  whitePlayerMoves = new ConcurrentLinkedDeque<>();
-
-    public boolean awaitingNewGame(){
-        return gameStatus == GameStatus.AWAITING_NEW_GAME;
-    }
 
     public void addPlayer(Player player){
         if(whitePlayer != null && redPlayer != null) return; //TODO - Throw exception

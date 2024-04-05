@@ -31,25 +31,31 @@ public class Board {
 
 
     public Board() {
-        initializeBoard();
+        setUpBoard();
     }
 
-    private void initializeBoard() {
+    private void setUpBoard() {
         for (int row = 0; row < 8; row++) {
             rows[row] = createRow(row);
         }
     }
     private BoardRow createRow(int rowNumber) {
         BoardRow row = new BoardRow();
-        for (int column = 0; column < 8; column++) {
-            if ((rowNumber + column) % 2 == 0) {
-                row.getSquaresOnRow()[column] = EMPTY_SQUARE;
-            } else if (rowNumber < 3) {
-                row.getSquaresOnRow()[column] = WHITE_MAN;
-            } else if (rowNumber > 4) {
-                row.getSquaresOnRow()[column] = RED_MAN;
-            } else {
-                row.getSquaresOnRow()[column] = EMPTY_SQUARE;
+        for (int columnNumber = 0; columnNumber < 8; columnNumber++) {
+            if (rowNumber == 0 || rowNumber == 2){
+                row.getSquaresOnRow()[columnNumber] = columnNumber % 2 == 0 ? RED_MAN : EMPTY_SQUARE;
+            }
+            if (rowNumber == 1){
+                row.getSquaresOnRow()[columnNumber] = columnNumber % 2 != 0 ? RED_MAN : EMPTY_SQUARE;
+            }
+            if (rowNumber > 2 && rowNumber < 5){
+                row.getSquaresOnRow()[columnNumber] = EMPTY_SQUARE;
+            }
+            if (rowNumber == 5 || rowNumber == 7){
+                row.getSquaresOnRow()[columnNumber] = columnNumber % 2 != 0 ? WHITE_MAN : EMPTY_SQUARE;
+            }
+            if (rowNumber == 6){
+                row.getSquaresOnRow()[columnNumber] = columnNumber % 2 == 0 ? WHITE_MAN : EMPTY_SQUARE;
             }
         }
         return row;
