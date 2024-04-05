@@ -16,7 +16,6 @@ import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
-import java.io.IOException;
 import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.CopyOnWriteArraySet;
@@ -28,31 +27,28 @@ import static com.github.jeffw12345.draughts.models.messaging.ServerToClientMess
 @Component
 @ServerEndpoint(value = "/webSocket")
 public class ServerMessagingInboundService {
-
     private final static Set<Session> SESSIONS = new CopyOnWriteArraySet<>();
     @OnOpen
     public static synchronized void onOpen(Session session) {
         SESSIONS.add(session);
+        log.info(String.format("New server session established. Number of sessions: %s", SESSIONS.size()));
+
         String clientId = String.valueOf(UUID.randomUUID());
-        ClientIdToSessionMapping.add(clientId, session);
-        sendClientIdToClient(clientId, session);
-        log.info(String.format("New server session. Number of sessions: %s", SESSIONS.size()));
+        ClientIdToSessionMapping.addMapping(clientId, session);
+        sendClientIdToClient(clientId);
     }
 
-    private static void sendClientIdToClient(String clientId, Session session) {
-        //TODO - Code to create object for giving client its id. Also do a CountDownLatch.
-        // Create new thread, wait for clientId to not be null, then latch.countDown()
-        try {
-            ServerMessageToClient informClientOfIdAsObject = ServerMessageToClient.builder()
-                    .serverResponseType(INFORM_CLIENT_OF_ID)
-                    .clientId(clientId)
-                    .build();
+    private static void sendClientIdToClient(String clientId) {
+        ServerMessageToClient informClientOfIdAsObject = ServerMessageToClient.builder()
+                .serverResponseType(INFORM_CLIENT_OF_ID)
+                .clientId(clientId)
+                .build();
 
-            String informClientOfIdAsJson =ServerMessagingUtility.convertServerMessageToJSON(informClientOfIdAsObject);
-            session.getBasicRemote().sendText(informClientOfIdAsJson);
-        } catch (IOException e) {
-            log.error("Error sending message to client: {}", e.getMessage());
-        }
+        String informClientOfIdAsJson = ServerMessagingUtility.convertServerMessageToJSON(informClientOfIdAsObject);
+
+        log.info("About to inform client {} of its id", clientId);
+
+        ServerMessagingOutboundService.sendJsonMessage(informClientOfIdAsJson, clientId);
     }
 
     @OnMessage
@@ -71,8 +67,10 @@ public class ServerMessagingInboundService {
 
     private static void updateClientIdToSessionDictionary(ClientMessageToServer message) {
         String clientId = message.getClientId();
-        Session session = ClientIdToSessionMapping.getSessionFromClientId(clientId);
-        ClientIdToSessionMapping.add(clientId, session);
+        if (clientId != null){
+            Session session = ClientIdToSessionMapping.getSessionFromClientId(clientId);
+            ClientIdToSessionMapping.addMapping(clientId, session);
+        }
     }
 
     @OnClose

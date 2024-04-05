@@ -8,7 +8,7 @@ import java.util.concurrent.ConcurrentHashMap;
 public class ClientIdToSessionMapping {
     private static final ConcurrentHashMap<String, Session> clientIdToSessionObject = new ConcurrentHashMap<>();
 
-    public static void add(String clientId, Session session){
+    public static void addMapping(String clientId, Session session){
         if (clientId == null){
             return;
         }
