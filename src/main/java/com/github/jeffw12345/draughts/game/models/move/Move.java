@@ -80,40 +80,52 @@ public class Move {
     public boolean isTwoSquareMove(){
         return Math.abs(startSquareColumn - endSquareColumn) == 2;
     }
+
+    @JsonIgnore
     public boolean isRightUpOne(){
         return (startSquareRow - endSquareRow == -1) && (startSquareColumn - endSquareColumn == -1);
     }
+    @JsonIgnore
     public boolean isLeftUpOne() {
         return (startSquareRow - endSquareRow == 1) && (startSquareColumn - endSquareColumn == -1);
     }
+    @JsonIgnore
     public boolean isRightDownOne() {
         return (startSquareRow - endSquareRow == -1) && (startSquareColumn - endSquareColumn == 1);
     }
+    @JsonIgnore
     public boolean isLeftDownOne() {
         return (startSquareRow - endSquareRow == -1) && (startSquareColumn - endSquareColumn == -1);
     }
+    @JsonIgnore
     public boolean isRightUpTwo() {
         return (startSquareRow - endSquareRow == -2) && (startSquareColumn - endSquareColumn == -2);
     }
+    @JsonIgnore
     public boolean isLeftUpTwo() {
         return (startSquareRow - endSquareRow == 2) && (startSquareColumn - endSquareColumn == -2);
     }
+    @JsonIgnore
     public boolean isRightDownTwo() {
         return (startSquareRow - endSquareRow == -2) && (startSquareColumn - endSquareColumn == 2);
     }
+    @JsonIgnore
     public boolean isLeftDownTwo() {
         return (startSquareRow - endSquareRow == 2) && (startSquareColumn - endSquareColumn == 2);
     }
+    @JsonIgnore
     public boolean isMovingUpBoard(){
         return endSquareRow > startSquareRow;
     }
+    @JsonIgnore
     public boolean isMovingDownBoard(){
         return endSquareRow > startSquareRow;
     }
-
+    @JsonIgnore
     public boolean startCoordinatesOnlyProvided(){
         return startCoordinatesProvided && !endCoordinatesProvided;
     }
+    @JsonIgnore
     public boolean noStartOrEndSquareProvidedYet(){
         return !startCoordinatesProvided && !endCoordinatesProvided;
     }
@@ -134,9 +146,6 @@ public class Move {
         int middleRow = (startSquareRow + endSquareRow) / 2;
         int middleColumn = (startSquareColumn + endSquareColumn) / 2;
         return board.getSquareAtRowAndColumn(middleRow, middleColumn);
-    }
-    public boolean isLegal(Game game){
-        return MoveValidationService.isMoveLegal(game, this);
     }
 
     public void moveProcessedUpdate(MoveStatus newStatus){
