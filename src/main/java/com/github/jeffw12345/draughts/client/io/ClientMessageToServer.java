@@ -1,7 +1,8 @@
-package com.github.jeffw12345.draughts.models.messaging;
+package com.github.jeffw12345.draughts.client.io;
 
-import com.github.jeffw12345.draughts.models.game.Colour;
-import com.github.jeffw12345.draughts.models.game.move.Move;
+import com.github.jeffw12345.draughts.client.io.models.ClientToServerMessageType;
+import com.github.jeffw12345.draughts.game.models.Colour;
+import com.github.jeffw12345.draughts.game.models.move.Move;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

@@ -1,6 +1,6 @@
 package com.github.jeffw12345.draughts.server.messaging.io;
 
-import com.github.jeffw12345.draughts.models.game.Game;
+import com.github.jeffw12345.draughts.game.models.Game;
 import com.github.jeffw12345.draughts.server.mapping.ClientIdToGameMapping;
 import com.github.jeffw12345.draughts.server.mapping.ClientIdToSessionMapping;
 import jakarta.websocket.Session;

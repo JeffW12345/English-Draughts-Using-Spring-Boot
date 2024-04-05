@@ -1,10 +1,10 @@
-package com.github.jeffw12345.draughts.models.game;
+package com.github.jeffw12345.draughts.game.models;
 
-import com.github.jeffw12345.draughts.models.game.move.Move;
-import com.github.jeffw12345.draughts.models.game.move.type.KingMoveType;
-import com.github.jeffw12345.draughts.models.game.move.type.MoveType;
-import com.github.jeffw12345.draughts.models.game.move.type.RedManMoveType;
-import com.github.jeffw12345.draughts.models.game.move.type.WhiteManMoveType;
+import com.github.jeffw12345.draughts.game.models.move.type.KingMoveType;
+import com.github.jeffw12345.draughts.game.models.move.type.MoveType;
+import com.github.jeffw12345.draughts.game.models.move.type.RedManMoveType;
+import com.github.jeffw12345.draughts.game.models.move.type.WhiteManMoveType;
+import com.github.jeffw12345.draughts.game.models.move.Move;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 

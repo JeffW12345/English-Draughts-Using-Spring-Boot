@@ -1,6 +1,6 @@
 package com.github.jeffw12345.draughts.server.mapping;
 
-import com.github.jeffw12345.draughts.models.game.Game;
+import com.github.jeffw12345.draughts.game.models.Game;
 
 import java.util.List;
 import java.util.Map;

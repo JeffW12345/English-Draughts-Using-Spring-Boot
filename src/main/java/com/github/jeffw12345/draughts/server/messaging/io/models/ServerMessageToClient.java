@@ -1,6 +1,6 @@
-package com.github.jeffw12345.draughts.models.messaging;
+package com.github.jeffw12345.draughts.server.messaging.io.models;
 
-import com.github.jeffw12345.draughts.models.game.Board;
+import com.github.jeffw12345.draughts.game.models.Board;
 import lombok.Builder;
 import lombok.Getter;
 

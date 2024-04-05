@@ -1,17 +1,17 @@
 package com.github.jeffw12345.draughts.server.messaging.io;
 
-import com.github.jeffw12345.draughts.models.game.Board;
-import com.github.jeffw12345.draughts.models.game.Colour;
-import com.github.jeffw12345.draughts.models.messaging.ServerMessageToClient;
-import com.github.jeffw12345.draughts.models.messaging.ServerToClientMessageType;
+import com.github.jeffw12345.draughts.game.models.Board;
+import com.github.jeffw12345.draughts.game.models.Colour;
+import com.github.jeffw12345.draughts.server.messaging.io.models.ServerMessageToClient;
+import com.github.jeffw12345.draughts.server.messaging.io.models.ServerToClientMessageType;
 
-import static com.github.jeffw12345.draughts.models.messaging.ServerToClientMessageType.DECLINE_MOVE;
-import static com.github.jeffw12345.draughts.models.messaging.ServerToClientMessageType.INFORM_DRAW_OFFER_MADE;
-import static com.github.jeffw12345.draughts.models.messaging.ServerToClientMessageType.INFORM_OF_DRAW_ACCEPTED;
-import static com.github.jeffw12345.draughts.models.messaging.ServerToClientMessageType.INFORM_OTHER_CLIENT_CLOSED_WINDOW;
-import static com.github.jeffw12345.draughts.models.messaging.ServerToClientMessageType.INFORM_OTHER_PLAYER_RESIGNED;
-import static com.github.jeffw12345.draughts.models.messaging.ServerToClientMessageType.UPDATE_BOARD_CHANGE_OF_TURN;
-import static com.github.jeffw12345.draughts.models.messaging.ServerToClientMessageType.UPDATE_BOARD_SAME_TURN;
+import static com.github.jeffw12345.draughts.server.messaging.io.models.ServerToClientMessageType.DECLINE_MOVE;
+import static com.github.jeffw12345.draughts.server.messaging.io.models.ServerToClientMessageType.INFORM_DRAW_OFFER_MADE;
+import static com.github.jeffw12345.draughts.server.messaging.io.models.ServerToClientMessageType.INFORM_OF_DRAW_ACCEPTED;
+import static com.github.jeffw12345.draughts.server.messaging.io.models.ServerToClientMessageType.INFORM_OTHER_CLIENT_CLOSED_WINDOW;
+import static com.github.jeffw12345.draughts.server.messaging.io.models.ServerToClientMessageType.INFORM_OTHER_PLAYER_RESIGNED;
+import static com.github.jeffw12345.draughts.server.messaging.io.models.ServerToClientMessageType.UPDATE_BOARD_CHANGE_OF_TURN;
+import static com.github.jeffw12345.draughts.server.messaging.io.models.ServerToClientMessageType.UPDATE_BOARD_SAME_TURN;
 
 public class ServerMessageComposeService {
 

@@ -1,4 +1,4 @@
-package com.github.jeffw12345.draughts.models.messaging;
+package com.github.jeffw12345.draughts.server.messaging.io.models;
 
 public enum ServerToClientMessageType {
     ASSIGN_RED_COLOUR,

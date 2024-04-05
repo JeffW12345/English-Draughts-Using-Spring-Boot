@@ -1,9 +1,9 @@
-package com.github.jeffw12345.draughts.client.io;
+package com.github.jeffw12345.draughts.client.io.models;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.github.jeffw12345.draughts.models.messaging.ClientMessageToServer;
-import com.github.jeffw12345.draughts.models.messaging.ServerMessageToClient;
+import com.github.jeffw12345.draughts.client.io.ClientMessageToServer;
+import com.github.jeffw12345.draughts.server.messaging.io.models.ServerMessageToClient;
 import lombok.extern.slf4j.Slf4j; //TODO - Add to other classes
 
 @Slf4j

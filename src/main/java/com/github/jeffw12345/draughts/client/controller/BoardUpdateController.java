@@ -1,6 +1,6 @@
 package com.github.jeffw12345.draughts.client.controller;
 
-import com.github.jeffw12345.draughts.models.messaging.ServerMessageToClient;
+import com.github.jeffw12345.draughts.server.messaging.io.models.ServerMessageToClient;
 
 public class BoardUpdateController {
     private final MasterClientController masterController;

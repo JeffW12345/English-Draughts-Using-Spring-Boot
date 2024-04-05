@@ -1,4 +1,4 @@
-package com.github.jeffw12345.draughts.models.game;
+package com.github.jeffw12345.draughts.game.models;
 
 import lombok.Builder;
 import lombok.Getter;

@@ -1,6 +1,6 @@
-package com.github.jeffw12345.draughts.models.game;
+package com.github.jeffw12345.draughts.game.models;
 
-import com.github.jeffw12345.draughts.models.messaging.ServerMessageToClient;
+import com.github.jeffw12345.draughts.server.messaging.io.models.ServerMessageToClient;
 import com.github.jeffw12345.draughts.server.messaging.io.ServerMessagingOutboundService;
 import com.github.jeffw12345.draughts.server.messaging.io.ServerMessagingUtility;
 import lombok.Getter;
@@ -8,8 +8,8 @@ import lombok.Setter;
 
 import java.util.UUID;
 
-import static com.github.jeffw12345.draughts.models.messaging.ServerToClientMessageType.ASSIGN_RED_COLOUR;
-import static com.github.jeffw12345.draughts.models.messaging.ServerToClientMessageType.ASSIGN_WHITE_COLOUR;
+import static com.github.jeffw12345.draughts.server.messaging.io.models.ServerToClientMessageType.ASSIGN_RED_COLOUR;
+import static com.github.jeffw12345.draughts.server.messaging.io.models.ServerToClientMessageType.ASSIGN_WHITE_COLOUR;
 
 @Getter
 @Setter

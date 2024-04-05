@@ -1,9 +1,9 @@
 package com.github.jeffw12345.draughts.client.io;
 
 import com.github.jeffw12345.draughts.client.Client;
-import com.github.jeffw12345.draughts.models.game.Colour;
-import com.github.jeffw12345.draughts.models.game.move.Move;
-import com.github.jeffw12345.draughts.models.messaging.ClientMessageToServer;
+import com.github.jeffw12345.draughts.client.io.models.ClientMessagingUtility;
+import com.github.jeffw12345.draughts.game.models.Colour;
+import com.github.jeffw12345.draughts.game.models.move.Move;
 import jakarta.websocket.ClientEndpoint;
 import jakarta.websocket.ContainerProvider;
 import jakarta.websocket.Session;
@@ -14,7 +14,7 @@ import lombok.extern.slf4j.Slf4j;
 import java.io.IOException;
 import java.net.URI;
 
-import static com.github.jeffw12345.draughts.models.messaging.ClientToServerMessageType.*;
+import static com.github.jeffw12345.draughts.client.io.models.ClientToServerMessageType.*;
 
 @ClientEndpoint
 @Slf4j

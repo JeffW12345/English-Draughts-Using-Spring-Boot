@@ -2,10 +2,10 @@ package com.github.jeffw12345.draughts.client.controller;
 
 import com.github.jeffw12345.draughts.client.Client;
 import com.github.jeffw12345.draughts.client.view.DraughtsBoardGui;
-import com.github.jeffw12345.draughts.models.game.Colour;
-import com.github.jeffw12345.draughts.models.game.move.Move;
-import com.github.jeffw12345.draughts.models.messaging.ServerMessageToClient;
-import com.github.jeffw12345.draughts.models.messaging.ServerToClientMessageType;
+import com.github.jeffw12345.draughts.game.models.Colour;
+import com.github.jeffw12345.draughts.game.models.move.Move;
+import com.github.jeffw12345.draughts.server.messaging.io.models.ServerMessageToClient;
+import com.github.jeffw12345.draughts.server.messaging.io.models.ServerToClientMessageType;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 

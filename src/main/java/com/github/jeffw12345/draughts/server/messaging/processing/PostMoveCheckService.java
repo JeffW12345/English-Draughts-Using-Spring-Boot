@@ -1,12 +1,12 @@
 package com.github.jeffw12345.draughts.server.messaging.processing;
 
-import com.github.jeffw12345.draughts.models.game.Board;
-import com.github.jeffw12345.draughts.models.game.Colour;
-import com.github.jeffw12345.draughts.models.game.Game;
-import com.github.jeffw12345.draughts.models.game.SquareContent;
-import com.github.jeffw12345.draughts.models.game.move.Move;
-import com.github.jeffw12345.draughts.models.game.move.type.BackwardJump;
-import com.github.jeffw12345.draughts.models.game.move.type.ForwardJump;
+import com.github.jeffw12345.draughts.game.models.Board;
+import com.github.jeffw12345.draughts.game.models.Colour;
+import com.github.jeffw12345.draughts.game.models.Game;
+import com.github.jeffw12345.draughts.game.models.SquareContent;
+import com.github.jeffw12345.draughts.game.models.move.Move;
+import com.github.jeffw12345.draughts.game.models.move.type.BackwardJump;
+import com.github.jeffw12345.draughts.game.models.move.type.ForwardJump;
 
 public class PostMoveCheckService {
     public static boolean isFollowUpOvertakePossible(Board board, SquareContent startingSquareContent, Move move) {

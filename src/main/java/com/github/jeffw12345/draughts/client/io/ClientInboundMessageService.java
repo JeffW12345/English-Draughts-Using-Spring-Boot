@@ -1,7 +1,8 @@
 package com.github.jeffw12345.draughts.client.io;
 
 import com.github.jeffw12345.draughts.client.Client;
-import com.github.jeffw12345.draughts.models.messaging.ServerMessageToClient;
+import com.github.jeffw12345.draughts.client.io.models.ClientMessagingUtility;
+import com.github.jeffw12345.draughts.server.messaging.io.models.ServerMessageToClient;
 
 import jakarta.websocket.ClientEndpoint;
 import jakarta.websocket.OnClose;
@@ -17,8 +18,6 @@ import lombok.extern.slf4j.Slf4j;
 public class ClientInboundMessageService {
     private Session session;
     private final Client client;
-    private String sessionId;
-
     public ClientInboundMessageService(Client client) {
         this.client = client;
     }
@@ -26,7 +25,6 @@ public class ClientInboundMessageService {
     @OnOpen
     public void onOpen(Session session) {
         this.session = session;
-        this.sessionId = session.getId();
 
         ClientSessionStorage.storeSession(session);
 
@@ -40,8 +38,9 @@ public class ClientInboundMessageService {
 
     @OnMessage
     public void onMessage(String jsonMessage) {
-        log.info(String.format("Incoming message to client id %s from server: %s", client.getClientId(), jsonMessage));
-        ServerMessageToClient messageFromServerAsObject = ClientMessagingUtility.getServerMessageObjectFromJson(jsonMessage);
+        log.info("Incoming message to client id {} from server: {}", client.getClientId(), jsonMessage);
+        ServerMessageToClient messageFromServerAsObject =
+                ClientMessagingUtility.getServerMessageObjectFromJson(jsonMessage);
         client.getClientController().processMessageFromServer(messageFromServerAsObject);
     }
 }

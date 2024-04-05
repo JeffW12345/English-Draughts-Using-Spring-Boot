@@ -1,6 +1,6 @@
-package com.github.jeffw12345.draughts.models.game;
+package com.github.jeffw12345.draughts.game.models;
 
-import com.github.jeffw12345.draughts.models.game.move.Move;
+import com.github.jeffw12345.draughts.game.models.move.Move;
 import com.github.jeffw12345.draughts.server.mapping.ClientIdToGameMapping;
 import lombok.Getter;
 import lombok.Setter;
