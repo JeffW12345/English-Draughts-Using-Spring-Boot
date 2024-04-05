@@ -284,4 +284,9 @@ public class DraughtsBoardGui implements ActionListener {
         clientIdProvided = true;
         offerNewGameButton.setEnabled(true);
     }
+
+    public void buttonEnablingAtStartOfGame() {
+        offerDrawButton.setEnabled(true);
+        resignButton.setEnabled(true);
+    }
 }

@@ -1,43 +1,62 @@
 package com.github.jeffw12345.draughts.game.models.move;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.github.jeffw12345.draughts.game.models.Board;
 import com.github.jeffw12345.draughts.game.models.Colour;
 import com.github.jeffw12345.draughts.game.models.Game;
 import com.github.jeffw12345.draughts.game.models.Square;
 import com.github.jeffw12345.draughts.game.models.SquareContent;
 import com.github.jeffw12345.draughts.server.messaging.processing.MoveValidationService;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.sql.Timestamp;
 import java.util.UUID;
 
+@NoArgsConstructor
+@AllArgsConstructor
 @Builder
 @Setter
 @Getter
 public class Move {
+    @JsonProperty("MOVE_ID")
     private String MOVE_ID = String.valueOf(UUID.randomUUID());
+    @JsonProperty("startSquare")
     private Square startSquare;
+    @JsonProperty("endSquare")
     private Square endSquare;
-
+    @JsonProperty("startSquareColumn")
     private int startSquareColumn;
+    @JsonProperty("startSquareRow")
     private int startSquareRow;
+    @JsonProperty("startCoordinatesProvided")
     private boolean startCoordinatesProvided;
 
+    @JsonProperty("endSquareColumn")
     private int endSquareColumn;
+    @JsonProperty("endSquareRow")
     private int endSquareRow;
+    @JsonProperty("endCoordinatesProvided")
     private boolean endCoordinatesProvided;
 
-
+    @JsonProperty("startAndEndCoordinatesProvided")
     private boolean startAndEndCoordinatesProvided;
 
+    @JsonProperty("overtakingMove")
     private boolean overtakingMove;
+    @JsonProperty("oneSquareMove")
     private boolean oneSquareMove;
 
+    @JsonProperty("moveStatus")
     private MoveStatus moveStatus = MoveStatus.PENDING;
+    @JsonProperty("isTurnComplete")
     private boolean isTurnComplete;
-    Timestamp moveProcessedTimestamp;
+    @JsonProperty("moveProcessedTimestamp")
+    private Timestamp moveProcessedTimestamp;
 
 
     public void setStartCoordinates(int row, int column){
@@ -57,6 +76,7 @@ public class Move {
     public boolean isOneSquareMove(){
         return Math.abs(startSquareColumn - endSquareColumn) == 1;
     }
+    @JsonIgnore
     public boolean isTwoSquareMove(){
         return Math.abs(startSquareColumn - endSquareColumn) == 2;
     }

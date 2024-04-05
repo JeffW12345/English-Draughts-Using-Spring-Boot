@@ -104,6 +104,7 @@ public class MasterClientController {
         amIRed = colour == Colour.RED;
         gameInProgress = true;
         guiMessageController.bothPlayersReadyMessage();
+        view.buttonEnablingAtStartOfGame();
     }
 
     public void boardSquareClicked(int row, int column) {
