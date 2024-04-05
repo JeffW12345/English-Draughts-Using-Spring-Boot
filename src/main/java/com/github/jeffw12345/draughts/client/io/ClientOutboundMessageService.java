@@ -4,7 +4,6 @@ import com.github.jeffw12345.draughts.client.Client;
 import com.github.jeffw12345.draughts.client.io.models.ClientMessageToServer;
 import com.github.jeffw12345.draughts.game.models.Colour;
 import com.github.jeffw12345.draughts.game.models.move.Move;
-import jakarta.websocket.ClientEndpoint;
 import jakarta.websocket.ContainerProvider;
 import jakarta.websocket.DeploymentException;
 import jakarta.websocket.Session;
@@ -20,7 +19,6 @@ import static com.github.jeffw12345.draughts.client.io.models.ClientToServerMess
 
 @Slf4j
 @Getter
-@ClientEndpoint
 public class ClientOutboundMessageService {
     private Session session;
     private final Client client;
@@ -98,7 +96,7 @@ public class ClientOutboundMessageService {
     public void establishSession() {
         try {
             WebSocketContainer container = ContainerProvider.getWebSocketContainer();
-            session = container.connectToServer(this, new URI("ws://localhost:8080/webSocket"));
+            session = container.connectToServer(client.getClientInboundMessagingService(), new URI("ws://localhost:8080/webSocket"));
             log.info("WebSocket session established");
         } catch (IOException | DeploymentException | URISyntaxException e) {
             log.error("Error establishing WebSocket session: {}", e.getMessage());
