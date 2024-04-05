@@ -28,6 +28,9 @@ public class ClientInboundMessageService {
     @OnMessage
     public void onMessage(String jsonMessage) {
         log.info("Incoming message to client id {} from server: {}", client.getClientId(), jsonMessage);
+        if (jsonMessage.contains("ASSIGN_RED_COLOUR")){
+            log.info("STOP");
+        }
         try {
             ServerMessageToClient messageFromServerAsObject = ClientMessagingUtility
                     .getServerMessageObjectFromJson(jsonMessage);

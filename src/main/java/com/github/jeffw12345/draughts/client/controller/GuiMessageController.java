@@ -6,12 +6,17 @@ import javax.swing.*;
 
 public class GuiMessageController {
     private final DraughtsBoardGui view;
-    private final boolean amIRed;
-    private final boolean isRedsTurn;
+    private boolean amIRed;
+    private boolean isRedsTurn;
+    private final MasterClientController masterClientController;
     public GuiMessageController(MasterClientController masterController){
+        this.masterClientController = masterController;
         this.view = masterController.getView();
-        this.amIRed = masterController.isAmIRed();
-        this.isRedsTurn = masterController.isRedsTurn();
+    }
+
+    public void syncWithControllerColourAndTurnValues(){
+        this.amIRed = masterClientController.isAmIRed();
+        this.isRedsTurn = masterClientController.isRedsTurn();
     }
     void ifWhiteLostMessage() {
         if (amIRed) {
@@ -77,6 +82,7 @@ public class GuiMessageController {
     }
 
     String turnMessage() {
+        syncWithControllerColourAndTurnValues();
         if (amIRed && isRedsTurn) {
             return "It is your turn.";
         }
@@ -120,6 +126,7 @@ public class GuiMessageController {
     }
 
     void bothPlayersReadyMessage() {
+        syncWithControllerColourAndTurnValues();
         view.setMiddleLineMessageText("Both players are connected");
         if (amIRed) {
             view.setBottomLineMessageText("You are the red player.");
@@ -130,6 +137,7 @@ public class GuiMessageController {
     }
 
     void turnOverMessage(){
+        syncWithControllerColourAndTurnValues();
         if (isRedsTurn){
             redMoveOverMessage();
         } else {
@@ -153,6 +161,7 @@ public class GuiMessageController {
 
 
     public void turnOngoingMessage() {
+        syncWithControllerColourAndTurnValues();
         if (isRedsTurn){
             redTurnOngoingMessage();
         } else {
@@ -175,6 +184,7 @@ public class GuiMessageController {
     }
 
     public void setWelcomeMessageWithColours() {
+        syncWithControllerColourAndTurnValues();
         view.setTopLineMessageText("Welcome to English Draughts!");
         view.setMiddleLineMessageText("");
         view.setBottomLineMessageText(colourMessage(amIRed));
