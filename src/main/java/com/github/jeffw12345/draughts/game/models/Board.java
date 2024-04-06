@@ -207,7 +207,8 @@ public class Board {
     @Override
     public String toString() {
         StringBuilder stringBuilder = new StringBuilder();
-        for (int row = 0; row < 8; row++) {
+        for (int row = 7; row > -1; row--) {
+            stringBuilder.append("Row number: ").append(row).append(" ");
             for (int column = 0; column < 8; column++) {
                 SquareContent squareContent = rows[row].getSquaresOnRow()[column].getSquareContent();
                 stringBuilder.append(getStringRepresentation(squareContent)).append(" ");
@@ -232,5 +233,12 @@ public class Board {
             default:
                 return ' ';
         }
+    }
+    public static void main(String[] args){
+        //TODO - Delete. For debugging
+        Board board = new Board();
+        System.out.println(board);
+        SquareContent squareContent = board.getSquareContentAtRowAndColumn(0, 0);
+        System.out.println(squareContent);
     }
 }
