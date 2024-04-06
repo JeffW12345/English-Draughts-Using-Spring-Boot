@@ -38,7 +38,14 @@ public class MoveValidationService {
             return false;
         }
 
-        if(move.isOvertakingMove() && !isOverTakeValid(game, playerMakingMoveColour, move)){
+        if (move.isOvertakingMove()){
+            log.info("Hello"); //TODO - Delete
+        }
+        if(!isOverTakeValid(game, playerMakingMoveColour, move)){
+            log.info("Hello"); //TODO - Delete
+        }
+
+        if (move.isOvertakingMove() && !isOverTakeValid(game, playerMakingMoveColour, move)){
             return false;
         }
 

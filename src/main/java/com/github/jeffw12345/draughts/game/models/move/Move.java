@@ -123,12 +123,9 @@ public class Move {
     public boolean noStartOrEndSquareProvidedYet(){
         return !startCoordinatesProvided && !endCoordinatesProvided;
     }
-    public boolean willMoveResultInCoronation(Board board){
-        Colour playerColour = SquareContent
-                .getColour(board.getSquareContentAtRowAndColumn(startSquareRow, startSquareColumn));
-        return (playerColour == Colour.RED && endSquareRow == 7) || (playerColour == Colour.WHITE && endSquareRow == 0);
+    public boolean willMoveResultInCoronation(){
+        return (endSquareRow == 7 || endSquareRow == 0) && startSquareRow != endSquareRow;
     }
-
     public void moveProcessedUpdate(MoveStatus newStatus){
         moveStatus = newStatus;
         moveProcessedTimestamp = new Timestamp(System.currentTimeMillis());

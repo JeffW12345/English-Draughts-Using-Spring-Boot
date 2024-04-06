@@ -1,10 +1,6 @@
 package com.github.jeffw12345.draughts.game.models;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.github.jeffw12345.draughts.game.models.move.type.KingMoveType;
-import com.github.jeffw12345.draughts.game.models.move.type.MoveType;
-import com.github.jeffw12345.draughts.game.models.move.type.RedManMoveType;
-import com.github.jeffw12345.draughts.game.models.move.type.WhiteManMoveType;
 import com.github.jeffw12345.draughts.game.models.move.Move;
 import lombok.Builder;
 import lombok.Getter;
@@ -63,7 +59,8 @@ public class Board {
         if (isValidPosition(rowNumber, columnNumber)) {
             return rows[rowNumber].getSquareAtColumn(columnNumber).getSquareContent();
         } else {
-            throw new IllegalArgumentException("Invalid row or column index");
+            throw new IllegalArgumentException
+                    (String.format("Invalid row or column index. Row: %s Column: %s", rowNumber, columnNumber));
         }
     }
 
@@ -71,7 +68,8 @@ public class Board {
         if (isValidPosition(rowNumber, columnNumber)) {
             return rows[rowNumber].getSquareAtColumn(columnNumber);
         } else {
-            throw new IllegalArgumentException("Invalid row or column index");
+            throw new IllegalArgumentException
+                    (String.format("Invalid row or column index. Row: %s Column: %s", rowNumber, columnNumber));
         }
     }
 
@@ -92,9 +90,9 @@ public class Board {
         startSquareOnBoard.setSquareContent(SquareContent.EMPTY);
 
         if (move.isOneSquareMove()) {
-            updateForOneSquareMoveActions(move, destinationSquare, colourOfPieceBeingMoved, this);
+            updateForOneSquareMoveActions(move, destinationSquare, colourOfPieceBeingMoved);
         } else if (move.isOvertakingMove()) {
-            updateForTwoSquareMoveActions(move, destinationSquare, middleSquare, colourOfPieceBeingMoved, this);
+            updateForTwoSquareMoveActions(move, destinationSquare, middleSquare, colourOfPieceBeingMoved);
         }
     }
 
@@ -115,9 +113,8 @@ public class Board {
     private static void updateForTwoSquareMoveActions(Move move,
                                                       Square destinationSquare,
                                                       Square middleSquare,
-                                                      Colour colourOfPieceBeingMoved,
-                                                      Board board) {
-        if (move.willMoveResultInCoronation(board)){
+                                                      Colour colourOfPieceBeingMoved) {
+        if (move.willMoveResultInCoronation()){
             destinationSquare.setSquareContent(Colour.getKingSquareContentForColour(colourOfPieceBeingMoved));
         }else{
             destinationSquare.setSquareContent(Colour.getManSquareContentForColour(colourOfPieceBeingMoved));
@@ -127,9 +124,8 @@ public class Board {
 
     private static void updateForOneSquareMoveActions(Move move,
                                                       Square destinationSquare,
-                                                      Colour colourOfPieceBeingMoved,
-                                                      Board board) {
-        if (move.willMoveResultInCoronation(board)) {
+                                                      Colour colourOfPieceBeingMoved) {
+        if (move.willMoveResultInCoronation()) {
             destinationSquare.setSquareContent(Colour.getKingSquareContentForColour(colourOfPieceBeingMoved));
         } else {
             destinationSquare.setSquareContent(Colour.getManSquareContentForColour(colourOfPieceBeingMoved));
@@ -146,81 +142,6 @@ public class Board {
             }
         }
         return true;
-    }
-
-    //TODO - Consider putting in PostMoveCheckService
-    public boolean noLegalMovesForColour(Colour colour) {
-        for (int rowIndex = 0; rowIndex < 8; rowIndex++) {
-            for (int columnIndex = 0; columnIndex < 8; columnIndex++) {
-                SquareContent content = getSquareContentAtRowAndColumn(rowIndex, columnIndex);
-
-                boolean wrongColour = !content.toString().toLowerCase().contains(colour.toString().toLowerCase());
-                if (content == SquareContent.EMPTY || wrongColour) {
-                    continue;
-                }
-
-                MoveType[] moveTypes = null;
-                if (content == SquareContent.WHITE_MAN) {
-                    moveTypes = WhiteManMoveType.values();
-                } else if (content == SquareContent.RED_MAN) {
-                    moveTypes = RedManMoveType.values();
-                } else if (content == SquareContent.WHITE_KING || content == SquareContent.RED_KING) {
-                    moveTypes = KingMoveType.values();
-                }
-
-                if (moveTypes != null) {
-                    for (MoveType moveType : moveTypes) {
-                        if (moveType.isOutOfBoundsForPieceAtPosition(rowIndex, columnIndex)){
-                            return false;
-                        }
-                    }
-                }
-            }
-        }
-        return true;
-    }
-
-    //TODO - Consider putting in PostMoveCheckService
-    public boolean jumpPossibleForMoveType(SquareContent startingSquareContent, Move move,
-                                           Class<? extends Enum<? extends MoveType>> moveTypeEnumClass) {
-        MoveType[] moveTypes = (MoveType[]) moveTypeEnumClass.getEnumConstants();
-        for (MoveType moveType : moveTypes) {
-            int startRow = move.getStartSquareRow();
-            int startColumn = move.getStartSquareColumn();
-            if (moveType.isOutOfBoundsForPieceAtPosition(startRow, startColumn)) continue;
-            if (!isOvertakingSquareOccupiedByOpponentPiece(startingSquareContent, move, moveType)) continue;
-
-            int destinationRow = moveType.getDestinationRow(startRow);
-            int destinationColumn = moveType.getDestinationColumn(startColumn);
-            boolean isDestinationSquareEmpty =
-                    getSquareContentAtRowAndColumn(destinationRow, destinationColumn) == SquareContent.EMPTY;
-            if (isDestinationSquareEmpty) return true;
-        }
-        return false;
-    }
-
-    private boolean isOvertakingSquareOccupiedByOpponentPiece(SquareContent startingSquareContent,
-                                                              Move move,
-                                                              MoveType moveType)
-    {
-        int startRow = move.getEndSquareRow();
-        int startColumn = move.getEndSquareColumn();
-        int rowChange = moveType.getRowChange();
-        int columnChange = moveType.getColumnChange();
-
-        int jumpedOverSquareRow = rowChange < 0
-                ? startRow + rowChange + 1
-                : startRow + rowChange -1;
-        int jumpedOverSquareColumn = columnChange < 0
-                ? startColumn + columnChange + 1
-                : startColumn + columnChange -1;
-
-        SquareContent jumpedOverSquareContent = getSquareContentAtRowAndColumn
-                (jumpedOverSquareRow, jumpedOverSquareColumn);
-
-        Colour playerColour = SquareContent.getColour(startingSquareContent);
-        Colour opponentColour = Colour.getOtherPlayerColour(playerColour);
-        return SquareContent.getColour(jumpedOverSquareContent) == opponentColour;
     }
 
     @Override
@@ -252,12 +173,5 @@ public class Board {
             default:
                 return ' ';
         }
-    }
-    public static void main(String[] args){
-        //TODO - Delete. For debugging
-        Board board = new Board();
-        System.out.println(board);
-        SquareContent squareContent = board.getSquareContentAtRowAndColumn(0, 0);
-        System.out.println(squareContent);
     }
 }
