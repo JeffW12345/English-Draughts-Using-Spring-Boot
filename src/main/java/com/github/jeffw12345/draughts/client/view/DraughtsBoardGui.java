@@ -35,14 +35,10 @@ public class DraughtsBoardGui implements ActionListener {
     @Setter
     private String bottomLineMessageText, middleLineMessageText, topLineMessageText;
     private final MasterClientController controller;
-    private final DrawController drawController;
-    private final WinLossController winLossController;
     private boolean clientIdProvided, colourAssigned;
 
     public DraughtsBoardGui(MasterClientController controller) {
         this.controller = controller;
-        this.drawController = controller.getDrawController();
-        this.winLossController = controller.getWinLossController();
     }
 
     public void setUp() {
@@ -128,11 +124,11 @@ public class DraughtsBoardGui implements ActionListener {
                     if (e.getSource() == offerNewGameButton) {
                         controller.offerNewGameButtonPressed();
                     } else if (e.getSource() == offerDrawButton) {
-                        drawController.offerDrawButtonPressedActions();
+                        controller.getDrawController().offerDrawButtonPressedActions();
                     } else if (e.getSource() == acceptDrawButton) {
-                        drawController.acceptDrawButtonPressed();
+                        controller.getDrawController().acceptDrawButtonPressed();
                     } else if (e.getSource() == resignButton) {
-                        winLossController.resignButtonPressed();
+                        controller.getWinLossController().resignButtonPressed();
                     }
                     return null;
                 }
