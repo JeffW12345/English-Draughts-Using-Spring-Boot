@@ -63,6 +63,7 @@ public class Game {
         whitePlayer.setHasOfferedDraw(false);
     }
     public Colour getColourOfPlayerMakingMove(Move move) {
+        //TODO - There must be a more efficient way than this?
         for(Move redPlayerMove : redPlayerMoves){
             if(redPlayerMove == move){
                 return Colour.RED;

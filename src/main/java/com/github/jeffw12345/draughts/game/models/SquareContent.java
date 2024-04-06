@@ -1,7 +1,5 @@
 package com.github.jeffw12345.draughts.game.models;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-
 public enum SquareContent {
     EMPTY,
     WHITE_MAN,
@@ -27,7 +25,7 @@ public enum SquareContent {
         return squareContent == SquareContent.WHITE_MAN;
     }
 
-    public static boolean canPieceTypeJumpBothDirections(SquareContent squareContent){
+    public static boolean isAKing(SquareContent squareContent){
         return squareContent == SquareContent.RED_KING || squareContent == SquareContent.WHITE_KING;
     }
 }

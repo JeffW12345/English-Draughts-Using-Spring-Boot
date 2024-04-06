@@ -85,14 +85,17 @@ public class Board {
         Square startSquareOnBoard = getStartOfMoveSquare(move);
         Square destinationSquare = getMoveTerminationSquare(move);
         Square middleSquare = getIntermediateSquare(move);
+
         Colour colourOfPieceBeingMoved = SquareContent.getColour(startSquareOnBoard.getSquareContent());
+
+        boolean isPieceAKing = startSquareOnBoard.containsAKing();
 
         startSquareOnBoard.setSquareContent(SquareContent.EMPTY);
 
         if (move.isOneSquareMove()) {
-            updateForOneSquareMoveActions(move, destinationSquare, colourOfPieceBeingMoved);
+            updateForOneSquareMoveActions(move, destinationSquare, colourOfPieceBeingMoved, isPieceAKing);
         } else if (move.isOvertakingMove()) {
-            updateForTwoSquareMoveActions(move, destinationSquare, middleSquare, colourOfPieceBeingMoved);
+            updateForTwoSquareMoveActions(move, destinationSquare, middleSquare, colourOfPieceBeingMoved, isPieceAKing);
         }
     }
 
@@ -113,8 +116,9 @@ public class Board {
     private static void updateForTwoSquareMoveActions(Move move,
                                                       Square destinationSquare,
                                                       Square middleSquare,
-                                                      Colour colourOfPieceBeingMoved) {
-        if (move.willMoveResultInCoronation()){
+                                                      Colour colourOfPieceBeingMoved,
+                                                      boolean isPieceAKing) {
+        if (move.willMoveResultInCoronation() || isPieceAKing){
             destinationSquare.setSquareContent(Colour.getKingSquareContentForColour(colourOfPieceBeingMoved));
         }else{
             destinationSquare.setSquareContent(Colour.getManSquareContentForColour(colourOfPieceBeingMoved));
@@ -124,8 +128,9 @@ public class Board {
 
     private static void updateForOneSquareMoveActions(Move move,
                                                       Square destinationSquare,
-                                                      Colour colourOfPieceBeingMoved) {
-        if (move.willMoveResultInCoronation()) {
+                                                      Colour colourOfPieceBeingMoved,
+                                                      boolean isPieceAKing) {
+        if (move.willMoveResultInCoronation() || isPieceAKing) {
             destinationSquare.setSquareContent(Colour.getKingSquareContentForColour(colourOfPieceBeingMoved));
         } else {
             destinationSquare.setSquareContent(Colour.getManSquareContentForColour(colourOfPieceBeingMoved));

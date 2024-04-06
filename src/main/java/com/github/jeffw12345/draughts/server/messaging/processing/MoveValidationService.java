@@ -29,7 +29,6 @@ public class MoveValidationService {
         int endRow = move.getEndSquareRow();
         int endColumn = move.getEndSquareColumn();
         SquareContent endSquareContent = board.getSquareContentAtRowAndColumn(endRow, endColumn);
-
         if (endSquareContent != SquareContent.EMPTY) {
             return false;
         }

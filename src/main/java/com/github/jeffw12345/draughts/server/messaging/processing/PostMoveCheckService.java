@@ -14,7 +14,7 @@ import com.github.jeffw12345.draughts.game.models.move.type.WhiteManMoveType;
 
 public class PostMoveCheckService {
     public static boolean isFollowUpOvertakePossible(Board board, Move move, SquareContent startingSquareContent) {
-        if (SquareContent.canPieceTypeJumpBothDirections(startingSquareContent)) {
+        if (SquareContent.isAKing(startingSquareContent)) {
             return canJumpFromDestinationSquare(move, UpwardOvertakeJump.class, board, startingSquareContent) ||
                     canJumpFromDestinationSquare(move, DownwardOvertakeJump.class, board, startingSquareContent);
         }
