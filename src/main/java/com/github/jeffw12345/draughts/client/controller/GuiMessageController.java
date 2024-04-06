@@ -6,20 +6,14 @@ import javax.swing.*;
 
 public class GuiMessageController {
     private final DraughtsBoardGui view;
-    private boolean amIRed;
-    private boolean isRedsTurn;
     private final MasterClientController masterClientController;
     public GuiMessageController(MasterClientController masterController){
         this.masterClientController = masterController;
         this.view = masterController.getView();
     }
 
-    public void syncWithControllerColourAndTurnValues(){
-        this.amIRed = masterClientController.isAmIRed();
-        this.isRedsTurn = masterClientController.isRedsTurn();
-    }
     void ifWhiteLostMessage() {
-        if (amIRed) {
+        if (masterClientController.isAmIRed()) {
             view.setTopLineMessageText("Well done! You've won");
             view.setMiddleLineMessageText("");
             view.setBottomLineMessageText("");
@@ -33,7 +27,7 @@ public class GuiMessageController {
     }
 
     void ifRedLostMessage() {
-        if (!amIRed) {
+        if (!masterClientController.isAmIRed()) {
             view.setTopLineMessageText("Well done! You've won");
             view.setMiddleLineMessageText("");
             view.setBottomLineMessageText("");
@@ -62,7 +56,7 @@ public class GuiMessageController {
 
     void offerNewGameButtonPressedMessage() {
         view.setTopLineMessageText("You've offered a new game");
-        view.setMiddleLineMessageText("Waiting for your opponent.");
+        view.setMiddleLineMessageText("Waiting for a match.");
         view.setBottomLineMessageText("");
         view.updateLabels();
     }
@@ -82,11 +76,10 @@ public class GuiMessageController {
     }
 
     String turnMessage() {
-        syncWithControllerColourAndTurnValues();
-        if (amIRed && isRedsTurn) {
+        if (masterClientController.isAmIRed() && masterClientController.isRedsTurn()) {
             return "It is your turn.";
         }
-        if (!amIRed && !isRedsTurn) {
+        if (!masterClientController.isAmIRed() && !masterClientController.isRedsTurn()) {
             return "It is your turn.";
         } else {
             return "It's the other player's turn.";
@@ -114,8 +107,8 @@ public class GuiMessageController {
         view.updateLabels();
     }
 
-    private String colourMessage(boolean amIRed) {
-        if (amIRed) {
+    private String colourMessage() {
+        if (masterClientController.isAmIRed()) {
             return "You are the red player";
         } else {
             return "You are the white player";
@@ -126,43 +119,46 @@ public class GuiMessageController {
     }
 
     void bothPlayersReadyMessage() {
-        syncWithControllerColourAndTurnValues();
-        view.setMiddleLineMessageText("Both players are connected");
-        if (amIRed) {
-            view.setBottomLineMessageText("You are the red player.");
+        view.setTopLineMessageText("Both players are connected.");
+        if (masterClientController.isAmIRed()) {
+            view.setMiddleLineMessageText("You are the red player.");
         } else {
-            view.setBottomLineMessageText("You are the white player.");
+            view.setMiddleLineMessageText("You are the white player.");
         }
+        view.setBottomLineMessageText("Good luck!");
         view.updateLabels();
     }
 
     void turnOverMessage(){
-        syncWithControllerColourAndTurnValues();
-        if (isRedsTurn){
-            redMoveOverMessage();
+        if (masterClientController.isRedsTurn()){
+            redTurnMessage();
         } else {
-            whiteMoveOverMessage();
+            whiteTurnMessage();
         }
     }
 
-    private void whiteMoveOverMessage() {
-        view.setTopLineMessageText("White's turn is over.");
-        view.setMiddleLineMessageText("It's now red's turn.");
+    //TODO - Change of turns/turn still ongoing
+    private void redTurnMessage() {
+        String whoseTurnMessage = masterClientController.isAmIRed() ? "It's your turn." : "It's red's turn";
+
+        view.setTopLineMessageText("");
+        view.setMiddleLineMessageText(whoseTurnMessage);
         view.setBottomLineMessageText("");
         view.updateLabels();
     }
 
-    private void redMoveOverMessage() {
-        view.setTopLineMessageText("Red's turn is over.");
-        view.setMiddleLineMessageText("It's now white's turn.");
+    private void whiteTurnMessage() {
+        String whoseTurnMessage = masterClientController.isAmIRed() ? "It's white's turn." : "It's your turn";
+
+        view.setTopLineMessageText("");
+        view.setMiddleLineMessageText(whoseTurnMessage);
         view.setBottomLineMessageText("");
         view.updateLabels();
     }
 
 
     public void turnOngoingMessage() {
-        syncWithControllerColourAndTurnValues();
-        if (isRedsTurn){
+        if (masterClientController.isRedsTurn()){
             redTurnOngoingMessage();
         } else {
             whiteTurnOngoingMessage();
@@ -184,10 +180,9 @@ public class GuiMessageController {
     }
 
     public void setWelcomeMessageWithColours() {
-        syncWithControllerColourAndTurnValues();
         view.setTopLineMessageText("Welcome to English Draughts!");
         view.setMiddleLineMessageText("");
-        view.setBottomLineMessageText(colourMessage(amIRed));
+        view.setBottomLineMessageText(colourMessage());
         view.updateLabels();
     }
 
