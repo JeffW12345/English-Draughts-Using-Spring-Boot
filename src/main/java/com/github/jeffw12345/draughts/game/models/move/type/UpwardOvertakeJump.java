@@ -2,7 +2,7 @@ package com.github.jeffw12345.draughts.game.models.move.type;
 
 import lombok.Getter;
 
-public enum ForwardJump implements MoveType {
+public enum UpwardOvertakeJump implements MoveType {
     JUMP_TWO_UP_RIGHT(2, 2),
     JUMP_TWO_UP_LEFT(2, -2);
     @Getter
@@ -10,7 +10,7 @@ public enum ForwardJump implements MoveType {
     @Getter
     private final int columnChange;
 
-    ForwardJump(int rowChange, int columnChange){
+    UpwardOvertakeJump(int rowChange, int columnChange){
         this.rowChange = rowChange;
         this.columnChange = columnChange;
     }
