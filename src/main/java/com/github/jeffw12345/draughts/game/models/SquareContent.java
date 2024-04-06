@@ -1,7 +1,13 @@
 package com.github.jeffw12345.draughts.game.models;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 public enum SquareContent {
-    EMPTY, WHITE_MAN, RED_MAN, WHITE_KING, RED_KING;
+    EMPTY,
+    WHITE_MAN,
+    RED_MAN,
+    WHITE_KING,
+    RED_KING;
 
     public static Colour getColour(SquareContent squareContent){
         if (squareContent == SquareContent.RED_MAN || squareContent == SquareContent.RED_KING){

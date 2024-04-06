@@ -14,7 +14,7 @@ public class ServerMessagingUtility {
 
     public static String convertServerMessageToJSON(ServerMessageToClient serverMessage) {
         try {
-            String objectAsString = objectMapper.writeValueAsString(serverMessage);
+            String objectAsString = objectMapper.writer().withDefaultPrettyPrinter().writeValueAsString(serverMessage);
             log.info("Successfully created JSON from ServerMessageToClient object: {}", objectAsString);
             return objectAsString;
         } catch (JsonProcessingException e) {

@@ -1,5 +1,6 @@
 package com.github.jeffw12345.draughts.game.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.github.jeffw12345.draughts.game.models.move.type.KingMoveType;
 import com.github.jeffw12345.draughts.game.models.move.type.MoveType;
@@ -20,13 +21,13 @@ public class Board {
     @JsonProperty("rows")
     private final BoardRow[] rows = new BoardRow[8];
 
-    @JsonProperty("EMPTY_SQUARE")
+    @JsonProperty("empty_SQUARE")
     private final Square EMPTY_SQUARE = Square.builder().squareContent(SquareContent.EMPTY).build();
 
-    @JsonProperty("WHITE_MAN")
+    @JsonProperty("white_MAN")
     private final Square WHITE_MAN = Square.builder().squareContent(SquareContent.WHITE_MAN).build();
 
-    @JsonProperty("RED_MAN")
+    @JsonProperty("red_MAN")
     private final Square RED_MAN = Square.builder().squareContent(SquareContent.RED_MAN).build();
 
 
