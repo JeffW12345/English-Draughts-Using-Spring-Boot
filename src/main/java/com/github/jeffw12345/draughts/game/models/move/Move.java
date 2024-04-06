@@ -123,12 +123,6 @@ public class Move {
     public boolean noStartOrEndSquareProvidedYet(){
         return !startCoordinatesProvided && !endCoordinatesProvided;
     }
-
-    @JsonIgnore
-    public boolean isOneSquareDiagonalMove() {
-        return (isLeftUpOne() || isLeftDownOne() || isRightUpOne() || isRightDownOne());
-    }
-
     public boolean willMoveResultInCoronation(Board board){
         Colour playerColour = SquareContent
                 .getColour(board.getSquareContentAtRowAndColumn(startSquareRow, startSquareColumn));

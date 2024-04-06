@@ -148,7 +148,8 @@ public class Board {
         return true;
     }
 
-    public boolean hasNoLegalMovesForColour(Colour colour) {
+    //TODO - Consider putting in PostMoveCheckService
+    public boolean noLegalMovesForColour(Colour colour) {
         for (int rowIndex = 0; rowIndex < 8; rowIndex++) {
             for (int columnIndex = 0; columnIndex < 8; columnIndex++) {
                 SquareContent content = getSquareContentAtRowAndColumn(rowIndex, columnIndex);
@@ -169,9 +170,7 @@ public class Board {
 
                 if (moveTypes != null) {
                     for (MoveType moveType : moveTypes) {
-                        int rowChange = moveType.getRowChange();
-                        int columnChange = moveType.getColumnChange();
-                        if (!outOfBounds(rowIndex, columnIndex, rowChange, columnChange)) {
+                        if (moveType.isOutOfBoundsForPieceAtPosition(rowIndex, columnIndex)){
                             return false;
                         }
                     }
@@ -181,38 +180,47 @@ public class Board {
         return true;
     }
 
+    //TODO - Consider putting in PostMoveCheckService
     public boolean jumpPossibleForMoveType(SquareContent startingSquareContent, Move move,
                                            Class<? extends Enum<? extends MoveType>> moveTypeEnumClass) {
         MoveType[] moveTypes = (MoveType[]) moveTypeEnumClass.getEnumConstants();
         for (MoveType moveType : moveTypes) {
-            int startRow = move.getEndSquareRow();
-            int startColumn = move.getEndSquareColumn();
-            int rowChange = moveType.getRowChange();
-            int columnChange = moveType.getColumnChange();
-            if (!outOfBounds(startRow, startColumn, rowChange, columnChange)) {
-                int jumpedSquareRow = rowChange < 0
-                        ? startRow + rowChange + 1
-                        : startRow + rowChange -1;
-                int jumpedSquareColumn = columnChange < 0
-                        ? startColumn + columnChange + 1
-                        : startColumn + columnChange -1;
+            int startRow = move.getStartSquareRow();
+            int startColumn = move.getStartSquareColumn();
+            if (moveType.isOutOfBoundsForPieceAtPosition(startRow, startColumn)) continue;
+            if (!isOvertakingSquareOccupiedByOpponentPiece(startingSquareContent, move, moveType)) continue;
 
-                SquareContent middleSquareContent = getSquareContentAtRowAndColumn(jumpedSquareRow, jumpedSquareColumn);
-                Colour startingSquare = SquareContent.getColour(startingSquareContent);
-                Colour opponentColour = Colour.getOtherPlayerColour(startingSquare);
-                if(SquareContent.getColour(middleSquareContent) == opponentColour){
-                    return true;
-                }
-            }
+            int destinationRow = moveType.getDestinationRow(startRow);
+            int destinationColumn = moveType.getDestinationColumn(startColumn);
+            boolean isDestinationSquareEmpty =
+                    getSquareContentAtRowAndColumn(destinationRow, destinationColumn) == SquareContent.EMPTY;
+            if (isDestinationSquareEmpty) return true;
         }
         return false;
     }
 
-    private boolean outOfBounds(int row, int column, int rowChange, int columnChange){
-        row -= rowChange;
-        column -= columnChange;
+    private boolean isOvertakingSquareOccupiedByOpponentPiece(SquareContent startingSquareContent,
+                                                              Move move,
+                                                              MoveType moveType)
+    {
+        int startRow = move.getEndSquareRow();
+        int startColumn = move.getEndSquareColumn();
+        int rowChange = moveType.getRowChange();
+        int columnChange = moveType.getColumnChange();
 
-        return row < 0 || row > 7 || column < 0 || column > 7;
+        int jumpedOverSquareRow = rowChange < 0
+                ? startRow + rowChange + 1
+                : startRow + rowChange -1;
+        int jumpedOverSquareColumn = columnChange < 0
+                ? startColumn + columnChange + 1
+                : startColumn + columnChange -1;
+
+        SquareContent jumpedOverSquareContent = getSquareContentAtRowAndColumn
+                (jumpedOverSquareRow, jumpedOverSquareColumn);
+
+        Colour playerColour = SquareContent.getColour(startingSquareContent);
+        Colour opponentColour = Colour.getOtherPlayerColour(playerColour);
+        return SquareContent.getColour(jumpedOverSquareContent) == opponentColour;
     }
 
     @Override
