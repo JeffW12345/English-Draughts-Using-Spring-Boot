@@ -1,6 +1,5 @@
 package com.github.jeffw12345.draughts.game.models;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.github.jeffw12345.draughts.game.models.move.type.KingMoveType;
 import com.github.jeffw12345.draughts.game.models.move.type.MoveType;
@@ -87,9 +86,9 @@ public class Board {
             throw new IllegalArgumentException("Invalid move: null");
         }
 
-        Square startSquareOnBoard = move.getStartOfMoveSquare(this);
-        Square destinationSquare = move.getMoveTerminationSquare(this);
-        Square middleSquare = move.getIntermediateSquare(this);
+        Square startSquareOnBoard = getStartOfMoveSquare(move);
+        Square destinationSquare = getMoveTerminationSquare(move);
+        Square middleSquare = getIntermediateSquare(move);
         Colour colourOfPieceBeingMoved = SquareContent.getColour(startSquareOnBoard.getSquareContent());
 
         startSquareOnBoard.setSquareContent(SquareContent.EMPTY);
@@ -99,6 +98,20 @@ public class Board {
         } else if (move.isOvertakingMove()) {
             updateForTwoSquareMoveActions(move, destinationSquare, middleSquare, colourOfPieceBeingMoved, this);
         }
+    }
+
+    private Square getIntermediateSquare(Move move) {
+        int middleRow = (move.getStartSquareRow() + move.getEndSquareRow()) / 2;
+        int middleColumn = (move.getStartSquareColumn() + move.getEndSquareColumn()) / 2;
+        return getSquareAtRowAndColumn(middleRow, middleColumn);
+    }
+
+    private Square getMoveTerminationSquare(Move move) {
+        return getSquareAtRowAndColumn(move.getEndSquareRow(), move.getEndSquareColumn());
+    }
+
+    private Square getStartOfMoveSquare(Move move) {
+        return getSquareAtRowAndColumn(move.getStartSquareRow(), move.getStartSquareColumn());
     }
 
     private static void updateForTwoSquareMoveActions(Move move,

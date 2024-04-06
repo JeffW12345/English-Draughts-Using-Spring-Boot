@@ -134,18 +134,6 @@ public class Move {
                 .getColour(board.getSquareContentAtRowAndColumn(startSquareRow, startSquareColumn));
         return (playerColour == Colour.RED && endSquareRow == 7) || (playerColour == Colour.WHITE && endSquareRow == 0);
     }
-    public Square getStartOfMoveSquare(Board board){
-        return board.getSquareAtRowAndColumn(startSquareRow, startSquareColumn);
-    }
-    public Square getMoveTerminationSquare(Board board){
-        return board.getSquareAtRowAndColumn(endSquareRow, endSquareColumn);
-    }
-
-    public Square getIntermediateSquare(Board board){
-        int middleRow = (startSquareRow + endSquareRow) / 2;
-        int middleColumn = (startSquareColumn + endSquareColumn) / 2;
-        return board.getSquareAtRowAndColumn(middleRow, middleColumn);
-    }
 
     public void moveProcessedUpdate(MoveStatus newStatus){
         moveStatus = newStatus;
