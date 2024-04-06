@@ -79,6 +79,7 @@ public class ServerMessageController {
             } else{
                 ServerMessageComposeService.informClientsBoardUpdateTurnFinished(clientId, board);
             }
+            game.changeTurns();
             move.setTurnComplete(true);
         }
     }
@@ -106,6 +107,8 @@ public class ServerMessageController {
 
         Player whitePlayer = new Player(whitePlayerClientId, Colour.WHITE);
         game.addPlayer(whitePlayer);
+
+        game.changeStatusToInProgress();
 
         ClientIdToGameMapping.assignClientIdToGame(redPlayerClientId, game);
         ClientIdToGameMapping.assignClientIdToGame(whitePlayerClientId, game);

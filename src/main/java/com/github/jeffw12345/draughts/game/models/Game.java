@@ -44,15 +44,6 @@ public class Game {
         return (colour==Colour.RED && isRedTurn) || (colour==Colour.WHITE && !isRedTurn);
     }
 
-    public Move getLatestMoveForColour(Colour colour){
-        if (colour == Colour.RED){
-            return redPlayerMoves.peek();
-        }
-        else{
-            return whitePlayerMoves.peek();
-        }
-    }
-
     public void changeStatusToInProgress(){
         gameStatus = GameStatus.IN_PROGRESS;
     }
@@ -71,18 +62,6 @@ public class Game {
         whitePlayer.setPlayersTurn(!isRedTurn);
         whitePlayer.setHasOfferedDraw(false);
     }
-
-    public boolean isPlayerWhitePlayer(Player player){
-        return player == whitePlayer;
-    }
-
-    public Colour getPlayerColour(Player player){
-        if (player == redPlayer){
-            return Colour.RED;
-        }
-        return Colour.WHITE;
-    }
-
     public Colour getColourOfPlayerMakingMove(Move move) {
         for(Move redPlayerMove : redPlayerMoves){
             if(redPlayerMove == move){
@@ -101,9 +80,5 @@ public class Game {
                 .filter(clientId -> !clientId.equals(aClientId))
                 .findFirst()
                 .orElse(null);
-    }
-
-    public Colour getColourOfPlayerWhoseTurnItIs() {
-        return isRedTurn ? Colour.RED : Colour.WHITE;
     }
 }
