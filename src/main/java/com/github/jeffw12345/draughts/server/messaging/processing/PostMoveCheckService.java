@@ -26,7 +26,7 @@ public class PostMoveCheckService {
     public static boolean isTurnOngoing(Game game, Move move) {
         Board board = game.getCurrentBoard();
         if (move.isOvertakingMove()){
-            SquareContent destinationSquareContent = move.getMoveTerminationSquare(board).getSquareContent();
+            SquareContent destinationSquareContent = board.getMoveTerminationSquare(move).getSquareContent();
             return PostMoveCheckService.isFollowUpOvertakePossible(board, destinationSquareContent, move);
         }
         return false;

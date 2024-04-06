@@ -10,7 +10,7 @@ import lombok.Setter;
 @Setter
 @Builder
 @AllArgsConstructor
-@NoArgsConstructor //TODO - Is this needed?
+@NoArgsConstructor
 public class Square {
     private SquareContent squareContent;
 }

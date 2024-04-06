@@ -20,16 +20,6 @@ public class Board {
     @JsonProperty("rows")
     private final BoardRow[] rows = new BoardRow[8];
 
-    @JsonProperty("empty_SQUARE")
-    private final Square EMPTY_SQUARE = Square.builder().squareContent(SquareContent.EMPTY).build();
-
-    @JsonProperty("white_MAN")
-    private final Square WHITE_MAN = Square.builder().squareContent(SquareContent.WHITE_MAN).build();
-
-    @JsonProperty("red_MAN")
-    private final Square RED_MAN = Square.builder().squareContent(SquareContent.RED_MAN).build();
-
-
     public Board() {
         setUpBoard();
     }
@@ -43,19 +33,27 @@ public class Board {
         BoardRow row = new BoardRow();
         for (int columnNumber = 0; columnNumber < 8; columnNumber++) {
             if (rowNumber == 0 || rowNumber == 2){
-                row.getSquaresOnRow()[columnNumber] = columnNumber % 2 == 0 ? RED_MAN : EMPTY_SQUARE;
+                row.getSquaresOnRow()[columnNumber] = columnNumber % 2 == 0
+                        ? new Square(SquareContent.RED_MAN)
+                        : new Square(SquareContent.EMPTY);
             }
             if (rowNumber == 1){
-                row.getSquaresOnRow()[columnNumber] = columnNumber % 2 != 0 ? RED_MAN : EMPTY_SQUARE;
+                row.getSquaresOnRow()[columnNumber] = columnNumber % 2 != 0
+                        ? new Square(SquareContent.RED_MAN)
+                        : new Square(SquareContent.EMPTY);
             }
             if (rowNumber > 2 && rowNumber < 5){
-                row.getSquaresOnRow()[columnNumber] = EMPTY_SQUARE;
+                row.getSquaresOnRow()[columnNumber] = new Square(SquareContent.EMPTY);
             }
             if (rowNumber == 5 || rowNumber == 7){
-                row.getSquaresOnRow()[columnNumber] = columnNumber % 2 != 0 ? WHITE_MAN : EMPTY_SQUARE;
+                row.getSquaresOnRow()[columnNumber] = columnNumber % 2 != 0
+                        ? new Square(SquareContent.WHITE_MAN)
+                        : new Square(SquareContent.EMPTY);
             }
             if (rowNumber == 6){
-                row.getSquaresOnRow()[columnNumber] = columnNumber % 2 == 0 ? WHITE_MAN : EMPTY_SQUARE;
+                row.getSquaresOnRow()[columnNumber] = columnNumber % 2 == 0
+                        ? new Square(SquareContent.WHITE_MAN)
+                        : new Square(SquareContent.EMPTY);
             }
         }
         return row;
@@ -100,18 +98,18 @@ public class Board {
         }
     }
 
+    private Square getStartOfMoveSquare(Move move) {
+        return getSquareAtRowAndColumn(move.getStartSquareRow(), move.getStartSquareColumn());
+    }
+
     private Square getIntermediateSquare(Move move) {
         int middleRow = (move.getStartSquareRow() + move.getEndSquareRow()) / 2;
         int middleColumn = (move.getStartSquareColumn() + move.getEndSquareColumn()) / 2;
         return getSquareAtRowAndColumn(middleRow, middleColumn);
     }
 
-    private Square getMoveTerminationSquare(Move move) {
+    public Square getMoveTerminationSquare(Move move) {
         return getSquareAtRowAndColumn(move.getEndSquareRow(), move.getEndSquareColumn());
-    }
-
-    private Square getStartOfMoveSquare(Move move) {
-        return getSquareAtRowAndColumn(move.getStartSquareRow(), move.getStartSquareColumn());
     }
 
     private static void updateForTwoSquareMoveActions(Move move,
