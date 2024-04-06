@@ -43,11 +43,6 @@ public class ServerMessageController {
                 throw new IllegalArgumentException("Unexpected response type: " + clientToServerRequestType);
         }
     }
-
-    private static void establishConnectionActions(ClientMessageToServer clientRequestToServer) {
-        //ClientIdToSessionMapping.add(clientRequestToServer.getClientId(), clientRequestToServer.getSession());
-        //TODO - Change or remove
-    }
     private static void exitDueToGuiCloseActions(String requestingClientId) {
         ServerMessageComposeService.tellOtherClientAboutShutDown(requestingClientId);
     }
