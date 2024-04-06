@@ -5,7 +5,9 @@ import com.github.jeffw12345.draughts.game.models.Colour;
 import com.github.jeffw12345.draughts.game.models.Game;
 import com.github.jeffw12345.draughts.game.models.SquareContent;
 import com.github.jeffw12345.draughts.game.models.move.Move;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 public class MoveValidationService {
 
     public static boolean isMoveLegal(Game game, Move move) {

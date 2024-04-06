@@ -113,7 +113,7 @@ public class Move {
     }
     @JsonIgnore
     public boolean isMovingDownBoard(){
-        return endSquareRow > startSquareRow;
+        return endSquareRow < startSquareRow;
     }
     @JsonIgnore
     public boolean startCoordinatesOnlyProvided(){
