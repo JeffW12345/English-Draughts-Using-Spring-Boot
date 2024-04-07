@@ -1,4 +1,4 @@
-NB - STILL IN PROGRESS! WATCH THIS SPACE! :) 
+NB - STILL IN PROGRESS! WATCH THIS SPACE! :) SEE 'TO DO.md' file for list of miscellaneous things to do. 
 
 OVERVIEW
 ========

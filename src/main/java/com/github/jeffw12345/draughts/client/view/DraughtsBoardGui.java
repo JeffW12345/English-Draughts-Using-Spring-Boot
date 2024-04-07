@@ -109,7 +109,6 @@ public class DraughtsBoardGui implements ActionListener {
             public void windowClosing(WindowEvent e) {
                 log.warn("Closing app due to window close");
                 System.exit(1);
-                //controller.thisClientGuiCloseActions(); TODO - Reinstate when fixed
             }
         });
     }

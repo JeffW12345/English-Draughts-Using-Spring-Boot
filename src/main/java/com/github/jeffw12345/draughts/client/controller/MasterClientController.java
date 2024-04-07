@@ -14,7 +14,6 @@ import java.awt.event.WindowEvent;
 
 @Getter
 @Slf4j
-//TODO - Check encapsulation as tight as possible.
 public class MasterClientController {
     private final Client client;
     private final DraughtsBoardGui view = new DraughtsBoardGui(this);

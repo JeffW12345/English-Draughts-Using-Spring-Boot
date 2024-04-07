@@ -26,8 +26,6 @@ public class Player {
         this.clientId = clientId;
         this.amIRedPlayer = red == Colour.RED;
     }
-
-    //TODO - Do we need a Player class?
     public void newGameClientNotifications() {
         ServerMessageToClient serverMessageToClient = ServerMessageToClient.builder()
                 .serverResponseType(amIRedPlayer ? ASSIGN_RED_COLOUR : ASSIGN_WHITE_COLOUR)

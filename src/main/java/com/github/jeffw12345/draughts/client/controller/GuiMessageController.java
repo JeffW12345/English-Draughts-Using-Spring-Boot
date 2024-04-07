@@ -137,7 +137,6 @@ public class GuiMessageController {
         }
     }
 
-    //TODO - Change of turns/turn still ongoing
     private void redTurnMessage() {
         String whoseTurnMessage = masterClientController.isAmIRed() ? "It's your turn." : "It's red's turn";
 

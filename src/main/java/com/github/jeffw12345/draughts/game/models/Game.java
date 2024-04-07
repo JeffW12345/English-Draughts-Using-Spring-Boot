@@ -23,7 +23,7 @@ public class Game {
     private static final ConcurrentLinkedDeque<Move>  whitePlayerMoves = new ConcurrentLinkedDeque<>();
 
     public void addPlayer(Player player){
-        if(whitePlayer != null && redPlayer != null) return; //TODO - Throw exception
+        if(whitePlayer != null && redPlayer != null) return;
         if(redPlayer == null){
             redPlayer = player;
         }
@@ -63,7 +63,6 @@ public class Game {
         whitePlayer.setHasOfferedDraw(false);
     }
     public Colour getColourOfPlayerMakingMove(Move move) {
-        //TODO - There must be a more efficient way than this?
         for(Move redPlayerMove : redPlayerMoves){
             if(redPlayerMove == move){
                 return Colour.RED;
