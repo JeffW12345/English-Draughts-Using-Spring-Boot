@@ -103,7 +103,7 @@ public class GuiMessageController {
     void ifOtherPlayerResignsMessage() {
         view.setTopLineMessageText("Your opponent has resigned!");
         view.setMiddleLineMessageText("You've won - Well done.");
-        view.setBottomLineMessageText("");
+        view.setBottomLineMessageText("Press offer new game for a new game");
         view.updateLabels();
     }
 
@@ -138,20 +138,22 @@ public class GuiMessageController {
     }
 
     private void redTurnMessage() {
-        String whoseTurnMessage = masterClientController.isAmIRed() ? "It's your turn." : "It's red's turn";
+        String topLine = masterClientController.isAmIRed() ? "You are red" : "You are white";
+        String bottomLine = masterClientController.isAmIRed() ? "It's your turn." : "It's red's turn";
 
-        view.setTopLineMessageText("");
-        view.setMiddleLineMessageText(whoseTurnMessage);
-        view.setBottomLineMessageText("");
+        view.setTopLineMessageText(topLine);
+        view.setMiddleLineMessageText("");
+        view.setBottomLineMessageText(bottomLine);
         view.updateLabels();
     }
 
     private void whiteTurnMessage() {
-        String whoseTurnMessage = masterClientController.isAmIRed() ? "It's white's turn." : "It's your turn";
+        String topLine = masterClientController.isAmIRed() ? "You are red" : "You are white";
+        String bottomLine = masterClientController.isAmIRed() ? "It's white's turn." : "It's your turn";
 
-        view.setTopLineMessageText("");
-        view.setMiddleLineMessageText(whoseTurnMessage);
-        view.setBottomLineMessageText("");
+        view.setTopLineMessageText(topLine);
+        view.setMiddleLineMessageText("");
+        view.setBottomLineMessageText(bottomLine);
         view.updateLabels();
     }
 
@@ -191,4 +193,6 @@ public class GuiMessageController {
         view.setBottomLineMessageText("Waiting for player assignment");
         view.updateLabels();
     }
+
+
 }

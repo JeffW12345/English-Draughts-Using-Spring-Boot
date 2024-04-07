@@ -72,6 +72,7 @@ public class ServerMessageController {
 
         if (PostMoveCheckService.isTurnOngoing(game, move)){
             ServerMessageComposeService.informClientsBoardUpdateTurnOngoing(clientId, board);
+            game.setNewTurn(false);
         } else {
             boolean hasMoveResultedInWin = PostMoveCheckService.isWinForColour(playerColour, board);
             if (hasMoveResultedInWin){
@@ -80,7 +81,6 @@ public class ServerMessageController {
                 ServerMessageComposeService.informClientsBoardUpdateTurnFinished(clientId, board);
             }
             game.changeTurns();
-            move.setTurnComplete(true);
         }
     }
 

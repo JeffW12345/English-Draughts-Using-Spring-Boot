@@ -22,3 +22,6 @@ Explore whether setEnabled is being used correctly when draw offers are made and
 Can I get rid of amIRed and have a Colour object instead, for simplicity?
 
 Can we get rid of dictionaries by storing the clientIds in objects? 
+
+Ensure README up-to-date and complete. Consider JavaDocs. Put notes about the GUI in the readme.
+

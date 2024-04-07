@@ -18,13 +18,17 @@ public class DrawController {
     }
 
     public void drawOfferMadeByOtherClientViewUpdate() {
-        masterController.getGuiMessageController().drawOfferMadeByOtherClientMessage();
+        view.getResignButton().setEnabled(false);
         view.getOfferDrawButton().setEnabled(false);
         view.getAcceptDrawButton().setEnabled(true);
+
+        masterController.getGuiMessageController().drawOfferMadeByOtherClientMessage();
     }
 
     public void offerDrawButtonPressedActions() {
         view.getOfferDrawButton().setEnabled(false);
+        view.getResignButton().setEnabled(false);
+        view.getResignButton().setEnabled(false);
         drawOfferSentPending = true;
         masterController.getGuiMessageController().youHaveOfferedDrawMessage();
         masterController.getClient().getClientOutboundMessagingService().sendDrawOfferProposal
@@ -44,6 +48,7 @@ public class DrawController {
             masterController.getGuiMessageController().drawOfferExpiresMessage();
             view.getOfferDrawButton().setEnabled(true);
             view.getAcceptDrawButton().setEnabled(false);
+            view.getResignButton().setEnabled(true);
         }
     }
 }

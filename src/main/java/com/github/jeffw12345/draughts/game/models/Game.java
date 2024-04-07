@@ -15,7 +15,7 @@ import java.util.concurrent.ConcurrentLinkedDeque;
 public class Game {
     private String gameId = String.valueOf(UUID.randomUUID());
     private Board currentBoard = new Board();
-    private boolean isRedTurn = true, isDrawOfferPending;
+    private boolean isRedTurn = true, isDrawOfferPending, isNewTurn;
     private GameStatus gameStatus = GameStatus.AWAITING_NEW_GAME;
     private static final ConcurrentLinkedDeque<Move>  redPlayerMoves = new ConcurrentLinkedDeque<>();
     private static final ConcurrentLinkedDeque<Move>  whitePlayerMoves = new ConcurrentLinkedDeque<>();
@@ -40,6 +40,7 @@ public class Game {
     public void changeTurns(){
         isRedTurn = !isRedTurn;
         isDrawOfferPending = false;
+        isNewTurn = true;
     }
     public List<String> getClientIds(){
         return ClientIdToGameMapping.getClientIdsForGame(this);
