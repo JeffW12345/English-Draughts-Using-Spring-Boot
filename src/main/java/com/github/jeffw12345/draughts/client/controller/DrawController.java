@@ -1,31 +1,24 @@
 package com.github.jeffw12345.draughts.client.controller;
 
-import com.github.jeffw12345.draughts.client.io.ClientOutboundMessageService;
 import com.github.jeffw12345.draughts.client.view.DraughtsBoardGui;
 
 public class DrawController {
     private final MasterClientController masterController;
-    private final GuiMessageController guiMessageController;
     public DraughtsBoardGui view;
-    private final ClientOutboundMessageService clientMessageDispatchService;
-    private final String clientId;
     private boolean drawOfferSentPending;
 
     public DrawController(MasterClientController masterController) {
         this.masterController = masterController;
-        this.guiMessageController = masterController.getGuiMessageController();
         this.view = masterController.getView();
-        this.clientMessageDispatchService = masterController.getClient().getClientOutboundMessagingService();
-        this.clientId = masterController.getClient().getClientId();
     }
 
     public void drawOfferAcceptedViewUpdate() {
-        guiMessageController.drawOfferAcceptedMessage();
+        masterController.getGuiMessageController().drawOfferAcceptedMessage();
         masterController.gameOverActions();
     }
 
     public void drawOfferMadeByOtherClientViewUpdate() {
-        guiMessageController.drawOfferMadeByOtherClientMessage();
+        masterController.getGuiMessageController().drawOfferMadeByOtherClientMessage();
         view.getOfferDrawButton().setEnabled(false);
         view.getAcceptDrawButton().setEnabled(true);
     }
@@ -33,20 +26,22 @@ public class DrawController {
     public void offerDrawButtonPressedActions() {
         view.getOfferDrawButton().setEnabled(false);
         drawOfferSentPending = true;
-        guiMessageController.youHaveOfferedDrawMessage();
-        clientMessageDispatchService.sendDrawOfferProposal(clientId);
+        masterController.getGuiMessageController().youHaveOfferedDrawMessage();
+        masterController.getClient().getClientOutboundMessagingService().sendDrawOfferProposal
+                (masterController.getClient().getClientId());
     }
 
     public void acceptDrawButtonPressed() {
         masterController.gameOverActions();
-        guiMessageController.acceptDrawButtonPressedMessage();
-        clientMessageDispatchService.sendDrawOfferAcceptance(clientId);
+        masterController.getGuiMessageController().acceptDrawButtonPressedMessage();
+        masterController.getClient().getClientOutboundMessagingService().sendDrawOfferAcceptance
+                (masterController.getClient().getClientId());
     }
 
     public void withDrawOfferIfPending() {
         if(drawOfferSentPending){
             drawOfferSentPending = false;
-            guiMessageController.drawOfferExpiresMessage();
+            masterController.getGuiMessageController().drawOfferExpiresMessage();
             view.getOfferDrawButton().setEnabled(true);
             view.getAcceptDrawButton().setEnabled(false);
         }
