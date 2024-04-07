@@ -15,22 +15,11 @@ import java.util.concurrent.ConcurrentLinkedDeque;
 public class Game {
     private String gameId = String.valueOf(UUID.randomUUID());
     private Board currentBoard = new Board();
-    private Player redPlayer;
-    private Player whitePlayer;
-    private boolean isRedTurn = true;
+    private boolean isRedTurn = true, isDrawOfferPending;
     private GameStatus gameStatus = GameStatus.AWAITING_NEW_GAME;
     private static final ConcurrentLinkedDeque<Move>  redPlayerMoves = new ConcurrentLinkedDeque<>();
     private static final ConcurrentLinkedDeque<Move>  whitePlayerMoves = new ConcurrentLinkedDeque<>();
 
-    public void addPlayer(Player player){
-        if(whitePlayer != null && redPlayer != null) return;
-        if(redPlayer == null){
-            redPlayer = player;
-        }
-        else{
-            whitePlayer = player;
-        }
-    }
     public void addMove(Move move, Colour colour){
         if (colour == Colour.RED){
             redPlayerMoves.push(move);
@@ -48,29 +37,10 @@ public class Game {
         gameStatus = GameStatus.IN_PROGRESS;
     }
 
-    public void newGamePlayerNotificationActions() {
-        redPlayer.newGameClientNotifications();
-        whitePlayer.newGameClientNotifications();
-    }
-
     public void changeTurns(){
         isRedTurn = !isRedTurn;
-
-        redPlayer.setPlayersTurn(isRedTurn);
-        redPlayer.setHasOfferedDraw(false);
-
-        whitePlayer.setPlayersTurn(!isRedTurn);
-        whitePlayer.setHasOfferedDraw(false);
+        isDrawOfferPending = false;
     }
-    public Colour getColourOfPlayerMakingMove(Move move) {
-        for(Move redPlayerMove : redPlayerMoves){
-            if(redPlayerMove == move){
-                return Colour.RED;
-            }
-        }
-        return Colour.WHITE;
-    }
-
     public List<String> getClientIds(){
         return ClientIdToGameMapping.getClientIdsForGame(this);
     }

@@ -3,7 +3,6 @@ package com.github.jeffw12345.draughts.server.messaging.processing;
 import com.github.jeffw12345.draughts.game.models.Board;
 import com.github.jeffw12345.draughts.game.models.Colour;
 import com.github.jeffw12345.draughts.game.models.Game;
-import com.github.jeffw12345.draughts.game.models.Player;
 import com.github.jeffw12345.draughts.game.models.move.Move;
 import com.github.jeffw12345.draughts.game.models.move.MoveStatus;
 import com.github.jeffw12345.draughts.server.ClientsAwaitingAGame;
@@ -11,7 +10,13 @@ import com.github.jeffw12345.draughts.server.mapping.ClientIdToGameMapping;
 import com.github.jeffw12345.draughts.client.io.models.ClientMessageToServer;
 import com.github.jeffw12345.draughts.client.io.models.ClientToServerMessageType;
 import com.github.jeffw12345.draughts.server.messaging.io.ServerMessageComposeService;
+import com.github.jeffw12345.draughts.server.messaging.io.ServerMessagingOutboundService;
+import com.github.jeffw12345.draughts.server.messaging.io.ServerMessagingUtility;
+import com.github.jeffw12345.draughts.server.messaging.io.models.ServerMessageToClient;
 import lombok.extern.slf4j.Slf4j;
+
+import static com.github.jeffw12345.draughts.server.messaging.io.models.ServerToClientMessageType.ASSIGN_RED_COLOUR;
+import static com.github.jeffw12345.draughts.server.messaging.io.models.ServerToClientMessageType.ASSIGN_WHITE_COLOUR;
 
 @Slf4j
 public class ServerMessageController {
@@ -94,20 +99,23 @@ public class ServerMessageController {
         }
     }
 
-    private static void newGameSetup(String redPlayerClientId, String whitePlayerClientId) {
+    private synchronized static void newGameSetup(String redPlayerClientId, String whitePlayerClientId) {
         Game game = new Game();
-
-        Player redPlayer = new Player(redPlayerClientId, Colour.RED);
-        game.addPlayer(redPlayer);
-
-        Player whitePlayer = new Player(whitePlayerClientId, Colour.WHITE);
-        game.addPlayer(whitePlayer);
-
-        game.changeStatusToInProgress();
+        newGameClientNotifications(redPlayerClientId, Colour.RED);
+        newGameClientNotifications(whitePlayerClientId, Colour.WHITE);
 
         ClientIdToGameMapping.assignClientIdToGame(redPlayerClientId, game);
         ClientIdToGameMapping.assignClientIdToGame(whitePlayerClientId, game);
 
-        game.newGamePlayerNotificationActions();
+        game.changeStatusToInProgress();
+    }
+
+    public synchronized static void newGameClientNotifications(String clientId, Colour playerColour) {
+        ServerMessageToClient serverMessageToClient = ServerMessageToClient.builder()
+                .serverResponseType(playerColour == Colour.RED ? ASSIGN_RED_COLOUR : ASSIGN_WHITE_COLOUR)
+                .build();
+
+        String messageAsJson = ServerMessagingUtility.convertServerMessageToJSON(serverMessageToClient);
+        ServerMessagingOutboundService.sendJsonMessage(messageAsJson, clientId);
     }
 }

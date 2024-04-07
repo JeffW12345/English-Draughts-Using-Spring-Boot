@@ -36,21 +36,20 @@ public class Move {
     private int endSquareRow;
     @JsonProperty("endCoordinatesProvided")
     private boolean endCoordinatesProvided;
-
     @JsonProperty("startAndEndCoordinatesProvided")
     private boolean startAndEndCoordinatesProvided;
-
     @JsonProperty("overtakingMove")
     private boolean overtakingMove;
     @JsonProperty("oneSquareMove")
     private boolean oneSquareMove;
-
     @JsonProperty("moveStatus")
     private MoveStatus moveStatus = MoveStatus.PENDING;
     @JsonProperty("isTurnComplete")
     private boolean isTurnComplete;
     @JsonProperty("moveProcessedTimestamp")
     private Timestamp moveProcessedTimestamp;
+    @JsonProperty("colourOfPlayerMakingMove")
+    private Colour colourOfPlayerMakingMove;
 
 
     public void setStartCoordinates(int row, int column){

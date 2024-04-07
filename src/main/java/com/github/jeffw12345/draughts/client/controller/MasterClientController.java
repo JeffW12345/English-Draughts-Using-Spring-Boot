@@ -18,7 +18,7 @@ public class MasterClientController {
     private final Client client;
     private final DraughtsBoardGui view = new DraughtsBoardGui(this);
     private boolean amIRed, gameInProgress, isRedsTurn = true;
-    private Move move = Move.builder().build();
+    private Move move = new Move();
     private final DrawController drawController;
     private final WinLossController winLossController;
     private final BoardUpdateController boardUpdateController;
@@ -30,6 +30,13 @@ public class MasterClientController {
         this.winLossController = new WinLossController(this);
         this.boardUpdateController = new BoardUpdateController(this);
         this.guiMessageController = new GuiMessageController(this);
+    }
+
+    private Move createMoveForColour(boolean amIRed) {
+        Colour playerColour = amIRed ? Colour.RED : Colour.WHITE;
+        return Move.builder()
+                .colourOfPlayerMakingMove(playerColour)
+                .build();
     }
 
     public void processMessageFromServer(ServerMessageToClient serverResponseToClient) {
@@ -101,6 +108,7 @@ public class MasterClientController {
 
     public void assignColour(Colour colour) {
         amIRed = colour == Colour.RED;
+        move.setColourOfPlayerMakingMove(colour);
         gameInProgress = true;
         guiMessageController.bothPlayersReadyMessage();
         view.buttonEnablingAtStartOfGame();
@@ -131,7 +139,7 @@ public class MasterClientController {
             move.setEndCoordinates(row, column);
             move.setStartAndEndCoordinatesProvided(true);
             client.getClientOutboundMessagingService().sendMoveToServer(move);
-            move = Move.builder().build();
+            move = createMoveForColour(amIRed);
         }
     }
     public void changeTurns() {

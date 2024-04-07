@@ -11,7 +11,7 @@ import lombok.extern.slf4j.Slf4j;
 public class MoveValidationService {
 
     public static boolean isMoveLegal(Game game, Move move) {
-        Colour playerMakingMoveColour = game.getColourOfPlayerMakingMove(move);
+        Colour playerMakingMoveColour = move.getColourOfPlayerMakingMove();
 
         if (!game.isTurnOfColour(playerMakingMoveColour)) {
             return false;
