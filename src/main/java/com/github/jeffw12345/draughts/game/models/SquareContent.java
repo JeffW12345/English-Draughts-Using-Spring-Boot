@@ -17,6 +17,19 @@ public enum SquareContent {
         return Colour.NONE;
     }
 
+    public static boolean isPieceColourDifferentToColour(Colour colour, SquareContent squareContent){
+        if (colour == Colour.WHITE && (squareContent == SquareContent.RED_MAN ||
+                squareContent == SquareContent.RED_KING)){
+            return true;
+        }
+
+        if (colour == Colour.RED && (squareContent == SquareContent.WHITE_MAN ||
+                squareContent == SquareContent.WHITE_KING)){
+            return true;
+        }
+        return false;
+    }
+
     public static boolean canPieceTypeJumpUpwardsFromBottomOnly(SquareContent squareContent){
         return squareContent == SquareContent.RED_MAN;
     }
@@ -28,4 +41,6 @@ public enum SquareContent {
     public static boolean isAKing(SquareContent squareContent){
         return squareContent == SquareContent.RED_KING || squareContent == SquareContent.WHITE_KING;
     }
+
+
 }

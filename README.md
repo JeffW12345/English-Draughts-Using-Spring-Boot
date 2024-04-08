@@ -43,7 +43,10 @@ opponent's pieces or by leaving the opponent with no legal move'.
 
 Draws only occur by mutual consent for the purposes of this app. 
 
-A move is defined as the movement of a piece, which may or may not terminate with a change of turn.
+If the player can make an overtake move, the game compels them to do so. 
+
+A move is defined for the purposes of this app as the movement of a piece, which may or may not terminate with a change 
+of turn.
 
 LIMITATIONS
 ===========

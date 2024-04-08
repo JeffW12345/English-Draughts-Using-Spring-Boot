@@ -11,13 +11,24 @@ import lombok.extern.slf4j.Slf4j;
 public class MoveValidationService {
 
     public static boolean isMoveLegal(Game game, Move move) {
+
         Colour playerMakingMoveColour = move.getColourOfPlayerMakingMove();
+
+        Board board = game.getCurrentBoard();
+
+        boolean isJumpPossible = new JumpPossibleValidationService()
+                .isJumpPossibleForColour(playerMakingMoveColour, board);
+
+
+
+        if(!move.isOvertakingMove() && isJumpPossible){
+            return false;
+        }
 
         if (!game.isTurnOfColour(playerMakingMoveColour)) {
             return false;
         }
 
-        Board board = game.getCurrentBoard();
         int startRow = move.getStartSquareRow();
         int startColumn = move.getStartSquareColumn();
         SquareContent startSquareContent = board.getSquareContentAtRowAndColumn(startRow, startColumn);
@@ -37,11 +48,7 @@ public class MoveValidationService {
             return false;
         }
 
-        if (move.isOvertakingMove() && !isOverTakeValid(game, playerMakingMoveColour, move)){
-            return false;
-        }
-
-        return true;
+        return !move.isOvertakingMove() || isOverTakeValid(game, playerMakingMoveColour, move);
     }
 
     private static boolean isOverTakeValid(Game game, Colour startingSquareColour, Move move) {

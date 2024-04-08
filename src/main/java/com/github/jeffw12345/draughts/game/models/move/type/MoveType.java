@@ -14,11 +14,11 @@ public interface MoveType {
         return startRow < 0 || startRow > 7 || startColumn < 0 || startColumn > 7;
     }
 
-    default int getDestinationRow(int startRow){
+    default int getDestinationRowFromStartRow(int startRow){
         return startRow + getRowChange();
     }
 
-    default int getDestinationColumn(int startColumn){
+    default int getDestinationColumnFromStartColumn(int startColumn){
         return startColumn + getColumnChange();
     }
 }

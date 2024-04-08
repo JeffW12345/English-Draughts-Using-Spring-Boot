@@ -45,8 +45,8 @@ public class PostMoveCheckService {
                 continue;
             }
 
-            int destinationRow = moveType.getDestinationRow(endRow);
-            int destinationColumn = moveType.getDestinationColumn(endColumn);
+            int destinationRow = moveType.getDestinationRowFromStartRow(endRow);
+            int destinationColumn = moveType.getDestinationColumnFromStartColumn(endColumn);
 
             if (board.getSquareContentAtRowAndColumn(destinationRow, destinationColumn) == SquareContent.EMPTY) {
                 return true;
