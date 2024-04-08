@@ -16,7 +16,7 @@ public class MoveValidationService {
 
         Board board = game.getCurrentBoard();
 
-        boolean isJumpPossible = new JumpPossibleValidationService()
+        boolean isJumpPossible = new JumpPossibleCheckService()
                 .isJumpPossibleForColour(playerMakingMoveColour, board);
 
 

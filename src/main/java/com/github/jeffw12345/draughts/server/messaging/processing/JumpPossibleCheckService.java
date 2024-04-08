@@ -7,7 +7,7 @@ import com.github.jeffw12345.draughts.game.models.move.type.DownwardOvertakeJump
 import com.github.jeffw12345.draughts.game.models.move.type.UpwardOvertakeJump;
 import com.github.jeffw12345.draughts.game.models.move.type.MoveType;
 
-public class JumpPossibleValidationService {
+public class JumpPossibleCheckService {
 
     public boolean isJumpPossibleForColour(Colour colourOfPlayerPiece, Board board){
         for (int row = 0; row < 8; row ++){
@@ -16,12 +16,6 @@ public class JumpPossibleValidationService {
                 if (SquareContent.getColour(squareContent) != colourOfPlayerPiece){
                     continue;
                 }
-
-                if(row == 3 && column == 1 && SquareContent.getColour(squareContent) == Colour.RED){
-                    System.out.println("hello");
-
-                    //TODO - Hello for red square when right for jumpo
-                }
                 if (isOvertakePossibleForSquare(colourOfPlayerPiece, board, squareContent, row, column)){
                     return true;
                 }
@@ -29,8 +23,6 @@ public class JumpPossibleValidationService {
         }
         return false;
     }
-
-
 
     public static boolean isOvertakePossibleForSquare(Colour colourOfPlayerPiece,
                                                       Board board,
