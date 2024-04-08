@@ -77,10 +77,10 @@ public class GuiMessageController {
 
     String turnMessage() {
         if (masterClientController.isAmIRed() && masterClientController.isRedsTurn()) {
-            return "It is your turn.";
+            return "You're the red player. It's your turn.";
         }
         if (!masterClientController.isAmIRed() && !masterClientController.isRedsTurn()) {
-            return "It is your turn.";
+            return "You're the white player. It's your turn.";
         } else {
             return "It's the other player's turn.";
         }

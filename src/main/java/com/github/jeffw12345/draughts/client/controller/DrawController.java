@@ -18,6 +18,7 @@ public class DrawController {
     }
 
     public void drawOfferMadeByOtherClientViewUpdate() {
+        drawOfferSentPending = true;
         view.getResignButton().setEnabled(false);
         view.getOfferDrawButton().setEnabled(false);
         view.getAcceptDrawButton().setEnabled(true);
