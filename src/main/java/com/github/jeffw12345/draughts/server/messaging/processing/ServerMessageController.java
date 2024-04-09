@@ -100,8 +100,6 @@ public class ServerMessageController {
 
         ClientIdToGameMapping.assignClientIdToGame(redPlayerClientId, game);
         ClientIdToGameMapping.assignClientIdToGame(whitePlayerClientId, game);
-
-        game.changeStatusToInProgress();
     }
 
     public synchronized static void newGameClientNotifications(String clientId, Colour playerColour) {
