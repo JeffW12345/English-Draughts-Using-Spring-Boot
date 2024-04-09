@@ -19,8 +19,6 @@ public class MoveValidationService {
         boolean isJumpPossible = new JumpPossibleCheckService()
                 .isJumpPossibleForColour(playerMakingMoveColour, board);
 
-
-
         if(!move.isOvertakingMove() && isJumpPossible){
             return false;
         }

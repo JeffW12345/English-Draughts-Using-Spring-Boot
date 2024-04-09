@@ -24,38 +24,34 @@ public class JumpPossibleCheckService {
         return false;
     }
 
-    public static boolean isOvertakePossibleForSquare(Colour colourOfPlayerPiece,
+    public boolean isOvertakePossibleForSquare(Colour colourOfPlayerPiece,
                                                       Board board,
                                                       SquareContent squareContent,
                                                       int row,
                                                       int column) {
         if (SquareContent.isAKing(squareContent)) {
-            return canJumpFromSquare(board, UpwardOvertakeJump.class, squareContent, row, column, colourOfPlayerPiece) ||
-                    canJumpFromSquare(board, DownwardOvertakeJump.class, squareContent, row, column, colourOfPlayerPiece);
+            return canJumpFromSquare(board, UpwardOvertakeJump.class, row, column, colourOfPlayerPiece) ||
+                    canJumpFromSquare(board, DownwardOvertakeJump.class, row, column, colourOfPlayerPiece);
         }
         if (SquareContent.canPieceTypeJumpDownwardsFromTopOnly(squareContent)) {
-            return canJumpFromSquare(board, DownwardOvertakeJump.class, squareContent, row, column, colourOfPlayerPiece);
+            return canJumpFromSquare(board, DownwardOvertakeJump.class, row, column, colourOfPlayerPiece);
         }
         if (SquareContent.canPieceTypeJumpUpwardsFromBottomOnly(squareContent)) {
-            return canJumpFromSquare(board, UpwardOvertakeJump.class, squareContent, row, column, colourOfPlayerPiece);
+            return canJumpFromSquare(board, UpwardOvertakeJump.class, row, column, colourOfPlayerPiece);
         }
         return false;
     }
 
     public static boolean canJumpFromSquare(Board board,
                                             Class<? extends Enum<? extends MoveType>> moveTypeEnumClass,
-                                            SquareContent squareContent,
-                                            int startRow,
-                                            int startColumn,
+                                            int startOfNewMoveRow,
+                                            int startOfNewMoveColumn,
                                             Colour colourOfPlayerPiece) {
 
         MoveType[] moveTypes = (MoveType[]) moveTypeEnumClass.getEnumConstants();
 
         for (MoveType moveType : moveTypes) {
-            int endRow = moveType.getDestinationRowFromStartRow(startRow);
-            int endColumn = moveType.getDestinationColumnFromStartColumn(startColumn);
-
-            if (moveType.isOutOfBoundsForPieceAtPosition(endRow, endColumn)) {
+            if (moveType.isOutOfBoundsForPieceAtPosition(startOfNewMoveRow, startOfNewMoveColumn)) {
                 continue;
             }
 
@@ -63,18 +59,18 @@ public class JumpPossibleCheckService {
             int columnChange = moveType.getColumnChange();
 
             int jumpedOverSquareRow = rowChange < 0
-                    ? startRow + rowChange + 1
-                    : startRow + rowChange -1;
+                    ? startOfNewMoveRow + rowChange + 1
+                    : startOfNewMoveRow + rowChange -1;
             int jumpedOverSquareColumn = columnChange < 0
-                    ? startColumn + columnChange + 1
-                    : startColumn + columnChange -1;
+                    ? startOfNewMoveColumn + columnChange + 1
+                    : startOfNewMoveColumn + columnChange -1;
 
             if (!isSquareOccupiedByOpponentPiece(jumpedOverSquareRow, jumpedOverSquareColumn, board, colourOfPlayerPiece)) {
                 continue;
             }
 
-            int destinationRow = moveType.getDestinationRowFromStartRow(startRow);
-            int destinationColumn = moveType.getDestinationColumnFromStartColumn(startColumn);
+            int destinationRow = moveType.getDestinationRowFromStartRow(startOfNewMoveRow);
+            int destinationColumn = moveType.getDestinationColumnFromStartColumn(startOfNewMoveColumn);
 
             if (board.getSquareContentAtRowAndColumn(destinationRow, destinationColumn) == SquareContent.EMPTY) {
                 return true;

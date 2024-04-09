@@ -5,8 +5,6 @@ import com.github.jeffw12345.draughts.game.models.Colour;
 import com.github.jeffw12345.draughts.game.models.Game;
 import com.github.jeffw12345.draughts.game.models.SquareContent;
 import com.github.jeffw12345.draughts.game.models.move.Move;
-import com.github.jeffw12345.draughts.game.models.move.type.DownwardOvertakeJump;
-import com.github.jeffw12345.draughts.game.models.move.type.UpwardOvertakeJump;
 import com.github.jeffw12345.draughts.game.models.move.type.KingMoveType;
 import com.github.jeffw12345.draughts.game.models.move.type.MoveType;
 import com.github.jeffw12345.draughts.game.models.move.type.RedManMoveType;
@@ -14,69 +12,12 @@ import com.github.jeffw12345.draughts.game.models.move.type.WhiteManMoveType;
 
 public class PostMoveCheckService {
     public static boolean isFollowUpOvertakePossible(Board board, Move move, SquareContent startingSquareContent) {
-        if (SquareContent.isAKing(startingSquareContent)) {
-            return canJumpFromDestinationSquare(move, UpwardOvertakeJump.class, board, startingSquareContent) ||
-                    canJumpFromDestinationSquare(move, DownwardOvertakeJump.class, board, startingSquareContent);
-        }
-        if (SquareContent.canPieceTypeJumpDownwardsFromTopOnly(startingSquareContent)) {
-            return canJumpFromDestinationSquare(move, DownwardOvertakeJump.class, board, startingSquareContent);
-        }
-        if (SquareContent.canPieceTypeJumpUpwardsFromBottomOnly(startingSquareContent)) {
-            return canJumpFromDestinationSquare(move, UpwardOvertakeJump.class, board, startingSquareContent);
-        }
-        return false;
-    }
+        int endOfMoveRow = move.getEndSquareRow();
+        int endOfMoveColumn = move.getEndSquareColumn();
+        Colour playerColour = move.getColourOfPlayerMakingMove();
 
-    public static boolean canJumpFromDestinationSquare(Move move,
-                                                       Class<? extends Enum<? extends MoveType>> moveTypeEnumClass,
-                                                       Board board,
-                                                       SquareContent startingSquareContent) {
-        MoveType[] moveTypes = (MoveType[]) moveTypeEnumClass.getEnumConstants();
-
-        for (MoveType moveType : moveTypes) {
-            int endRow = move.getEndSquareRow();
-            int endColumn = move.getEndSquareColumn();
-
-            if (moveType.isOutOfBoundsForPieceAtPosition(endRow, endColumn)) {
-                continue;
-            }
-
-            if (!isOvertakingSquareOccupiedByOpponentPiece(startingSquareContent, move, moveType, board)) {
-                continue;
-            }
-
-            int destinationRow = moveType.getDestinationRowFromStartRow(endRow);
-            int destinationColumn = moveType.getDestinationColumnFromStartColumn(endColumn);
-
-            if (board.getSquareContentAtRowAndColumn(destinationRow, destinationColumn) == SquareContent.EMPTY) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    public static boolean isOvertakingSquareOccupiedByOpponentPiece(SquareContent startingSquareContent,
-                                                                    Move move,
-                                                                    MoveType moveType,
-                                                                    Board board) {
-        int startRow = move.getEndSquareRow();
-        int startColumn = move.getEndSquareColumn();
-        int rowChange = moveType.getRowChange();
-        int columnChange = moveType.getColumnChange();
-
-        int jumpedOverSquareRow = rowChange < 0
-                ? startRow + rowChange + 1
-                : startRow + rowChange -1;
-        int jumpedOverSquareColumn = columnChange < 0
-                ? startColumn + columnChange + 1
-                : startColumn + columnChange -1;
-
-        SquareContent jumpedOverSquareContent = board.getSquareContentAtRowAndColumn
-                (jumpedOverSquareRow, jumpedOverSquareColumn);
-
-        Colour playerColour = SquareContent.getColour(startingSquareContent);
-        Colour opponentColour = Colour.getOtherPlayerColour(playerColour);
-        return SquareContent.getColour(jumpedOverSquareContent) == opponentColour;
+        return new JumpPossibleCheckService().isOvertakePossibleForSquare
+                (playerColour, board, startingSquareContent, endOfMoveRow, endOfMoveColumn);
     }
 
     public static boolean isTurnOngoing(Game game, Move move) {
