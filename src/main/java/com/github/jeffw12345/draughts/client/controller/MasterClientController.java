@@ -72,9 +72,6 @@ public class MasterClientController {
             case INFORM_DRAW_OFFER_MADE:
                 drawController.drawOfferMadeByOtherClientViewUpdate();
                 break;
-            case INFORM_OTHER_CLIENT_CLOSED_WINDOW:
-                otherClientClosedGuiActions();
-                break;
             case INFORM_CLIENT_OF_ID:
                 String clientId = serverResponseToClient.getClientId();
                 updateClientId(clientId);
@@ -89,12 +86,6 @@ public class MasterClientController {
         client.setClientId(clientId);
         view.setUp();
         view.clientIdProvidedActions();
-    }
-
-    private void otherClientClosedGuiActions() {
-        log.warn("Shutting down as your opponent closed their window");
-        view.getFrame().dispatchEvent(new WindowEvent(view.getFrame(), WindowEvent.WINDOW_CLOSING));
-        client.getClientOutboundMessagingService().closeSession();
     }
 
     void gameOverActions(){
@@ -152,6 +143,6 @@ public class MasterClientController {
         view.getOfferNewGameButton().setEnabled(false);
         guiMessageController.offerNewGameButtonPressedMessage();
 
-        client.getClientOutboundMessagingService().sendOfferNewGameRequest(client.getClientId());
+        client.getClientMessageComposeService().sendOfferNewGameRequest(client.getClientId());
     }
 }

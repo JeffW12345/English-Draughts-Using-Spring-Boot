@@ -5,6 +5,5 @@ public enum ClientToServerMessageType {
     MOVE_REQUEST,
     DRAW_OFFER,
     DRAW_ACCEPT,
-    RESIGN,
-    EXITING_DUE_TO_GUI_CLOSE
+    RESIGN
 }

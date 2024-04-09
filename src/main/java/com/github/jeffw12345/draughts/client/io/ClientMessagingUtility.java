@@ -9,22 +9,27 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class ClientMessagingUtility {
     private static final ObjectMapper objectMapper = new ObjectMapper();
+    private static final Object lock = new Object();
 
     public static String convertClientMessageToJSON(ClientMessageToServer clientRequestToServer) {
-        try {
-            return objectMapper.writer().withDefaultPrettyPrinter().writeValueAsString(clientRequestToServer);
-        } catch (JsonProcessingException e) {
-            log.error("Error processing JSON: {}", e.getMessage());
-            throw new RuntimeException("Error converting message to JSON", e);
+        synchronized (lock) {
+            try {
+                return objectMapper.writer().withDefaultPrettyPrinter().writeValueAsString(clientRequestToServer);
+            } catch (JsonProcessingException e) {
+                log.error("Error processing JSON: {}", e.getMessage());
+                throw new RuntimeException("Error converting message to JSON", e);
+            }
         }
     }
 
     public static ServerMessageToClient getServerMessageObjectFromJson(String json) {
-        try {
-            return objectMapper.readValue(json, ServerMessageToClient.class);
-        } catch (JsonProcessingException e) {
-            log.error("Error processing JSON: {}", e.getMessage());
-            throw new RuntimeException("Error parsing JSON message", e);
+        synchronized (lock) {
+            try {
+                return objectMapper.readValue(json, ServerMessageToClient.class);
+            } catch (JsonProcessingException e) {
+                log.error("Error processing JSON: {}", e.getMessage());
+                throw new RuntimeException("Error parsing JSON message", e);
+            }
         }
     }
 }

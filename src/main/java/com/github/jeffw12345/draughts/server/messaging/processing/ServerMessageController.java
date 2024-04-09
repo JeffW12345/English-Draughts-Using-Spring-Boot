@@ -41,15 +41,9 @@ public class ServerMessageController {
             case RESIGN:
                 ServerMessageComposeService.informOtherClientOfResignation(requestingClientId);
                 break;
-            case EXITING_DUE_TO_GUI_CLOSE:
-                exitDueToGuiCloseActions(requestingClientId);
-                break;
             default:
                 throw new IllegalArgumentException("Unexpected response type: " + clientToServerRequestType);
         }
-    }
-    private static void exitDueToGuiCloseActions(String requestingClientId) {
-        ServerMessageComposeService.tellOtherClientAboutShutDown(requestingClientId);
     }
     private static void moveRequestActions(String requestingClientId, Move move, Colour playerColour) {
         Game game = ClientIdToGameMapping.getGameForClientId(requestingClientId);

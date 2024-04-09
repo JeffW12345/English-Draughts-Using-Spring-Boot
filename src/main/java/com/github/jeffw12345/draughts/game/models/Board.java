@@ -173,10 +173,8 @@ public class Board {
                 return 'R';
             case WHITE_KING:
                 return 'W';
-            case EMPTY:
-                return 'e';
             default:
-                return ' ';
+                return 'e';
         }
     }
 }

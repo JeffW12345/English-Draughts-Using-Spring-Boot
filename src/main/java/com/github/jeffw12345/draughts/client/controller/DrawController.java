@@ -32,14 +32,14 @@ public class DrawController {
         view.getResignButton().setEnabled(false);
         drawOfferSentPending = true;
         masterController.getGuiMessageController().youHaveOfferedDrawMessage();
-        masterController.getClient().getClientOutboundMessagingService().sendDrawOfferProposal
+        masterController.getClient().getClientMessageComposeService().sendDrawOfferProposal
                 (masterController.getClient().getClientId());
     }
 
     public void acceptDrawButtonPressed() {
         masterController.gameOverActions();
         masterController.getGuiMessageController().acceptDrawButtonPressedMessage();
-        masterController.getClient().getClientOutboundMessagingService().sendDrawOfferAcceptance
+        masterController.getClient().getClientMessageComposeService().sendDrawOfferAcceptance
                 (masterController.getClient().getClientId());
     }
 

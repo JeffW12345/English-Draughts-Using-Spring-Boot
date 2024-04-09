@@ -55,16 +55,6 @@ public class ServerMessageComposeService {
         ServerMessagingOutboundService.sendJsonMessage(messageAsJson, idOfClientSubmittingMove);
     }
 
-    public static void tellOtherClientAboutShutDown(String idOfClientWhoClosedGui){
-        ServerMessageToClient serverMessageToClient = ServerMessageToClient.builder()
-                .serverResponseType(ServerToClientMessageType.INFORM_OTHER_CLIENT_CLOSED_WINDOW)
-                .build();
-
-        String messageAsJson = ServerMessagingUtility.convertServerMessageToJSON(serverMessageToClient);
-
-        ServerMessagingOutboundService.messageOtherClientInGame(messageAsJson, idOfClientWhoClosedGui);
-    }
-
     public static void informOtherClientOfResignation(String resigningClientId) {
         ServerMessageToClient serverMessageToClient = ServerMessageToClient.builder()
                 .serverResponseType(ServerToClientMessageType.INFORM_OTHER_PLAYER_RESIGNED)

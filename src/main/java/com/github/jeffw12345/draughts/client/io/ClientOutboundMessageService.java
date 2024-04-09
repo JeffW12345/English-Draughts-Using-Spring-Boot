@@ -57,42 +57,6 @@ public class ClientOutboundMessageService {
         }
     }
 
-    public void sendOfferNewGameRequest(String clientId) {
-        ClientMessageToServer requestForGame = ClientMessageToServer.builder()
-                .clientId(clientId)
-                .requestType(WANT_GAME)
-                .build();
-
-        convertMessageToJSONThenSendToServer(requestForGame);
-    }
-
-    public void sendDrawOfferAcceptance(String clientId) {
-        ClientMessageToServer acceptDrawMessage = ClientMessageToServer.builder()
-                .clientId(clientId)
-                .requestType(DRAW_ACCEPT)
-                .build();
-
-        convertMessageToJSONThenSendToServer(acceptDrawMessage);
-    }
-
-    public void sendDrawOfferProposal(String clientId) {
-        ClientMessageToServer offerDrawMessage = ClientMessageToServer.builder()
-                .clientId(clientId)
-                .requestType(DRAW_OFFER)
-                .build();
-
-        convertMessageToJSONThenSendToServer(offerDrawMessage);
-    }
-
-    public void sendResignation(String resigningClientId) {
-        ClientMessageToServer resignationRequest = ClientMessageToServer.builder()
-                .clientId(resigningClientId)
-                .requestType(RESIGN)
-                .build();
-
-        convertMessageToJSONThenSendToServer(resignationRequest);
-    }
-
     public void establishSession() {
         try {
             WebSocketContainer container = ContainerProvider.getWebSocketContainer();
@@ -103,20 +67,10 @@ public class ClientOutboundMessageService {
         }
     }
 
-    public void sendGuiCloseMessageAndCloseSession(String windowClosedClientId) {
-        ClientMessageToServer guiCloseMessage = ClientMessageToServer.builder()
-                .clientId(windowClosedClientId)
-                .requestType(EXITING_DUE_TO_GUI_CLOSE)
-                .build();
-
-        convertMessageToJSONThenSendToServer(guiCloseMessage);
-        closeSession();
-    }
-
     public void closeSession() {
         if (session != null && session.isOpen()) {
             try {
-                log.warn("Closing communication session with server. You will receive a confirmation message.");
+                log.warn("Closing communication session with server.");
                 session.close();
             } catch (IOException e) {
                 log.error("Problem closing session: {}", e.getMessage());

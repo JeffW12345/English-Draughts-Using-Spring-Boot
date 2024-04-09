@@ -1,8 +1,6 @@
 package com.github.jeffw12345.draughts.client.view;
 
-import com.github.jeffw12345.draughts.client.controller.DrawController;
 import com.github.jeffw12345.draughts.client.controller.MasterClientController;
-import com.github.jeffw12345.draughts.client.controller.WinLossController;
 import com.github.jeffw12345.draughts.game.models.Board;
 import com.github.jeffw12345.draughts.game.models.SquareContent;
 import lombok.Getter;
@@ -23,7 +21,6 @@ import static com.github.jeffw12345.draughts.client.view.ViewUtils.makeGuiDispla
 @Slf4j
 @Getter
 public class DraughtsBoardGui implements ActionListener {
-
     static {
         System.setProperty("java.awt.headless", "false");
     }
@@ -35,7 +32,7 @@ public class DraughtsBoardGui implements ActionListener {
     @Setter
     private String bottomLineMessageText, middleLineMessageText, topLineMessageText;
     private final MasterClientController controller;
-    private boolean clientIdProvided, colourAssigned;
+    private boolean clientIdProvided;
 
     public DraughtsBoardGui(MasterClientController controller) {
         this.controller = controller;
@@ -44,11 +41,7 @@ public class DraughtsBoardGui implements ActionListener {
     public void setUp() {
         newBoardActions();
         labelSetup();
-        if (!colourAssigned){
-            controller.getGuiMessageController().setWelcomeMessageWithoutColours();
-        } else {
-            controller.getGuiMessageController().setWelcomeMessageWithColours();
-        }
+        controller.getGuiMessageController().setWelcomeMessageWithoutColours();
     }
 
     void newBoardActions() {
@@ -108,6 +101,7 @@ public class DraughtsBoardGui implements ActionListener {
             @Override
             public void windowClosing(WindowEvent e) {
                 log.warn("Closing app due to window close");
+                controller.getClient().getClientOutboundMessagingService().closeSession();
                 System.exit(1);
             }
         });
@@ -138,9 +132,9 @@ public class DraughtsBoardGui implements ActionListener {
                 @Override
                 protected Void doInBackground() {
                     for (int row = 0; row < 8; row++) {
-                        for (int col = 0; col < 8; col++) {
-                            if (e.getSource() == grid[row][col]) {
-                                controller.boardSquareClicked(row, col);
+                        for (int column = 0; column < 8; column++) {
+                            if (e.getSource() == grid[row][column]) {
+                                controller.boardSquareClicked(row, column);
                             }
                         }
                     }
@@ -151,20 +145,20 @@ public class DraughtsBoardGui implements ActionListener {
         }
     }
 
-    public void addRedKingToSquare(int row, int col) {
-        GuiSquare.getComponent(grid[row][col]).setState(GuiSquareState.RED_KING);
+    public void addRedKingToSquare(int row, int column) {
+        GuiSquare.getComponent(grid[row][column]).setState(GuiSquareState.RED_KING);
     }
 
-    public void addRedManToSquare(int row, int col) {
-        GuiSquare.getComponent(grid[row][col]).setState(GuiSquareState.RED_MAN);
+    public void addRedManToSquare(int row, int column) {
+        GuiSquare.getComponent(grid[row][column]).setState(GuiSquareState.RED_MAN);
     }
 
-    public void addWhiteKing(int row, int col) {
-        GuiSquare.getComponent(grid[row][col]).setState(GuiSquareState.WHITE_KING);
+    public void addWhiteKing(int row, int column) {
+        GuiSquare.getComponent(grid[row][column]).setState(GuiSquareState.WHITE_KING);
     }
 
-    public void addWhiteMan(int row, int col) {
-        GuiSquare.getComponent(grid[row][col]).setState(GuiSquareState.WHITE_MAN);
+    public void addWhiteMan(int row, int column) {
+        GuiSquare.getComponent(grid[row][column]).setState(GuiSquareState.WHITE_MAN);
     }
 
     void addWhiteMenToBoardForInitialSetup() {

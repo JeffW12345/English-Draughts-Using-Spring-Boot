@@ -3,7 +3,6 @@ package com.github.jeffw12345.draughts.client.controller;
 public class WinLossController {
     private final MasterClientController masterController;
 
-
     public WinLossController(MasterClientController masterController) {
         this.masterController = masterController;
     }
@@ -27,6 +26,6 @@ public class WinLossController {
         masterController.getGuiMessageController().resignButtonPressedMessage();
         masterController.gameOverActions();
         masterController.getClient()
-                .getClientOutboundMessagingService().sendResignation(masterController.getClient().getClientId());
+                .getClientMessageComposeService().sendResignation(masterController.getClient().getClientId());
     }
 }

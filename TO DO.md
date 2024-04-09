@@ -3,6 +3,8 @@ TO DO
 
 # TO BE DELETED ONCE PROJECT GOES LIVE
 
+When new game accepted after previous game, reset GUIs. 
+
 Check encapsulation as tight as possible.
 
 Write messages in GuiMessageController to cater for a change of turn or the current turn being ongoing

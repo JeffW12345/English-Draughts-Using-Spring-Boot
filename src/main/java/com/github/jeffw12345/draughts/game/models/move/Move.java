@@ -2,10 +2,8 @@ package com.github.jeffw12345.draughts.game.models.move;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.github.jeffw12345.draughts.game.models.Board;
+
 import com.github.jeffw12345.draughts.game.models.Colour;
-import com.github.jeffw12345.draughts.game.models.Square;
-import com.github.jeffw12345.draughts.game.models.SquareContent;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -48,7 +46,6 @@ public class Move {
     private Timestamp moveProcessedTimestamp;
     @JsonProperty("colourOfPlayerMakingMove")
     private Colour colourOfPlayerMakingMove;
-
 
     public void setStartCoordinates(int row, int column){
         startSquareColumn = column;

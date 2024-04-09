@@ -13,7 +13,6 @@ import lombok.Setter;
 @NoArgsConstructor
 public class Square {
     private SquareContent squareContent;
-
     public boolean containsAKing(){
         return SquareContent.isAKing(squareContent);
     }

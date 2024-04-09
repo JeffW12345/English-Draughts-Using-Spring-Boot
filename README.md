@@ -12,6 +12,8 @@ WebSocket library.
 
 The game uses the Model View Controller paradigm, and also has service classes. 
 
+Here is a demo of the app: https://www.youtube.com/watch?v=MXzk7qO0z2I
+
 RUNNING INSTRUCTIONS
 ====================
 
@@ -38,7 +40,7 @@ There is just one player per Client instance.
 
 If a player closes their GUI, the other player is informed, and the game is abandoned and the app closes. 
 
-A win is determined in accordance to the aforementioned Wikipedia page: 'A player wins by capturing all of the 
+A win is determined in accordance to the aforementioned Wikipedia page: 'A player wins by capturing all the 
 opponent's pieces or by leaving the opponent with no legal move'.
 
 Draws only occur by mutual consent for the purposes of this app. 
@@ -47,6 +49,9 @@ If the player can make an overtake move, the game compels them to do so.
 
 A move is defined for the purposes of this app as the movement of a piece, which may or may not terminate with a change 
 of turn.
+
+If any player closes their GUI, this results in the app shutting down. If the app is eventually extended to cater for 
+more than two players, then this approach to a window close will be revised. 
 
 LIMITATIONS
 ===========
@@ -124,10 +129,10 @@ separate thread. For each Client object, the following takes place:
 
 - The Client calls the newly created MasterClientController object's setUp() method, which fires up a GUI, using its 
 instance of the DraughtBoardView class. It does so by invoking its DraughtsBoardGui object's setUp method. 
+
 ## New game requests
 
-The
-DraughtsBoardGui disables GUI button presses until the id is assigned. Once an ID is assigned the user has the option
+The DraughtsBoardGui disables GUI button presses until the id is assigned. Once an ID is assigned the user has the option
 to request a game. When the user selects this option, a request is sent to the server.
 
 The server then consults a static linked list of client ids relating to clients awaiting games (stored in the
@@ -204,7 +209,6 @@ which describe the type of request being made:
     DRAW_OFFER
     DRAW_ACCEPT 
     RESIGN
-    EXITING_DUE_TO_GUI_CLOSE 
     ESTABLISH_SESSION
 
 The ClientMessageToServer also contains other instance variables, such as a Move object, which will be null if they are
@@ -234,11 +238,6 @@ constant of 'DRAW_ACCEPT'.
 **Resignation** The object contains String attribute containing the Client id relating to the resigning player as a
 String and a ClientMessageToServer constant of 'RESIGN'.
 
-**Exiting the game** When a client closes their GUI, this results in a message being sent from that client to the server,
-which sends a message to the other client to get it to shut down. In this instance, the client with the window being
-closed sends a message to the server, using a ClientMessageToServer object with a ClientMessageToServer constant of
-'EXITING_DUE_TO_GUI_CLOSE', and the client id as a String.
-
 Messages are converted to JSON, and then sent to the server using the ClientMessageDispatchService class.
 
 ## B. Server sending messages
@@ -257,7 +256,6 @@ the message type, that tells the client the purpose of the message. These are th
     INFORM_OF_DRAW_ACCEPTED,
     INFORM_OTHER_PLAYER_RESIGNED,
     INFORM_DRAW_OFFER_MADE,
-    INFORM_OTHER_CLIENT_CLOSED_WINDOW,
     INFORM_CLIENT_OF_ID
 
 The message is encoded in JSON format before being sent to the client.

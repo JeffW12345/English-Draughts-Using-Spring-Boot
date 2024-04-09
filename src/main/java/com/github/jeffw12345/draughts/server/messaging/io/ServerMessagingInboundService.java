@@ -74,7 +74,7 @@ public class ServerMessagingInboundService {
     @OnClose
     public void onClose(Session session) {
         String clientIdForSession = ClientIdToSessionMapping.getClientIdForSession(session);
-        ClientIdToSessionMapping.remove(clientIdForSession);
+        ClientIdToSessionMapping.removeEntryFromMap(clientIdForSession);
 
         log.info("Session disconnected. Number of sessions: {}", SESSIONS.size());
     }

@@ -1,9 +1,10 @@
 package com.github.jeffw12345.draughts.client.view;
 
+import javax.swing.JButton;
+import javax.swing.JLabel;
+import javax.swing.UIManager;
+import java.awt.Font;
 import lombok.extern.slf4j.Slf4j;
-
-import javax.swing.*;
-import java.awt.*;
 
 @Slf4j
 public class ViewUtils {
@@ -29,6 +30,4 @@ public class ViewUtils {
         label.setFont(font);
         return label;
     }
-
-
 }

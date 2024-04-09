@@ -15,7 +15,7 @@ public class ClientIdToSessionMapping {
         clientIdToSessionObject.put(clientId, session);
     }
 
-    public static void remove(String clientId){
+    public static void removeEntryFromMap(String clientId){
         clientIdToSessionObject.remove(clientId);
     }
     public static Session getSessionFromClientId(String clientId){

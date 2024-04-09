@@ -16,7 +16,6 @@ public class Game {
     private String gameId = String.valueOf(UUID.randomUUID());
     private Board currentBoard = new Board();
     private boolean isRedTurn = true, isDrawOfferPending, isNewTurn;
-    private GameStatus gameStatus = GameStatus.AWAITING_NEW_GAME;
     private static final ConcurrentLinkedDeque<Move>  redPlayerMoves = new ConcurrentLinkedDeque<>();
     private static final ConcurrentLinkedDeque<Move>  whitePlayerMoves = new ConcurrentLinkedDeque<>();
 
@@ -31,10 +30,6 @@ public class Game {
 
     public boolean isTurnOfColour(Colour colour){
         return (colour==Colour.RED && isRedTurn) || (colour==Colour.WHITE && !isRedTurn);
-    }
-
-    public void changeStatusToInProgress(){
-        gameStatus = GameStatus.IN_PROGRESS;
     }
 
     public void changeTurns(){

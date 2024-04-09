@@ -48,10 +48,6 @@ public class ServerMessagingOutboundService {
 
     public static synchronized void messageOtherClientInGame(String json, String thisClient) {
         String otherClientId = ServerMessagingUtility.getOtherClientIdForGame(thisClient);
-        if (otherClientId != null) {
-            sendJsonMessage(json, otherClientId);
-        } else {
-            log.error("Other client ID not found for client ID: {}", thisClient);
-        }
+        sendJsonMessage(json, otherClientId);
     }
 }
