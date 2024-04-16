@@ -9,8 +9,7 @@ import static com.github.jeffw12345.draughts.client.io.models.ClientToServerMess
 import static com.github.jeffw12345.draughts.client.io.models.ClientToServerMessageType.WANT_GAME;
 
 public class ClientMessageComposeService {
-
-    private Client client;
+    private final Client client;
 
     public ClientMessageComposeService(Client client) {
         this.client = client;

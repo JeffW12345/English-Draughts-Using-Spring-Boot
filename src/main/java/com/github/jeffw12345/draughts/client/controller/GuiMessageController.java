@@ -75,7 +75,7 @@ public class GuiMessageController {
         view.updateLabels();
     }
 
-    String turnMessage() {
+    private String turnMessage() {
         if (masterClientController.isAmIRed() && masterClientController.isRedsTurn()) {
             return "You're the red player. It's your turn.";
         }
