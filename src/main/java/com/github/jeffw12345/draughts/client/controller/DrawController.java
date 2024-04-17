@@ -29,7 +29,6 @@ public class DrawController {
     public void offerDrawButtonPressedActions() {
         view.getOfferDrawButton().setEnabled(false);
         view.getResignButton().setEnabled(false);
-        view.getResignButton().setEnabled(false);
         drawOfferSentPending = true;
         masterController.getGuiMessageController().youHaveOfferedDrawMessage();
         masterController.getClient().getClientMessageComposeService().sendDrawOfferProposal

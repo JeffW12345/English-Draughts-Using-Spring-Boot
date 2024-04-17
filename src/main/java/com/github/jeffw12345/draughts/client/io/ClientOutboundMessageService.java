@@ -12,9 +12,10 @@ import jakarta.websocket.WebSocketContainer;
 
 import lombok.Builder;
 import lombok.Getter;
+
 import lombok.Setter;
-import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.net.URI;
@@ -22,36 +23,38 @@ import java.net.URISyntaxException;
 
 import static com.github.jeffw12345.draughts.client.io.models.ClientToServerMessageType.*;
 
-@Slf4j
 @Getter
 @Setter
-@Builder
 public class ClientOutboundMessageService {
     private Session session;
     private final Client client;
-    private final Logger logger;
+    private Logger log;
+    public ClientOutboundMessageService(Client client){
+        this.client = client;
+        log = LoggerFactory.getLogger(ClientOutboundMessageService.class);
+    }
 
     public void sendJsonMessageToServer(String jsonMessage) {
         if (session != null && session.isOpen()) {
             session.getAsyncRemote().sendText(jsonMessage);
-            log.info("Client {} sent message to server: {}", client.getClientId(), jsonMessage);
+            String errorMessage = String.format("Client %s sent message to server: %s", client.getClientId(), jsonMessage);
+            log.info(errorMessage);
         } else {
-            log.warn("Cannot send message: session is closed");
+            log.error("Cannot send message: Session object is null or closed");
         }
     }
 
-    public void convertMessageToJSONThenSendToServer(ClientMessageToServer messageAsObject) {
-        String messageAsJSON = ClientMessagingUtility.convertClientMessageToJSON(messageAsObject);
+    public void convertMessageToJSONThenSendToServer(ClientMessageToServer clientMessageToServer) {
+        String messageAsJSON = ClientMessagingUtility.convertClientMessageToJSON(clientMessageToServer);
         sendJsonMessageToServer(messageAsJSON);
     }
 
     public void sendMoveToServer(Move move) {
         if (client != null && client.getClientController() != null) {
-            Colour clientPlayerColour = client.getClientController().isAmIRed() ? Colour.RED : Colour.WHITE;
             ClientMessageToServer moveRequest = ClientMessageToServer.builder()
                     .clientId(client.getClientId())
                     .move(move)
-                    .colourOfClientPlayer(clientPlayerColour)
+                    .colourOfClientPlayer(client.getClientController().isAmIRed() ? Colour.RED : Colour.WHITE)
                     .requestType(MOVE_REQUEST)
                     .build();
 

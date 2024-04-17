@@ -110,9 +110,8 @@ public class GuiMessageController {
     private String colourMessage() {
         if (masterClientController.isAmIRed()) {
             return "You are the red player";
-        } else {
-            return "You are the white player";
         }
+        return "You are the white player";
     }
     void invalidMovePopUpMessage() {
         JOptionPane.showMessageDialog(view.getFrame(), "Invalid move. Please try again");

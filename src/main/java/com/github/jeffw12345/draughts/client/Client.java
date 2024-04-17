@@ -13,12 +13,11 @@ public class Client {
     @Setter
     private String clientId;
     private final ClientInboundMessageService clientInboundMessagingService = new ClientInboundMessageService(this);
-    private final ClientOutboundMessageService clientOutboundMessagingService = ClientOutboundMessageService.builder()
-            .client(this)
-            .build();
+    private final ClientOutboundMessageService clientOutboundMessagingService = new ClientOutboundMessageService(this);
     private final ClientMessageComposeService clientMessageComposeService = new ClientMessageComposeService(this);
-    private final MasterClientController clientController = new MasterClientController(this);
+    private MasterClientController clientController = new MasterClientController(this);
     public void setUp() {
         clientOutboundMessagingService.establishSession();
     }
+
 }
