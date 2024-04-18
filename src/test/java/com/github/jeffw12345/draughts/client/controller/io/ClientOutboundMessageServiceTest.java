@@ -1,5 +1,6 @@
 package com.github.jeffw12345.draughts.client.controller.io;
 
+import com.github.jeffw12345.draughts.client.io.ClientInboundMessageService;
 import org.mockito.Mockito;
 
 import static org.mockito.Mockito.doThrow;
@@ -109,9 +110,11 @@ public class ClientOutboundMessageServiceTest {
 
     @Test
     public void establishSession_givenExceptionThrown_thenErrorLevelLog() throws Exception {
+        when(mockClient.getClientInboundMessagingService()).thenReturn(new ClientInboundMessageService(mockClient));
+
         doThrow(new DeploymentException("Connection failed"))
                 .when(mockContainer)
-                .connectToServer(any(), any(URI.class));
+                .connectToServer(any(ClientInboundMessageService.class), any(URI.class));
 
         clientOutboundMessageService.establishSession(mockContainer);
 
