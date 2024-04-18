@@ -1,5 +1,7 @@
 package com.github.jeffw12345.draughts.client.controller.io;
 
+import org.mockito.Mockito;
+
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
@@ -14,6 +16,7 @@ import jakarta.websocket.RemoteEndpoint;
 import jakarta.websocket.Session;
 import jakarta.websocket.WebSocketContainer;
 
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
@@ -33,22 +36,26 @@ public class ClientOutboundMessageServiceTest {
     @Mock
     private Session mockSession;
     @Mock
-    private Logger logger;
+    private Logger mockLogger;
     private ClientOutboundMessageService clientOutboundMessageService;
 
     @BeforeEach
     public void setUp() {
         MockitoAnnotations.openMocks(this);
         clientOutboundMessageService = new ClientOutboundMessageService(mockClient);
-        logger = mock(Logger.class);
-        clientOutboundMessageService.setLog(logger);
+        clientOutboundMessageService.setLog(mockLogger);
+    }
+
+    @AfterEach
+    public void tearDown() {
+        Mockito.reset(mockContainer, mockClient, mockSession, mockLogger);
     }
 
     @Test
     public void sendJsonMessageToServer_givenSessionNull_issuesErrorLog() {
         clientOutboundMessageService.setSession(null);
         clientOutboundMessageService.sendJsonMessageToServer("message");
-        verify(logger).error(any());
+        verify(mockLogger).error(any());
     }
 
     @Test
@@ -57,7 +64,7 @@ public class ClientOutboundMessageServiceTest {
         clientOutboundMessageService.setSession(mockSession);
         clientOutboundMessageService.sendJsonMessageToServer("message");
 
-        verify(logger).error(any());
+        verify(mockLogger).error(any());
     }
 
     @Test
@@ -73,15 +80,15 @@ public class ClientOutboundMessageServiceTest {
 
         clientOutboundMessageService.sendJsonMessageToServer("message");
 
-        verify(logger).info("Client ABC123 sent message to server: message");
+        verify(mockLogger).info("Client ABC123 sent message to server: message");
     }
 
     @Test
     public void sendMoveToServer_givenClientObjectNull_issuesErrorLevelLog(){
         clientOutboundMessageService = new ClientOutboundMessageService(null);
-        clientOutboundMessageService.setLog(logger);
+        clientOutboundMessageService.setLog(mockLogger);
         clientOutboundMessageService.sendMoveToServer(new Move());
-        verify(logger).error(any());
+        verify(mockLogger).error(any());
     }
 
     @Test
@@ -90,14 +97,14 @@ public class ClientOutboundMessageServiceTest {
 
         clientOutboundMessageService.sendMoveToServer(new Move());
 
-        verify(logger).error(any());
+        verify(mockLogger).error(any());
     }
 
     @Test
     public void establishSession_noExceptionsThrown_log_output_of_type_info() {
         clientOutboundMessageService.establishSession(mockContainer);
 
-        verify(logger).info(any());
+        verify(mockLogger).info(any());
     }
 
     @Test
@@ -108,7 +115,7 @@ public class ClientOutboundMessageServiceTest {
 
         clientOutboundMessageService.establishSession(mockContainer);
 
-        verify(logger).error(any());
+        verify(mockLogger).error(any());
     }
 
     @Test
@@ -117,7 +124,7 @@ public class ClientOutboundMessageServiceTest {
 
         clientOutboundMessageService.closeSession();
 
-        verify(logger).warn(any());
+        verify(mockLogger).warn(any());
     }
 
     @Test
@@ -127,7 +134,7 @@ public class ClientOutboundMessageServiceTest {
 
         clientOutboundMessageService.closeSession();
 
-        verify(logger).warn(any());
+        verify(mockLogger).warn(any());
     }
 
     @Test
@@ -138,6 +145,6 @@ public class ClientOutboundMessageServiceTest {
 
         clientOutboundMessageService.closeSession();
 
-        verify(logger).error(any());
+        verify(mockLogger).error(any());
     }
 }
