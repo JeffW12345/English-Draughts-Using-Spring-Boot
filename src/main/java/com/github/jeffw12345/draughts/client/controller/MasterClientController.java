@@ -2,6 +2,7 @@ package com.github.jeffw12345.draughts.client.controller;
 
 import com.github.jeffw12345.draughts.client.Client;
 import com.github.jeffw12345.draughts.client.view.DraughtsBoardGui;
+import com.github.jeffw12345.draughts.game.models.Board;
 import com.github.jeffw12345.draughts.game.models.Colour;
 import com.github.jeffw12345.draughts.game.models.move.Move;
 import com.github.jeffw12345.draughts.server.messaging.io.models.ServerMessageToClient;
@@ -43,9 +44,11 @@ public class MasterClientController {
         switch (serverResponseType) {
             case ASSIGN_WHITE_COLOUR:
                 assignColour(Colour.WHITE);
+                newGameClientActions();
                 break;
             case ASSIGN_RED_COLOUR:
                 assignColour(Colour.RED);
+                newGameClientActions();
                 break;
             case DECLINE_MOVE:
                 guiMessageController.invalidMovePopUpMessage();
@@ -79,6 +82,11 @@ public class MasterClientController {
             default:
                 throw new IllegalArgumentException("Unexpected response type: " + serverResponseType);
         }
+    }
+
+    private void newGameClientActions() {
+        boardUpdateController.repaintBoardAtStartOfNewGame(new Board());
+        isRedsTurn = true;
     }
 
     private void updateClientId(String clientId) {

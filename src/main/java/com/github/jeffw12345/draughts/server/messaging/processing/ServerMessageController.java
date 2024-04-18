@@ -95,6 +95,8 @@ public class ServerMessageController {
 
     private synchronized static void newGameSetup(String redPlayerClientId, String whitePlayerClientId) {
         Game game = new Game();
+        game.setCurrentBoard(new Board());
+        game.setRedTurn(true);
         newGameClientNotifications(redPlayerClientId, Colour.RED);
         newGameClientNotifications(whitePlayerClientId, Colour.WHITE);
 

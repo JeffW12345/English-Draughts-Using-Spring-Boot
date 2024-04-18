@@ -46,5 +46,4 @@ public class ClientInboundMessageServiceTest {
         verify(mockClient, times(1)).getClientId();
         verify(mockClientController, times(1)).processMessageFromServer(any(ServerMessageToClient.class));
     }
-
 }
