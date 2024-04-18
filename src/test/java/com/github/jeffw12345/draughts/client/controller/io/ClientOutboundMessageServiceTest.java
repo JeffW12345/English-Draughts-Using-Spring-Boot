@@ -1,5 +1,6 @@
 package com.github.jeffw12345.draughts.client.controller.io;
 
+import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -7,48 +8,54 @@ import static org.mockito.Mockito.when;
 import com.github.jeffw12345.draughts.client.Client;
 import com.github.jeffw12345.draughts.client.io.ClientOutboundMessageService;
 import com.github.jeffw12345.draughts.game.models.move.Move;
+
+import jakarta.websocket.DeploymentException;
 import jakarta.websocket.RemoteEndpoint;
 import jakarta.websocket.Session;
+import jakarta.websocket.WebSocketContainer;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.slf4j.Logger;
+
+import java.io.IOException;
+import java.net.URI;
+
 import static org.mockito.ArgumentMatchers.any;
 
 public class ClientOutboundMessageServiceTest {
-
     @Mock
-    private Client client;
-
+    private WebSocketContainer mockContainer;
     @Mock
-    private Session session;
-
-    private ClientOutboundMessageService service;
-
+    private Client mockClient;
+    @Mock
+    private Session mockSession;
     @Mock
     private Logger logger;
+    private ClientOutboundMessageService clientOutboundMessageService;
 
     @BeforeEach
     public void setUp() {
         MockitoAnnotations.openMocks(this);
-        service = new ClientOutboundMessageService(client);
+        clientOutboundMessageService = new ClientOutboundMessageService(mockClient);
         logger = mock(Logger.class);
-        service.setLog(logger);
+        clientOutboundMessageService.setLog(logger);
     }
 
     @Test
     public void sendJsonMessageToServer_givenSessionNull_issuesErrorLog() {
-        service.setSession(null);
-        service.sendJsonMessageToServer("message");
+        clientOutboundMessageService.setSession(null);
+        clientOutboundMessageService.sendJsonMessageToServer("message");
         verify(logger).error(any());
     }
 
     @Test
     public void sendJsonMessageToServer_givenClientControllerObjectNull_issuesErrorLog() {
-        when(session.isOpen()).thenReturn(false);
-        service.setSession(session);
-        service.sendJsonMessageToServer("message");
+        when(mockSession.isOpen()).thenReturn(false);
+        clientOutboundMessageService.setSession(mockSession);
+        clientOutboundMessageService.sendJsonMessageToServer("message");
 
         verify(logger).error(any());
     }
@@ -57,98 +64,80 @@ public class ClientOutboundMessageServiceTest {
     public void sendJsonMessageToServer_givenSessionObjectNonNullAndOpen_issuesInfoLogMessage(){
         RemoteEndpoint.Async asyncRemoteMock = mock(RemoteEndpoint.Async.class);
 
-        when(session.isOpen()).thenReturn(true);
-        when(session.getAsyncRemote()).thenReturn(asyncRemoteMock);
+        when(mockSession.isOpen()).thenReturn(true);
+        when(mockSession.getAsyncRemote()).thenReturn(asyncRemoteMock);
 
-        service.setSession(session);
+        clientOutboundMessageService.setSession(mockSession);
 
-        when(client.getClientId()).thenReturn("ABC123");
+        when(mockClient.getClientId()).thenReturn("ABC123");
 
-        service.sendJsonMessageToServer("message");
+        clientOutboundMessageService.sendJsonMessageToServer("message");
 
         verify(logger).info("Client ABC123 sent message to server: message");
     }
 
-
-
-    @Test
-    public void convertMessageToJSONThenSendToServer_givenClientMessageToServerPassedIn_returnsValidJsonForThatObject(){
-        //TODO
-    }
-
-
-
     @Test
     public void sendMoveToServer_givenClientObjectNull_issuesErrorLevelLog(){
-        service = new ClientOutboundMessageService(null);
-        service.setLog(logger);
-        service.sendMoveToServer(new Move());
+        clientOutboundMessageService = new ClientOutboundMessageService(null);
+        clientOutboundMessageService.setLog(logger);
+        clientOutboundMessageService.sendMoveToServer(new Move());
         verify(logger).error(any());
     }
 
     @Test
     public void sendMoveToServer_givenClientControllerNull_issuesErrorLevelLog(){
-        when(client.getClientController()).thenReturn(null);
+        when(mockClient.getClientController()).thenReturn(null);
 
-        service.sendMoveToServer(new Move());
+        clientOutboundMessageService.sendMoveToServer(new Move());
 
         verify(logger).error(any());
     }
 
-
     @Test
-    public void sendMoveToServer_validMoveObject_convertMessageToSendableObject(){
-        //TODO
+    public void establishSession_noExceptionsThrown_log_output_of_type_info() {
+        clientOutboundMessageService.establishSession(mockContainer);
+
+        verify(logger).info(any());
     }
 
     @Test
-    public void establishSession_successfulConnection_log_output_message_as_expected(){
-        //TODO
-    }
+    public void establishSession_givenExceptionThrown_thenErrorLevelLog() throws Exception {
+        doThrow(new DeploymentException("Connection failed"))
+                .when(mockContainer)
+                .connectToServer(any(), any(URI.class));
 
-    @Test
-    public void establishSession_successfulConnection_log_output_of_type_info(){
-        //TODO
-    }
+        clientOutboundMessageService.establishSession(mockContainer);
 
-    @Test
-    public void establishSession_unsuccessfulConnection_log_output_message_as_expected(){
-        //TODO
-    }
-
-    @Test
-    public void establishSession_unsuccessfulConnection_log_output_of_type_error(){
-        //TODO
-    }
-
-
-    @Test
-    public void closeSession_givenSessionObjectNull_logsExpectedMessage(){
-        //TODO
+        verify(logger).error(any());
     }
 
     @Test
     public void closeSession_givenSessionObjectNull_issuesWarnLevelLog(){
-        //TODO
-    }
+        clientOutboundMessageService.setSession(null);
 
-    @Test
-    public void closeSession_givenSessionObjectNotOpen_logsExpectedMessage(){
-        //TODO
+        clientOutboundMessageService.closeSession();
+
+        verify(logger).warn(any());
     }
 
     @Test
     public void closeSession_givenSessionObjectNotOpen_issuesWarnLevelLog(){
-        //TODO
+        when(mockSession.isOpen()).thenReturn(false);
+        clientOutboundMessageService.setSession(mockSession);
+
+        clientOutboundMessageService.closeSession();
+
+        verify(logger).warn(any());
     }
 
     @Test
-    public void closeSession_givenIOExceptionThrown_issuesErrorLevelLog(){
-        //TODO
-    }
+    public void closeSession_givenIOExceptionThrown_issuesErrorLevelLog() throws IOException {
+        when(mockSession.isOpen()).thenReturn(true);
+        doThrow(new IOException("Failed to close")).when(mockSession).close();
+        clientOutboundMessageService.setSession(mockSession);
 
-    @Test
-    public void closeSession_givenIOExceptionThrown_issuesExpectedErrorMessage(){
-        //TODO
+        clientOutboundMessageService.closeSession();
+
+        verify(logger).error(any());
     }
 }
