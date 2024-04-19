@@ -10,6 +10,24 @@ public enum UpwardOvertakeJump implements MoveType {
     @Getter
     private final int columnChange;
 
+    public synchronized boolean isOutOfBoundsForPieceAtPosition(int startRow, int startColumn) {
+        int rowChange = getRowChange();
+        int columnChange = getColumnChange();
+
+        startRow += rowChange;
+        startColumn += columnChange;
+
+        return startRow < 0 || startRow > 7 || startColumn < 0 || startColumn > 7;
+    }
+
+    public synchronized int getDestinationRowFromStartRow(int startRow){
+        return startRow + getRowChange();
+    }
+
+    public synchronized int getDestinationColumnFromStartColumn(int startColumn){
+        return startColumn + getColumnChange();
+    }
+
     UpwardOvertakeJump(int rowChange, int columnChange){
         this.rowChange = rowChange;
         this.columnChange = columnChange;
