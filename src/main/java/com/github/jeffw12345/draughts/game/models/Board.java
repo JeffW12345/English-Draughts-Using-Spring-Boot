@@ -73,6 +73,10 @@ public class Board {
         }
     }
 
+    public void setSquareAtRowAndColumn(int rowNumber, int columnNumber, SquareContent requiredSquareContent){
+        getSquareAtRowAndColumn(rowNumber, columnNumber).setSquareContent(requiredSquareContent);
+    }
+
     private boolean isValidPosition(int rowNumber, int columnNumber) {
         return rowNumber >= 0 && rowNumber < 8 && columnNumber >= 0 && columnNumber < 8;
     }

@@ -75,7 +75,7 @@ public class ServerMessageComposeService {
         ServerMessagingOutboundService.messageOtherClientInGame(messageAsJson, clientAcceptingDrawId);
     }
 
-    public static void tellOtherClientDrawAOffered(String clientOfferingDrawId) {
+    public static void tellOtherClientDrawOffered(String clientOfferingDrawId) {
         ServerMessageToClient serverMessageToClient = ServerMessageToClient.builder()
                 .serverResponseType(ServerToClientMessageType.INFORM_DRAW_OFFER_MADE)
                 .build();

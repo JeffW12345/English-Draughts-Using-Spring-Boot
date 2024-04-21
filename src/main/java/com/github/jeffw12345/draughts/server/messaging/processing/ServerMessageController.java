@@ -33,7 +33,7 @@ public class ServerMessageController {
                 moveRequestActions(requestingClientId, move, playerColour);
                 break;
             case DRAW_OFFER:
-                ServerMessageComposeService.tellOtherClientDrawAOffered(requestingClientId);
+                ServerMessageComposeService.tellOtherClientDrawOffered(requestingClientId);
                 break;
             case DRAW_ACCEPT:
                 ServerMessageComposeService.tellOtherClientDrawAccepted(requestingClientId);

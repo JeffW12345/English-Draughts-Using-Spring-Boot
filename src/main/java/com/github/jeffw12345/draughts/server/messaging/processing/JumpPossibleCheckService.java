@@ -42,7 +42,7 @@ public class JumpPossibleCheckService {
         return false;
     }
 
-    public static boolean canJumpFromSquare(Board board,
+    private static boolean canJumpFromSquare(Board board,
                                             Class<? extends Enum<? extends MoveType>> moveTypeEnumClass,
                                             int startOfNewMoveRow,
                                             int startOfNewMoveColumn,
@@ -79,7 +79,7 @@ public class JumpPossibleCheckService {
         return false;
     }
 
-    public static boolean isSquareOccupiedByOpponentPiece(int row,
+    private static boolean isSquareOccupiedByOpponentPiece(int row,
                                                           int column,
                                                           Board board,
                                                           Colour colourOfPlayerPiece) {
