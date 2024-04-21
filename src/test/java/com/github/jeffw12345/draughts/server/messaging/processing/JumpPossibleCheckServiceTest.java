@@ -1,12 +1,14 @@
-package com.github.jeffw12345.draughts.server.messaging.io.processing;
+package com.github.jeffw12345.draughts.server.messaging.processing;
 
 import com.github.jeffw12345.draughts.game.models.Board;
 import com.github.jeffw12345.draughts.game.models.Colour;
 import com.github.jeffw12345.draughts.game.models.SquareContent;
-import com.github.jeffw12345.draughts.server.messaging.processing.JumpPossibleCheckService;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import static org.junit.jupiter.api.Assertions.*;
+
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class JumpPossibleCheckServiceTest {
 

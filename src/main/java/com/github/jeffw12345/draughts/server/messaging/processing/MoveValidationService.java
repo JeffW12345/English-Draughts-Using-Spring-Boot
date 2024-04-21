@@ -49,7 +49,7 @@ public class MoveValidationService {
         return !move.isOvertakingMove() || isOverTakeValid(game, playerMakingMoveColour, move);
     }
 
-    private static boolean isOverTakeValid(Game game, Colour startingSquareColour, Move move) {
+    static boolean isOverTakeValid(Game game, Colour startingSquareColour, Move move) {
         Board board = game.getCurrentBoard();
         int startRow = move.getStartSquareRow();
         int startColumn = move.getStartSquareColumn();
