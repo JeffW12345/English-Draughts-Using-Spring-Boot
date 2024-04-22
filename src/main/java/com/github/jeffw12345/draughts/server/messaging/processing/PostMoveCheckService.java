@@ -11,15 +11,6 @@ import com.github.jeffw12345.draughts.game.models.move.type.RedManMoveType;
 import com.github.jeffw12345.draughts.game.models.move.type.WhiteManMoveType;
 
 public class PostMoveCheckService {
-    public static boolean isFollowUpOvertakePossible(Board board, Move move, SquareContent startingSquareContent) {
-        int endOfMoveRow = move.getEndSquareRow();
-        int endOfMoveColumn = move.getEndSquareColumn();
-        Colour playerColour = move.getColourOfPlayerMakingMove();
-
-        return new JumpPossibleCheckService().isOvertakePossibleForSquare
-                (playerColour, board, startingSquareContent, endOfMoveRow, endOfMoveColumn);
-    }
-
     public static boolean isTurnOngoing(Game game, Move move) {
         Board board = game.getCurrentBoard();
         if (move.isOvertakingMove()){
@@ -34,7 +25,7 @@ public class PostMoveCheckService {
         return noLegalMovesForColour(otherColour, board) || board.hasNoSquaresOfColour(otherColour);
     }
 
-    public static boolean noLegalMovesForColour(Colour colourToCheck, Board board) {
+    private static boolean noLegalMovesForColour(Colour colourToCheck, Board board) {
         for (int row = 0; row < 8; row++) {
             for (int column = 0; column < 8; column++) {
                 SquareContent content = board.getSquareContentAtRowAndColumn(row, column);
@@ -64,5 +55,17 @@ public class PostMoveCheckService {
             }
         }
         return true;
+    }
+    static boolean isFollowUpOvertakePossible(Board board, Move move, SquareContent startingSquareContent) {
+        if (move == null) {
+            throw new IllegalArgumentException("Move parameter cannot be null");
+        }
+
+        int endOfMoveRow = move.getEndSquareRow();
+        int endOfMoveColumn = move.getEndSquareColumn();
+        Colour playerColour = move.getColourOfPlayerMakingMove();
+
+        return new JumpPossibleCheckService().isOvertakePossibleForSquare
+                (playerColour, board, startingSquareContent, endOfMoveRow, endOfMoveColumn);
     }
 }
