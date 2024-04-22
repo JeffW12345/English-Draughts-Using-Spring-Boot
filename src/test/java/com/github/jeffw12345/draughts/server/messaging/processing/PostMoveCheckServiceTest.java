@@ -5,8 +5,8 @@ import com.github.jeffw12345.draughts.game.models.Colour;
 import com.github.jeffw12345.draughts.game.models.Game;
 import com.github.jeffw12345.draughts.game.models.SquareContent;
 import com.github.jeffw12345.draughts.game.models.move.Move;
+import org.junit.jupiter.api.Test;
 
-import org.junit.Test;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.assertFalse;
