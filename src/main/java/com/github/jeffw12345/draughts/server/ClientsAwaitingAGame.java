@@ -21,4 +21,9 @@ public class ClientsAwaitingAGame {
             return clientIdsSeekingGame.size() > 0;
         }
     }
+    public static void clearList() {
+        synchronized (lock) {
+            clientIdsSeekingGame.clear();
+        }
+    }
 }
